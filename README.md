@@ -88,6 +88,8 @@ A continuación se presentan las funcionalidades detalladas, organizadas en una 
 | Tipo | Funcionalidad | Usuario | Descripción |
 | :--- | :--- | :--- | :--- |
 | **Básica** | Listado de tours públicos en la página principal | Anónimo | Listado de tours públicos destacados en la página principal |
+**Básica** | Consulta de detalle de puntos de interés | Anónimo | Visualización en detalle de los datos de los puntos de interés que contienen los tour |
+**Básica** | Creación de puntos de interés | Administrador | Creación de nuevos puntos de interés por parte de un administrador para poder ser incluidos en los tour |
 | **Básica** | Consulta de detalle de tour | Anónimo | Consulta de la página de detalle de un tour. |
 | **Básica** | Registro de usuario | Anónimo | Registro de nuevas cuentas de usuario. |
 | **Básica** | Inicio de sesión | Anónimo | Identificación de usuarios ya registrados. |
@@ -102,7 +104,7 @@ A continuación se presentan las funcionalidades detalladas, organizadas en una 
 | **Intermedia** | Creación de grupos privados | Registrado | Creación de grupos de usuarios a partir de la lista de amigos. El usuario creador del grupo pasa a ser su líder, con permisos para gestionar miembros y apuntar al grupo a tours. Otros miembros pueden solicitar asumir ese rol desde el detalle del grupo. |
 | **Intermedia** | Creación de grupos públicos | Administrador | Creación de nuevos grupos turísticos públicos, a los que cualquier usuario puede unirse. |
 | **Intermedia** | Creación de tours privados | Registrado | Registro de un nuevo tour privado a partir de una lista de puntos de interés. |
-| **Intermedia** | Notificaciones | Registrado | Recepción de notificaciones en la plataforma (solicitudes de amistad, nuevos tours, etc.) |
+| **Intermedia** | Notificaciones | Registrado | Recepción de notificaciones en la plataforma (solicitudes de amistad, nuevos tours, etc.)|
 | **Intermedia** | Búsqueda por filtros | Anónimo | Filtrado de tours por precio, duración o tipo. |
 | **Avanzada** | Cálculo de ruta óptima | Registrado | Cálculo, mediante un algoritmo, de la ruta óptima dentro de los lugares de interés de un tour. Se realiza automáticamente durante la creación de un tour, pero puede actualizarse el resultado por si la ruta cambia con el tiempo según los datos (condiciones de tráfico, obras, etc). Estos datos se obtienen desde una API externa. Se puede calcular la ruta óptima tanto para realizarla caminando como para realizarla en coche. |
 | **Avanzada** | Pago de tours premium | Registrado | Pago mediante la pasarela de pago de stripe de tours públicos premium. |
@@ -256,7 +258,7 @@ Todos los gráficos se mostrarán en el panel de administrador.
 
 ## Tecnología complementaria
 
-Como tecnología complementaria, la plataforma hará uso de la API externa de algún sistema de mapas (por ejemplo, Google Maps) para obtener los datos necesarios para optimizar las rutas de los tours.
+Como tecnología complementaria, la plataforma hará uso de la API externa de algún sistema de mapas (por ejemplo, Google Maps) para obtener los datos necesarios para optimizar las rutas de los tours. Asimismo, el sistema utilizará Telegram para enviar notificaciones a los usuarios que lo deseen.
 
 ## Algoritmo o consulta avanzada
 
