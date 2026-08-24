@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-OptitourApplication<optitour>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "es.urjc.tfg.optitour.OptitourApplication",
+            "projectName": "optitour",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
