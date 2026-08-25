@@ -1,6 +1,5 @@
 package es.urjc.tfg.optitour.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import es.urjc.tfg.optitour.model.Tour;
@@ -10,8 +9,11 @@ import jakarta.annotation.PostConstruct;
 @Service
 public class SampleDataService {
 
-    @Autowired
-    private TourRepository repository;
+    private final TourRepository repository;
+
+    SampleDataService(TourRepository repository) {
+        this.repository = repository;
+    }
 
     @PostConstruct
     public void init() {
