@@ -73,3 +73,9 @@ Este documento registra el uso que se le da a diferentes herramientas de intelig
 * **Herramienta:** Cuaderno de Google Gemini.
 * **Modelo concreto:** Gemini 3.1 Pro.
 * **Cómo ha sido usada:** Uso de la IA para clarificar la documentación oficial de Vitest. Se le consultó acerca del funcionamiento de un DOM virtual, así como acerca de los conceptos `render`, `screen` y `vi.mock`para su comprensión. Posteriormente, y una vez comprendidos los conceptos necesarios para implementar el test, fue escrito de manera autónoma.
+
+* **Fecha:** 27/08/2026
+* **Objetivo:** Configuración de Testcontainers para Spring Boot.
+* **Herramienta:** Chat de Visual Studio Code
+* **Modelo concreto:** GitHub Copilot.
+* **Cómo ha sido usada:** Se utiliza la herramienta debido a problemas para integrar el contenedor de Testcontainers con la clase TourService. La IA genera las líneas de configuración 45-57 de la clase TourServiceIntegrationTest. También enseña cómo usar perfiles para evitar que SampleDataService inyecte tours de ejemplo en el contenedor de prueba.
