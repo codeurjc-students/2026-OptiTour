@@ -18,4 +18,8 @@ public class TourService {
     public List<Tour> getAllTours() {
         return repository.findAll();
     }
+
+    public void saveTour(Tour tour) {
+        repository.save(tour);
+    }
 }
