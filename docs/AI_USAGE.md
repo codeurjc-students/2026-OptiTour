@@ -79,3 +79,9 @@ Este documento registra el uso que se le da a diferentes herramientas de intelig
 * **Herramienta:** Chat de Visual Studio Code
 * **Modelo concreto:** GitHub Copilot.
 * **Cómo ha sido usada:** Se utiliza la herramienta debido a problemas para integrar el contenedor de Testcontainers con la clase TourService. La IA genera las líneas de configuración 45-57 de la clase TourServiceIntegrationTest. También enseña cómo usar perfiles para evitar que SampleDataService inyecte tours de ejemplo en el contenedor de prueba.
+
+* **Fecha:** 29/08/2026
+* **Objetivo:** Solución de errores CORS en la prueba de integración del frontend con la API REST.
+* **Herramienta:** Chat de Visual Studio Code.
+* **Modelo concreto:** GitHub Copilot.
+* **Cómo ha sido usada:** Se le indicó al sistema el error de CORS: `Access to fetch at 'http://localhost:443/tour/all' from origin 'http://localhost:5173' has been blocked by CORS policy`. La IA explica que el problema no es la ruta sino que el backend no devuelve la cabecera `Access-Control-Allow-Origin`, por lo que el navegador bloquea la solicitud del componente React. Se usa esta ayuda para configurar la política de CORS en Spring Boot y validar la prueba de integración sin mockeo.
