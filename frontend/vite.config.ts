@@ -9,16 +9,16 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     server: {
       proxy: {
-        '/api': {
+        '/tour': {
           target: env.VITE_API_TARGET || 'http://localhost:443',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ""),
         },
       },
     },
     test: {
       environment: 'jsdom',
       globals: true,
+      include: ['test/**/*test.tsx']
     }
   }
 })
