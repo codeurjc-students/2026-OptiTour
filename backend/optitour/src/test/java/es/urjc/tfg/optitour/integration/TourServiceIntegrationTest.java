@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -68,6 +69,7 @@ public class TourServiceIntegrationTest {
     }
 
     @Test
+    @DisplayName("getAllTours method should return the SampleDataService example tours")
     void getAllToursTest() {
         List<Tour> testTours = service.getAllTours();
 
