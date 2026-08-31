@@ -35,7 +35,7 @@ export default function Index() {
 
             <ul>
                 {tours?.map((tour) => (
-                    <li key={tour.id}>
+                    <li key={tour.id} id={String(tour.id)}>
                         <h2>{tour.id}: {tour.name}</h2>
                         <p>{tour.description}</p>
                     </li>

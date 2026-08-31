@@ -85,3 +85,10 @@ Este documento registra el uso que se le da a diferentes herramientas de intelig
 * **Herramienta:** Chat de Visual Studio Code.
 * **Modelo concreto:** GitHub Copilot.
 * **Cómo ha sido usada:** Se le indicó al sistema el error de CORS: `Access to fetch at 'http://localhost:443/tour/all' from origin 'http://localhost:5173' has been blocked by CORS policy`. La IA explica que el problema no es la ruta sino que el backend no devuelve la cabecera `Access-Control-Allow-Origin`, por lo que el navegador bloquea la solicitud del componente React. Se usa esta ayuda para configurar la política de CORS en Spring Boot y validar la prueba de integración sin mockeo.
+
+* **Fecha:** 31/08/2026
+* **Fase:** Fase 2
+* **Objetivo:** Resolución de dudas sintácticas en Rest Assured y tipado de aserciones en pruebas E2E.
+* **Herramienta:** Cuaderno de Google Gemini
+* **Versión concreta:** Gemini 3.1 Pro.
+* **Cómo ha sido usada:** Consulta sobre la sintaxis de la librería Rest Assured (importaciones estáticas, diferencias conceptuales entre `RestAssuredMockMvc` y la ejecución sobre un servidor web en puerto dinámico, y métodos de extracción de arrays JSON). Se utilizó la IA para clarificar el manejo de matchers de Hamcrest (`hasItems`, `hasSize`) y solucionar una colisión de tipos estricta entre identificadores de tipo `Long` y literales numéricos enteros en las aserciones.
