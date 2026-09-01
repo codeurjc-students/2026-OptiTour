@@ -1,0 +1,47 @@
+name: OptiTour Continuous Integration basic workflow
+
+on:
+  push:
+    branches: ['feature/**', 'fix/**']
+  workflow_dispatch:
+jobs:
+  backend-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend/optitour
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java environment
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+      
+      - name: Build Spring Boot project
+        run: mvn clean test-compile
+
+      - name: Run unit tests
+        run: mvn test -Dtest="es.urjc.tfg.optitour.unit.**.*"
+  frontend-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install modules
+        run: npm install
+
+      - name: Build React project
+        run: npm run build
+
+      - name: Run tests
+        run: npm test
