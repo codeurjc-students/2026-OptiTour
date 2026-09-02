@@ -1,4 +1,4 @@
-name: OptiTour Continuous Integration basic workflow
+name: OptiTour Continuous Integration complete workflow
 
 on:
   pull_request:
@@ -29,7 +29,7 @@ jobs:
       
       #Once we have the react project running in background, now we can execute backend tests.
       - name: Set up Java environment
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '25'
@@ -45,7 +45,7 @@ jobs:
 
       #Now, we need backend to be runnig so we can run integration tests: 
       - name: Set up Java environment
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '25'
