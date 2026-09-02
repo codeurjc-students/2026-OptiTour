@@ -1,0 +1,72 @@
+name: OptiTour Continuous Integration basic workflow
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  backend-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install modules
+        working-directory: ./frontend
+        run: npm install
+      
+      #We need react project to be running in order to execute E2E client test. 
+      #We can execute the react project in background, so the terminal it's not blocked and is possible to run Spring Boot project simultaneously.
+      #(This is not neccesary for Docker because it runs automatically in the GitHub actions runner)
+
+      - name: Run React project in background
+        working-directory: ./frontend
+        run: npm run dev &
+      
+      #Once we have the react project running in background, now we can execute backend tests.
+      - name: Set up Java environment
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+      
+      - name: Run backend
+        working-directory: ./backend/optitour
+        run: mvn clean test
+
+  frontend-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      #Now, we need backend to be runnig so we can run integration tests: 
+      - name: Set up Java environment
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+      
+      - name: Run backend
+        working-directory: ./backend/optitour
+        run: mvn spring-boot:run &
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install modules
+        working-directory: ./frontend
+        run: npm install
+
+      - name: Build React project
+        working-directory: ./frontend
+        run: npm run build
+
+      - name: Run tests
+        working-directory: ./frontend
+        run: npm test
