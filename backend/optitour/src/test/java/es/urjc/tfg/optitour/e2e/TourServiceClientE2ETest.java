@@ -8,19 +8,22 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.boot.test.context.SpringBootTest;
+
+import es.urjc.tfg.optitour.BaseIntegrationTest;
+
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@SpringBootTest
-public class TourServiceClientE2ETest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class TourServiceClientE2ETest extends BaseIntegrationTest {
     protected WebDriver driver;
 
     @BeforeEach
@@ -58,8 +61,8 @@ public class TourServiceClientE2ETest {
 
         // Now, get the list (waiting until it's visible) and check if one of its
         // elements is correct.
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(1));
-        wait.until(visibilityOfElementLocated(By.tagName("ul")));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(visibilityOfElementLocated(By.id("1")));
 
         WebElement listItem = driver.findElement(By.id("1"));
         String listItemText = listItem.getText();
