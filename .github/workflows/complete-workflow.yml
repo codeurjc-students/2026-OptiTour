@@ -81,7 +81,7 @@ jobs:
         run: mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=8080" &
 
       - name: Wait for backend startup
-        run: sleep 10
+        run: sleep 30
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
