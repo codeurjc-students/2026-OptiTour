@@ -48,6 +48,9 @@ jobs:
       - name: Run backend
         working-directory: ./backend/optitour
         run: mvn spring-boot:run &
+
+      - name: Wait for backend startup
+        run: sleep 10
       
       - name: Run backend
         working-directory: ./backend/optitour
@@ -76,6 +79,9 @@ jobs:
       - name: Run backend
         working-directory: ./backend/optitour
         run: mvn spring-boot:run &
+
+      - name: Wait for backend startup
+        run: sleep 10
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
