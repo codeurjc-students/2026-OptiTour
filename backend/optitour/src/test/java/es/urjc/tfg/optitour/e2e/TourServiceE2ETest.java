@@ -12,13 +12,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
+import es.urjc.tfg.optitour.BaseIntegrationTest;
 import es.urjc.tfg.optitour.DTO.TourDTO;
 import io.restassured.RestAssured;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TourServiceE2ETest {
+public class TourServiceE2ETest extends BaseIntegrationTest {
     // First of all, we configure the random port where the api will run:
-
     @LocalServerPort
     private int port;
 
@@ -45,6 +45,5 @@ public class TourServiceE2ETest {
             assertThat(result.get(i).name(), equalTo("Tour " + (i + 1)));
             assertThat(result.get(i).description(), equalTo("Tour de ejemplo numero " + (i + 1)));
         }
-
     }
 }

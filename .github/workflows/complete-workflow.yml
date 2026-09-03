@@ -34,6 +34,20 @@ jobs:
           distribution: 'temurin'
           java-version: '25'
       
+      # We'll also need to run backend, TourServiceE2ETest can call the api.
+      # To do that, it's necessary to run a mysql database:
+
+      - name: Configure and run MySQL
+        run: |
+          sudo systemctl start mysql
+          sudo mysql -e "CREATE DATABASE IF NOT EXISTS optitour;"
+          sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'tfgOptitour';"
+          sudo mysql -e "FLUSH PRIVILEGES;"
+
+      - name: Run backend
+        working-directory: ./backend/optitour
+        run: mvn spring-boot:run &
+      
       - name: Run backend
         working-directory: ./backend/optitour
         run: mvn clean test
@@ -49,6 +63,13 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '25'
+      
+      - name: Configure and run MySQL
+        run: |
+          sudo systemctl start mysql
+          sudo mysql -e "CREATE DATABASE IF NOT EXISTS optitour;"
+          sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'tfgOptitour';"
+          sudo mysql -e "FLUSH PRIVILEGES;"
       
       - name: Run backend
         working-directory: ./backend/optitour
