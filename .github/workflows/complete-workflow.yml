@@ -40,8 +40,10 @@ jobs:
       - name: Configure and run MySQL
         run: |
           sudo systemctl start mysql
-          sudo mysql -e "CREATE DATABASE IF NOT EXISTS optitour;"
-          sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'tfgOptitour';"
+          sudo mysql --protocol=socket -uroot -proot <<'SQL'
+          CREATE DATABASE IF NOT EXISTS optitour;
+          ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'tfgOptitour';
+          SQL
 
       - name: Run backend
         working-directory: ./backend/optitour
@@ -66,8 +68,10 @@ jobs:
       - name: Configure and run MySQL
         run: |
           sudo systemctl start mysql
-          sudo mysql -e "CREATE DATABASE IF NOT EXISTS optitour;"
-          sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'tfgOptitour';"
+          sudo mysql --protocol=socket -uroot -proot <<'SQL'
+          CREATE DATABASE IF NOT EXISTS optitour;
+          ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'tfgOptitour';
+          SQL
       
       - name: Run backend
         working-directory: ./backend/optitour
