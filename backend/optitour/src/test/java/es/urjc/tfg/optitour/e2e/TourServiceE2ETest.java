@@ -9,15 +9,25 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import es.urjc.tfg.optitour.BaseIntegrationTest;
 import es.urjc.tfg.optitour.DTO.TourDTO;
+import es.urjc.tfg.optitour.model.Tour;
+import es.urjc.tfg.optitour.repository.TourRepository;
 import io.restassured.RestAssured;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TourServiceE2ETest extends BaseIntegrationTest {
+    @Autowired
+    private TourRepository repository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     // First of all, we configure the random port where the api will run:
     @LocalServerPort
     private int port;
@@ -25,6 +35,11 @@ public class TourServiceE2ETest extends BaseIntegrationTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        jdbcTemplate.execute("TRUNCATE TABLE tour RESTART IDENTITY");
+
+        for (int i = 0; i < 5; i++) {
+            repository.save(new Tour("Tour " + (i + 1), "Tour de ejemplo numero " + (i + 1)));
+        }
     }
 
     @Test

@@ -25,7 +25,7 @@ jobs:
 
       - name: Run React project in background
         working-directory: ./frontend
-        run: npm run dev &
+        run: VITE_API_BASE_URL=http://localhost:8080/api/v1 npm run dev -- --host localhost --port 5173 &
       
       #Once we have the react project running in background, now we can execute backend tests.
       - name: Set up Java environment
@@ -47,7 +47,7 @@ jobs:
 
       - name: Run backend
         working-directory: ./backend/optitour
-        run: mvn spring-boot:run &
+        run: mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=8080" &
 
       - name: Wait for backend startup
         run: sleep 10
@@ -78,7 +78,7 @@ jobs:
       
       - name: Run backend
         working-directory: ./backend/optitour
-        run: mvn spring-boot:run &
+        run: mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=8080" &
 
       - name: Wait for backend startup
         run: sleep 10
@@ -98,4 +98,4 @@ jobs:
 
       - name: Run tests
         working-directory: ./frontend
-        run: npm test
+        run: VITE_API_BASE_URL=http://localhost:8080/api/v1 npm test
