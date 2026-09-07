@@ -92,3 +92,24 @@ Este documento registra el uso que se le da a diferentes herramientas de intelig
 * **Herramienta:** Cuaderno de Google Gemini
 * **Versión concreta:** Gemini 3.1 Pro.
 * **Cómo ha sido usada:** Consulta sobre la sintaxis de la librería Rest Assured (importaciones estáticas, diferencias conceptuales entre `RestAssuredMockMvc` y la ejecución sobre un servidor web en puerto dinámico, y métodos de extracción de arrays JSON). Se utilizó la IA para clarificar el manejo de matchers de Hamcrest (`hasItems`, `hasSize`) y solucionar una colisión de tipos estricta entre identificadores de tipo `Long` y literales numéricos enteros en las aserciones.
+
+* **Fecha:** 03/09/2026
+* **Fase:** Fase 2
+* **Objetivo:** Selección de base de datos en pruebas E2E
+* **Herramienta:** Cuaderno de Google Gemini
+* **Versión concreta:** Gemini 3.1 Pro.
+* **Cómo ha sido usada:** Se planteó a la IA el dilema de utilizar un servicio de MySQL externo en GitHub Actions frente al uso de Testcontainers para las pruebas de sistema E2E. La IA analizó pros y contras de cada enfoque y argumentó a favor del de Testcontainers (indicando que es el estándar en la industria) para garantizar la portabilidad y la reproducibilidad.
+
+* **Fecha:** 03/09/2026
+* **Fase:** Fase 2
+* **Objetivo:** Resolución de errores en el ciclo de vida del Testcontainers y fallos de compilación intermitentes.
+* **Herramienta:** Cuaderno de Google Gemini
+* **Versión concreta:** Gemini 3.1 Pro.
+* **Cómo ha sido usada:** La IA se utilizó como soporte técnico para identificar la causa de excepciones `NoSuchBeanDefinitionException` originadas por una incompatibilidad entre Java 25 y la librería MapStruct.
+
+* **Fecha:** 04/09/2026
+* **Fase:** Fase 2
+* **Objetivo:** Configuración y depuración del workflow completo de integración continua.
+* **Herramienta:** Chat de Visual Studio Code.
+* **Modelo concreto:** GitHub Copilot.
+* **Cómo ha sido usada:** La IA se utilizó como apoyo para resolver problemas relacionados con la configuración de MySQL nativo en los runners de GitHub Actions, incluyendo la autenticación del usuario `root`, la creación de la base de datos y la configuración de las credenciales utilizadas por Spring Boot. También ayudó con otros problemas como condiciones de carrera entre forntend y backend.
