@@ -10,19 +10,18 @@ paths:
     get:
       tags:
       - tour-controller
+      summary: Get all tours
       operationId: getTours
       responses:
         "200":
-          description: OK
+          description: Found tours
           content:
-            '*/*':
+            application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/TourDTO"
+                $ref: "#/components/schemas/Tour"
 components:
   schemas:
-    TourDTO:
+    Tour:
       type: object
       properties:
         id:

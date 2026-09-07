@@ -844,7 +844,7 @@ ul.nav-tabs {
   <script>
     // Script section to load models into a JS Var
     var defs = {}
-    defs["TourDTO"] = {
+    defs["Tour"] = {
   "properties" : {
     "id" : {
       "type" : "integer",
@@ -908,7 +908,7 @@ ul.nav-tabs {
                       <article id="api-TourController-getTours-0" data-group="User" data-name="getTours" data-version="0">
                         <div class="pull-left">
                           <h1>getTours</h1>
-                          <p></p>
+                          <p>Get all tours</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -939,8 +939,8 @@ ul.nav-tabs {
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-TourController-getTours-0-curl">
                             <pre class="prettyprint"><code class="language-bsh">curl -X GET \
- -H "Accept: */*" \
- "http://localhost:443/tour/all"
+ -H "Accept: application/json" \
+ "http://localhost:443/api/v1/tour/all"
 </code></pre>
                           </div>
                           <div class="tab-pane" id="examples-TourController-getTours-0-java">
@@ -959,7 +959,7 @@ public class TourControllerApiExample {
         TourControllerApi apiInstance = new TourControllerApi();
 
         try {
-            array[TourDTO] result = apiInstance.getTours();
+            Tour result = apiInstance.getTours();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling TourControllerApi#getTours");
@@ -994,7 +994,7 @@ public class TourControllerApiExample {
         TourControllerApi apiInstance = new TourControllerApi();
 
         try {
-            array[TourDTO] result = apiInstance.getTours();
+            Tour result = apiInstance.getTours();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling TourControllerApi#getTours");
@@ -1013,8 +1013,9 @@ public class TourControllerApiExample {
 // Create an instance of the API class
 TourControllerApi *apiInstance = [[TourControllerApi alloc] init];
 
+// Get all tours
 [apiInstance getToursWithCompletionHandler: 
-              ^(array[TourDTO] output, NSError* error) {
+              ^(Tour output, NSError* error) {
     if (output) {
         NSLog(@"%@", output);
     }
@@ -1062,7 +1063,8 @@ namespace Example
             var apiInstance = new TourControllerApi();
 
             try {
-                array[TourDTO] result = apiInstance.getTours();
+                // Get all tours
+                Tour result = apiInstance.getTours();
                 Debug.WriteLine(result);
             } catch (Exception e) {
                 Debug.Print("Exception when calling TourControllerApi.getTours: " + e.Message );
@@ -1117,6 +1119,7 @@ from pprint import pprint
 api_instance = openapi_client.TourControllerApi()
 
 try:
+    # Get all tours
     api_response = api_instance.get_tours()
     pprint(api_response)
 except ApiException as e:
@@ -1153,7 +1156,7 @@ pub fn main() {
                             <h3 id="examples-TourController-getTours-title-200"></h3>
                             <p id="examples-TourController-getTours-description-200" class="marked"></p>
                             <script>
-                              var responseTourController200_description = `OK`;
+                              var responseTourController200_description = `Found tours`;
                               var responseTourController200_description_break = responseTourController200_description.indexOf('\n');
                               if (responseTourController200_description_break == -1) {
                                 $("#examples-TourController-getTours-title-200").text("Status: 200 - " + responseTourController200_description);
@@ -1181,14 +1184,11 @@ pub fn main() {
                                   <script>
                                     $(document).ready(function() {
                                       var schemaWrapper = {
-  "description" : "OK",
+  "description" : "Found tours",
   "content" : {
-    "*/*" : {
+    "application/json" : {
       "schema" : {
-        "type" : "array",
-        "items" : {
-          "$ref" : "#/components/schemas/TourDTO"
-        }
+        "$ref" : "#/components/schemas/Tour"
       }
     }
   }

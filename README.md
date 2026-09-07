@@ -2,10 +2,54 @@
 
 ## Autores
 
-| Rol | Nombre |
-| :--- | :--- |
+| Rol    | Nombre                  |
+| :----- | :---------------------- |
 | Alumno | Marcos Hernández Martín |
-| Tutor | Michel Maes Bermejo |
+| Tutor  | Michel Maes Bermejo     |
+
+## Índice <!-- omit in toc -->
+
+- [OptiTour: Una aplicación web para la optimización de rutas turísticas](#optitour-una-aplicación-web-para-la-optimización-de-rutas-turísticas)
+  - [Autores](#autores)
+  - [Descripción general](#descripción-general)
+  - [Objetivos](#objetivos)
+    - [Objetivos funcionales](#objetivos-funcionales)
+    - [Objetivos técnicos](#objetivos-técnicos)
+  - [Metodología](#metodología)
+    - [Fases del desarrollo](#fases-del-desarrollo)
+    - [Diagrama de Gantt](#diagrama-de-gantt)
+    - [Funcionalidades detalladas](#funcionalidades-detalladas)
+- [Análisis](#análisis)
+  - [Diseño de las pantallas](#diseño-de-las-pantallas)
+    - [Sistema público y autenticación](#sistema-público-y-autenticación)
+      - [Pantalla principal](#pantalla-principal)
+      - [Iniciar sesión](#iniciar-sesión)
+      - [Registro de usuario](#registro-de-usuario)
+      - [Detalle de tour público sin iniciar sesión](#detalle-de-tour-público-sin-iniciar-sesión)
+      - [Detalle de punto de interés](#detalle-de-punto-de-interés)
+    - [Usuario registrado](#usuario-registrado)
+      - [Detalle de tour para usuario registrado](#detalle-de-tour-para-usuario-registrado)
+      - [Creación de tour](#creación-de-tour)
+      - [Perfil de usuario](#perfil-de-usuario)
+      - [Lista de amigos](#lista-de-amigos)
+      - [Lista de grupos](#lista-de-grupos)
+      - [Detalle de grupo](#detalle-de-grupo)
+      - [Listado de tours inscritos](#listado-de-tours-inscritos)
+      - [Notificaciones](#notificaciones)
+      - [Historial de compras](#historial-de-compras)
+    - [Administrador](#administrador)
+      - [Gestión de usuarios](#gestión-de-usuarios)
+      - [Gestión de puntos de interés](#gestión-de-puntos-de-interés)
+      - [Gestión de facturas](#gestión-de-facturas)
+    - [Navegación general](#navegación-general)
+  - [Entidades y Relaciones](#entidades-y-relaciones)
+  - [Permisos de usuarios](#permisos-de-usuarios)
+  - [Imágenes](#imágenes)
+  - [Gráficos](#gráficos)
+  - [Tecnología complementaria](#tecnología-complementaria)
+  - [Algoritmo o consulta avanzada](#algoritmo-o-consulta-avanzada)
+- [Guía de desarrollo](#guía-de-desarrollo)
+  - [Introducción](#introducción)
 
 ## Descripción general
 
@@ -13,7 +57,7 @@ OptiTour es una aplicación web colaborativa para la optimización de rutas tur�
 
 El desarrollo de esta aplicación se realiza en el contexto del Trabajo de Grado del Grado en Ingeniería del software, en la Escuela Técnica Superior de Ingeniería Informática de la Universidad Rey Juan Carlos
 
-*Actualmente solo se han definido los objetivos funcionales y los objetivos técnicos de la aplicación, pero no se ha comenzado su implementación todavía.*
+*Actualmente solo se han definido los objetivos funcionales y los objetivos técnicos de la aplicación. El desarrollo ya ha sido iniciado, pero la implementación todavía no es funcional.*
 
 ## Objetivos
 
@@ -85,31 +129,31 @@ gantt
 
 A continuación se presentan las funcionalidades detalladas, organizadas en una tabla según sean básicas, intermedias o avanzadas:
 
-| Tipo | Funcionalidad | Usuario | Descripción |
-| :--- | :--- | :--- | :--- |
-| **Básica** | Listado de tours públicos en la página principal | Anónimo | Listado de tours públicos destacados en la página principal |
-**Básica** | Consulta de detalle de puntos de interés | Anónimo | Visualización en detalle de los datos de los puntos de interés que contienen los tour |
-**Básica** | Creación de puntos de interés | Administrador | Creación de nuevos puntos de interés por parte de un administrador para poder ser incluidos en los tour |
-| **Básica** | Consulta de detalle de tour | Anónimo | Consulta de la página de detalle de un tour. |
-| **Básica** | Registro de usuario | Anónimo | Registro de nuevas cuentas de usuario. |
-| **Básica** | Inicio de sesión | Anónimo | Identificación de usuarios ya registrados. |
-| **Básica** | Cierre de sesión | Registrado | Finalización segura de la sesión activa del usuario. |
-| **Básica** | Validación de formularios | Todos | Validación en cliente y servidor de todos los campos. |
-| **Básica** | Modificación de datos de perfil | Registrado | Edición de los datos asociados a la cuenta de usuario. |
-| **Básica** | Gestión de tours | Administrador | Adición, eliminación y edición de tours públicos. |
-| **Básica** | Registro de administrador | Administrador | Creación de nuevas cuentas de administración. La primera cuenta vendrá grabada en el código fuente y deberá cambiar su contraseña en el primer inicio de sesión. |
-| **Básica** | Bloqueo de usuarios | Administrador | Bloqueo de usuarios que no cumplen las normas de la plataforma, limitando el uso de la misma como usuario registrado. |
-| **Básica** | Panel de administrador | Administrador | Página especial para administradores donde se encuentran las funcionalidades para este grupo de usuarios (estadísticas, creación de tours, registro de nuevos administradores o bloqueo de usuarios) |
-| **Intermedia** | Lista de amigos | Registrado | Registro y eliminación de amigos en la lista. Gestión de solicitudes de amistad. |
-| **Intermedia** | Creación de grupos privados | Registrado | Creación de grupos de usuarios a partir de la lista de amigos. El usuario creador del grupo pasa a ser su líder, con permisos para gestionar miembros y apuntar al grupo a tours. Otros miembros pueden solicitar asumir ese rol desde el detalle del grupo. |
-| **Intermedia** | Creación de grupos públicos | Administrador | Creación de nuevos grupos turísticos públicos, a los que cualquier usuario puede unirse. |
-| **Intermedia** | Creación de tours privados | Registrado | Registro de un nuevo tour privado a partir de una lista de puntos de interés. |
-| **Intermedia** | Notificaciones | Registrado | Recepción de notificaciones en la plataforma (solicitudes de amistad, nuevos tours, etc.)|
-| **Intermedia** | Búsqueda por filtros | Anónimo | Filtrado de tours por precio, duración o tipo. |
-| **Avanzada** | Cálculo de ruta óptima | Registrado | Cálculo, mediante un algoritmo, de la ruta óptima dentro de los lugares de interés de un tour. Se realiza automáticamente durante la creación de un tour, pero puede actualizarse el resultado por si la ruta cambia con el tiempo según los datos (condiciones de tráfico, obras, etc). Estos datos se obtienen desde una API externa. Se puede calcular la ruta óptima tanto para realizarla caminando como para realizarla en coche. |
-| **Avanzada** | Pago de tours premium | Registrado | Pago mediante la pasarela de pago de stripe de tours públicos premium. |
-| **Avanzada** | Notificaciones por mensajería | Registrado | Recepción de notificaciones a través de servicio de mensajería externo. |
-| **Avanzada** | Búsqueda de tours | Anónimo | Uso el motor de búsqueda avanzado para encontrar tours. |
+| Tipo           | Funcionalidad                                    | Usuario       | Descripción                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| :------------- | :----------------------------------------------- | :------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Básica**     | Listado de tours públicos en la página principal | Anónimo       | Listado de tours públicos destacados en la página principal                                                                                                                                                                                                                                                                                                                                                                             |
+| **Básica**     | Consulta de detalle de puntos de interés         | Anónimo       | Visualización en detalle de los datos de los puntos de interés que contienen los tour                                                                                                                                                                                                                                                                                                                                                   |
+| **Básica**     | Creación de puntos de interés                    | Administrador | Creación de nuevos puntos de interés por parte de un administrador para poder ser incluidos en los tour                                                                                                                                                                                                                                                                                                                                 |
+| **Básica**     | Consulta de detalle de tour                      | Anónimo       | Consulta de la página de detalle de un tour.                                                                                                                                                                                                                                                                                                                                                                                            |
+| **Básica**     | Registro de usuario                              | Anónimo       | Registro de nuevas cuentas de usuario.                                                                                                                                                                                                                                                                                                                                                                                                  |
+| **Básica**     | Inicio de sesión                                 | Anónimo       | Identificación de usuarios ya registrados.                                                                                                                                                                                                                                                                                                                                                                                              |
+| **Básica**     | Cierre de sesión                                 | Registrado    | Finalización segura de la sesión activa del usuario.                                                                                                                                                                                                                                                                                                                                                                                    |
+| **Básica**     | Validación de formularios                        | Todos         | Validación en cliente y servidor de todos los campos.                                                                                                                                                                                                                                                                                                                                                                                   |
+| **Básica**     | Modificación de datos de perfil                  | Registrado    | Edición de los datos asociados a la cuenta de usuario.                                                                                                                                                                                                                                                                                                                                                                                  |
+| **Básica**     | Gestión de tours                                 | Administrador | Adición, eliminación y edición de tours públicos.                                                                                                                                                                                                                                                                                                                                                                                       |
+| **Básica**     | Registro de administrador                        | Administrador | Creación de nuevas cuentas de administración. La primera cuenta vendrá grabada en el código fuente y deberá cambiar su contraseña en el primer inicio de sesión.                                                                                                                                                                                                                                                                        |
+| **Básica**     | Bloqueo de usuarios                              | Administrador | Bloqueo de usuarios que no cumplen las normas de la plataforma, limitando el uso de la misma como usuario registrado.                                                                                                                                                                                                                                                                                                                   |
+| **Básica**     | Panel de administrador                           | Administrador | Página especial para administradores donde se encuentran las funcionalidades para este grupo de usuarios (estadísticas, creación de tours, registro de nuevos administradores o bloqueo de usuarios)                                                                                                                                                                                                                                    |
+| **Intermedia** | Lista de amigos                                  | Registrado    | Registro y eliminación de amigos en la lista. Gestión de solicitudes de amistad.                                                                                                                                                                                                                                                                                                                                                        |
+| **Intermedia** | Creación de grupos privados                      | Registrado    | Creación de grupos de usuarios a partir de la lista de amigos. El usuario creador del grupo pasa a ser su líder, con permisos para gestionar miembros y apuntar al grupo a tours. Otros miembros pueden solicitar asumir ese rol desde el detalle del grupo.                                                                                                                                                                            |
+| **Intermedia** | Creación de grupos públicos                      | Administrador | Creación de nuevos grupos turísticos públicos, a los que cualquier usuario puede unirse.                                                                                                                                                                                                                                                                                                                                                |
+| **Intermedia** | Creación de tours privados                       | Registrado    | Registro de un nuevo tour privado a partir de una lista de puntos de interés.                                                                                                                                                                                                                                                                                                                                                           |
+| **Intermedia** | Notificaciones                                   | Registrado    | Recepción de notificaciones en la plataforma (solicitudes de amistad, nuevos tours, etc.)                                                                                                                                                                                                                                                                                                                                               |
+| **Intermedia** | Búsqueda por filtros                             | Anónimo       | Filtrado de tours por precio, duración o tipo.                                                                                                                                                                                                                                                                                                                                                                                          |
+| **Avanzada**   | Cálculo de ruta óptima                           | Registrado    | Cálculo, mediante un algoritmo, de la ruta óptima dentro de los lugares de interés de un tour. Se realiza automáticamente durante la creación de un tour, pero puede actualizarse el resultado por si la ruta cambia con el tiempo según los datos (condiciones de tráfico, obras, etc). Estos datos se obtienen desde una API externa. Se puede calcular la ruta óptima tanto para realizarla caminando como para realizarla en coche. |
+| **Avanzada**   | Pago de tours premium                            | Registrado    | Pago mediante la pasarela de pago de stripe de tours públicos premium.                                                                                                                                                                                                                                                                                                                                                                  |
+| **Avanzada**   | Notificaciones por mensajería                    | Registrado    | Recepción de notificaciones a través de servicio de mensajería externo.                                                                                                                                                                                                                                                                                                                                                                 |
+| **Avanzada**   | Búsqueda de tours                                | Anónimo       | Uso el motor de búsqueda avanzado para encontrar tours.                                                                                                                                                                                                                                                                                                                                                                                 |
 
 # Análisis
 
@@ -219,42 +263,42 @@ La zona de administración agrupa la gestión de usuarios, puntos de interés y 
 ## Entidades y Relaciones
 Se presentan a continuación las entidades que conformarán el sistema. Se asume que todas las entidades tienen un atributo que las identifica unívocamente: 
 
-| Entidad | Atributos | Relaciones | Descripción |
-| :--- | :--- | :--- | :--- |
-| **Usuario** | • E-mail <br> • Contraseña <br> • Nombre de usuario <br> • Número de teléfono <br> • Foto de perfil <br> • Lista de amigos <br> • Lista de grupos <br> • Lista de notificaciones • Usuario activo <br> • Lista de roles| • Grupo - N:M <br> • Amigos - N:M (recursiva) <br> • Tour - N:M <br> • Notificación - 1:N | Cuenta de usuario registrado. |
-| **Grupo** <br>  | • Lista de usuarios <br> • Lista de tours <br> • Usuario líder del grupo | • Usuario - N:M <br> • Usuario - 1:M <br> • Tour - N:M | Conjunto de usuarios que pueden contratar tours en conjunto o crear sus propios tour personalizados. La gestión (creación, borrado, definición de más líderes, inclusión y eliminación de usuarios de la lista de amigos) la lleva a cabo un usuario con el rol de "líder", siendo éste el usuario creador del grupo, con posibilidad de ampliación. |
-| **Punto de interés** | • Nombre <br> • Descripción <br> • Ciudad <br> • Dirección <br> • Coordenadas <br> • Lista de imágenes <br> • Precio (si es premium) | • Tour - N:M | Lugar que a los usuarios del sistema les resulta interesante visitar. Es el elemento básico de los tour, siendo los destinos que el algoritmo utilizará para calcular las rutas. |
-| **Tour** | • Nombre <br> • Descripción <br> • Lista de lugares de interés | • Punto de interés - N:M | Conjunto de puntos de interés de la misma temática que se visitan en un orden definido por el sistema para poder recorrerlos en tiempo óptimo. Pueden ser públicos, publicados por un administrador, o privados, organizados por grupos de usuarios que solo dicho grupo puede ver. |
-| **Notificación** | • Título <br> • Cuerpo <br> • Leída/No leída | • Usuario - N:1 | Mensajes que alertan al usuario acerca de novedades de su interés dentro de la plataforma. Por ejemplo, solicitudes de amistad, invitaciones a grupos o información sobre nuevos tours públicos. |
-| **Transacción** | • Concepto <br> • Importe <br> • Estado <br> • Fecha | • Usuario - N:1 | Registro de una operación económica realizada por un usuario dentro de la plataforma. |
+| Entidad              | Atributos                                                                                                                                                                                                               | Relaciones                                                                                | Descripción                                                                                                                                                                                                                                                                                                                                          |
+| :------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuario**          | • E-mail <br> • Contraseña <br> • Nombre de usuario <br> • Número de teléfono <br> • Foto de perfil <br> • Lista de amigos <br> • Lista de grupos <br> • Lista de notificaciones • Usuario activo <br> • Lista de roles | • Grupo - N:M <br> • Amigos - N:M (recursiva) <br> • Tour - N:M <br> • Notificación - 1:N | Cuenta de usuario registrado.                                                                                                                                                                                                                                                                                                                        |
+| **Grupo** <br>       | • Lista de usuarios <br> • Lista de tours <br> • Usuario líder del grupo                                                                                                                                                | • Usuario - N:M <br> • Usuario - 1:M <br> • Tour - N:M                                    | Conjunto de usuarios que pueden contratar tours en conjunto o crear sus propios tour personalizados. La gestión (creación, borrado, definición de más líderes, inclusión y eliminación de usuarios de la lista de amigos) la lleva a cabo un usuario con el rol de "líder", siendo éste el usuario creador del grupo, con posibilidad de ampliación. |
+| **Punto de interés** | • Nombre <br> • Descripción <br> • Ciudad <br> • Dirección <br> • Coordenadas <br> • Lista de imágenes <br> • Precio (si es premium)                                                                                    | • Tour - N:M                                                                              | Lugar que a los usuarios del sistema les resulta interesante visitar. Es el elemento básico de los tour, siendo los destinos que el algoritmo utilizará para calcular las rutas.                                                                                                                                                                     |
+| **Tour**             | • Nombre <br> • Descripción <br> • Lista de lugares de interés                                                                                                                                                          | • Punto de interés - N:M                                                                  | Conjunto de puntos de interés de la misma temática que se visitan en un orden definido por el sistema para poder recorrerlos en tiempo óptimo. Pueden ser públicos, publicados por un administrador, o privados, organizados por grupos de usuarios que solo dicho grupo puede ver.                                                                  |
+| **Notificación**     | • Título <br> • Cuerpo <br> • Leída/No leída                                                                                                                                                                            | • Usuario - N:1                                                                           | Mensajes que alertan al usuario acerca de novedades de su interés dentro de la plataforma. Por ejemplo, solicitudes de amistad, invitaciones a grupos o información sobre nuevos tours públicos.                                                                                                                                                     |
+| **Transacción**      | • Concepto <br> • Importe <br> • Estado <br> • Fecha                                                                                                                                                                    | • Usuario - N:1                                                                           | Registro de una operación económica realizada por un usuario dentro de la plataforma.                                                                                                                                                                                                                                                                |
 
 ## Permisos de usuarios
 
-| **Rol de usuario** | **Permisos** |
-| :--- | :--- |
-| **Anónimo** | • Visualización de la página principal. <br> • Consulta de catálogo de tours públicos y puntos de interés. <br> • Registro en la plataforma. <br> • Búsqueda de tours. |
-| **Registrado** | • Gestión completa de su perfil (editar datos, foto) <br> • Gestión de lista de amigos (añadir, eliminar y consultar amigos) <br> • Creación y gestión (invitar a amigos, unirse, eliminar) de grupos de viaje privados. <br> • Creación y edición de tours privados personalizados. <br> • Recepción de notificaciones. <br> • Cálculo de rutas óptimas. <br> • Realización de pagos mediante Stripe. |
-| **Administrador** | • Gestión (creación, lectura, modificación y borrado) de puntos de interés y tours públicos. <br> • Creación de grupos turísticos públicos. <br> • Bloqueo y desbloqueo de usuarios. <br> • Acceso a estadísticas mediante panel de administración. |
+| **Rol de usuario** | **Permisos**                                                                                                                                                                                                                                                                                                                                                                                           |
+| :----------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Anónimo**        | • Visualización de la página principal. <br> • Consulta de catálogo de tours públicos y puntos de interés. <br> • Registro en la plataforma. <br> • Búsqueda de tours.                                                                                                                                                                                                                                 |
+| **Registrado**     | • Gestión completa de su perfil (editar datos, foto) <br> • Gestión de lista de amigos (añadir, eliminar y consultar amigos) <br> • Creación y gestión (invitar a amigos, unirse, eliminar) de grupos de viaje privados. <br> • Creación y edición de tours privados personalizados. <br> • Recepción de notificaciones. <br> • Cálculo de rutas óptimas. <br> • Realización de pagos mediante Stripe. |
+| **Administrador**  | • Gestión (creación, lectura, modificación y borrado) de puntos de interés y tours públicos. <br> • Creación de grupos turísticos públicos. <br> • Bloqueo y desbloqueo de usuarios. <br> • Acceso a estadísticas mediante panel de administración.                                                                                                                                                    |
 
 ## Imágenes
 
-| **Entidad** | **Descripción de las imágenes** |
-| :--- | :--- |
-| **Usuario** | • Una imagen de perfil por usuario |
-| **Punto de interés** | • Una o varias imágenes que muestren el lugar turístico |
-| **Tour** | • Una imagen de portada representativa del itinerario del tour |
-| **Grupo** | • Una imagen de icono de grupo |
+| **Entidad**          | **Descripción de las imágenes**                                |
+| :------------------- | :------------------------------------------------------------- |
+| **Usuario**          | • Una imagen de perfil por usuario                             |
+| **Punto de interés** | • Una o varias imágenes que muestren el lugar turístico        |
+| **Tour**             | • Una imagen de portada representativa del itinerario del tour |
+| **Grupo**            | • Una imagen de icono de grupo                                 |
 
 ## Gráficos
 
 Todos los gráficos se mostrarán en el panel de administrador.
 
-| **Información a mostrar** | **Tipo de gráfico** |
-| :--- | :--- |
-| **Ingresos:** Evolución de los ingresos generados por la plataforma a lo largo del tiempo. | Lineal |
-| **Cantidad de puntos de interés:** Evolución del número de puntos de interés disponibles en la plataforma. | Lineal |
-| **Usuarios activos vs bloqueados:** Comparación entre usuarios activos y usuarios bloqueados. | Tarta |
-| **Evolución de usuarios:** Crecimiento o variación del número total de usuarios registrados. | Lineal |
+| **Información a mostrar**                                                                                  | **Tipo de gráfico** |
+| :--------------------------------------------------------------------------------------------------------- | :------------------ |
+| **Ingresos:** Evolución de los ingresos generados por la plataforma a lo largo del tiempo.                 | Lineal              |
+| **Cantidad de puntos de interés:** Evolución del número de puntos de interés disponibles en la plataforma. | Lineal              |
+| **Usuarios activos vs bloqueados:** Comparación entre usuarios activos y usuarios bloqueados.              | Tarta               |
+| **Evolución de usuarios:** Crecimiento o variación del número total de usuarios registrados.               | Lineal              |
 
 ## Tecnología complementaria
 
@@ -263,3 +307,54 @@ Como tecnología complementaria, la plataforma hará uso de la API externa de al
 ## Algoritmo o consulta avanzada
 
 Como ya se ha descrito anteriormente, el algoritmo avanzado de la aplicación consiste en un algoritmo de optimización de rutas entre varios puntos, tratándose más concretamente de la resolución de una variante Problema del Viajante. Estos cálculos se realizarán a partir de los datos obtenidos mediante la API externa escogida como tecnología complementaria. El algoritmo podrá ejecutarse en dos modalidades: para recorrer los puntos de interés caminando o en coche (ya que las aplicaciones de mapas suelen ofrecer estas rutas por separado). El algoritmo se ejecutará automáticamente una primera vez durante la creación del tour, pero el usuario podrá actualizar el resultado cuando el tour dé comienzo (ejecutando el algoritmo de nuevo) para tener en cuenta posibles obstáculos temporales como atascos, obras accidentes, etc.
+
+# Guía de desarrollo
+
+## Introducción
+
+OptiTour se trata de una aplicación web SPA (Single Page Aplication). Esta clase de aplicaciones web se caracteriza por contener la interfaz de usuario en un único fichero HTML, que va cambiando según el usuario navega por la aplicación. Estas aplicaciones tiene una navegación más fluida, al no necesitar que el navegador refresque la página con cada interacción, ya que las peticiones al servidor se realizan en segundo plano.
+
+En general, la arquitectura de OptiTour se divide en tres partes diferentes:
+
+- **Cliente**: Se trata de la interfaz que utilizarán los usuarios desde su navegador.
+- **Servidor**: Es la parte encargada de manipular y enviar los datos al cliente cuando los necesita. Funciona por medio de una API REST.
+- **Base de Datos**: Sistema de persistencia utilizado para almacenar los datos de la aplicación de manera ordenada.
+
+A continuación se presenta un resumen más detallado de las herramientas y tecnologías utilizadas durante el desarrollo:
+
+- **Tipo**: Aplicación Web SPA
+- **Tecnologías**
+    - **Servidor (*Backend*)**: Lenguaje Java (https://www.java.com/es/) sobre el framework Spring Boot (https://spring.io/projects/spring-boot).
+    - **Cliente (*Frontend*)**: Lenguaje TypeScript (https://www.typescriptlang.org/) con librería React (https://es.react.dev/).
+        - **Enrutamiento**: React Router. (https://reactrouter.com/)
+    - **Base de datos**: MySQL. (https://www.mysql.com/)
+- **Herramientas**
+    - **Editor de código**: Visual Studio Code. (https://code.visualstudio.com/)
+    - **Extensiones auxiliares:**
+        - Extension pack for Java. (Debugger for Java, Language Support for Java, Test Runner for Java) (https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)
+        - Debugger for Java. (https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-debug)
+        - Language Support for Java. (https://marketplace.visualstudio.com/items?itemName=redhat.java)
+        - Markdown All in One. (https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)
+        - Spring Boot Extension Pack (Spring Boot Dashboard, Spring Boot Tools, Spring Initializr Java Support) (https://marketplace.visualstudio.com/items?itemName=vmware.vscode-boot-dev-pack)
+        - Vitest (https://marketplace.visualstudio.com/items?itemName=vitest.explorer)
+- **Arquitectura de despliegue**
+    - OptiTour sigue una arquitectura cliente-servidor ubicada en dos procesos principales, empaquetados de manera independiente mediante Docker:
+        - ***Frontend* (Cliente)**: Una Single Page Application desarrollada en React que sirve la aplicación desde el navegador del usuario.
+        - ***Backend* (Servidor)**: Monolito construido con Spring Boot que expone una API REST para procesar la lógica de negocio, incluyendo la comunicación con el servidor externo de mapas y la implementación del algoritmo de cálculo de rutas.
+        - **Base de datos**: Base de datos relacional MySQL que actúa como capa de persistencia.
+    - **Documentación de la API REST**: Realizada con OpenAPI.
+      - Se puede consultar la documentación generada por OpenAPI desde la siguiente URL: https://raw.githack.com/codeurjc-students/2026-OptiTour/main/docs/api/index.html
+- **Control de calidad**:
+    - **Controles de calidad en el servidor**
+        - **Test unitarios**: JUnit. (https://junit.org/)
+        - **Dobles**: Mockito. (https://site.mockito.org/)
+        - **Test de integración y base de datos auxiliar (en test E2E)**: Testcontainers. (https://testcontainers.com/)
+        - **Pruebas End to End para el cliente**: Selenium. (https://www.selenium.dev/)
+        - **Pruebas End to End para el servidor**: RestAssured. (https://rest-assured.io/)
+    - **Controles de calidad en el cliente**
+        - **Test unitarios y de integración:** Vitest. (https://vitest.dev/)
+- **Despliegue**:
+    - **Empaquetado**: Tanto en el *frontend* como en el *backend*, la aplicación se empaquetará mediante contenedores Docker (https://www.docker.com/). Para la orquestación de estos servicios y la base de datos, se utilizará Docker Compose.
+    - **Entorno de despliegue**: Se utilizará la infraestructura de Microsoft Azure para el despliegue.
+- **Proceso de desarrollo**: Se utilizará una metodología incremental, utilizando conceptos de DevOps para agilizar el proceso mediante CI y CD.
+    - El ciclo de vida de las versiones se automatizará mediante flujos de GitHub Actions. La aplicación en producción se actualizará automáticamente con las nuevas versiones cuando se lancen en nuevas *Releases* del repositorio de GitHub.
