@@ -1,0 +1,85 @@
+{
+  "info": {
+    "_postman_id": "7fc9e864-8513-4916-af47-44368d04f274",
+    "name": "TFG_OptiTour",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52921088"
+  },
+  "item": [
+    {
+      "name": "GetAllTours",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/tour/all",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "tour",
+            "all"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "GetAllTours",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/tour/all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "tour",
+                "all"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "Vary",
+              "value": "Access-Control-Request-Method"
+            },
+            {
+              "key": "Vary",
+              "value": "Access-Control-Request-Headers"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Length",
+              "value": "331"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 08 Sep 2026 22:50:45 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n    {\n        \"id\": 1,\n        \"name\": \"Tour 1\",\n        \"description\": \"Tour de ejemplo numero 1\"\n    },\n    {\n        \"id\": 2,\n        \"name\": \"Tour 2\",\n        \"description\": \"Tour de ejemplo numero 2\"\n    },\n    {\n        \"id\": 3,\n        \"name\": \"Tour 3\",\n        \"description\": \"Tour de ejemplo numero 3\"\n    },\n    {\n        \"id\": 4,\n        \"name\": \"Tour 4\",\n        \"description\": \"Tour de ejemplo numero 4\"\n    },\n    {\n        \"id\": 5,\n        \"name\": \"Tour 5\",\n        \"description\": \"Tour de ejemplo numero 5\"\n    }\n]"
+        }
+      ]
+    }
+  ]
+}

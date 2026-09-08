@@ -50,6 +50,10 @@
   - [Algoritmo o consulta avanzada](#algoritmo-o-consulta-avanzada)
 - [Guía de desarrollo](#guía-de-desarrollo)
   - [Introducción](#introducción)
+    - [Ejecución y edición de código](#ejecución-y-edición-de-código)
+    - [Uso de herramientas](#uso-de-herramientas)
+    - [Uso de la API REST](#uso-de-la-api-rest)
+    - [Ejecución de las pruebas](#ejecución-de-las-pruebas)
 
 ## Descripción general
 
@@ -312,7 +316,7 @@ Como ya se ha descrito anteriormente, el algoritmo avanzado de la aplicación co
 
 ## Introducción
 
-OptiTour se trata de una aplicación web SPA (Single Page Aplication). Esta clase de aplicaciones web se caracteriza por contener la interfaz de usuario en un único fichero HTML, que va cambiando según el usuario navega por la aplicación. Estas aplicaciones tiene una navegación más fluida, al no necesitar que el navegador refresque la página con cada interacción, ya que las peticiones al servidor se realizan en segundo plano.
+OptiTour se trata de una aplicación web SPA (Single Page Application). Esta clase de aplicaciones web se caracteriza por contener la interfaz de usuario en un único fichero HTML, que va cambiando según el usuario navega por la aplicación. Estas aplicaciones tienen una navegación más fluida, al no necesitar que el navegador refresque la página con cada interacción, ya que las peticiones al servidor se realizan en segundo plano.
 
 En general, la arquitectura de OptiTour se divide en tres partes diferentes:
 
@@ -334,9 +338,10 @@ A continuación se presenta un resumen más detallado de las herramientas y tecn
         - Extension pack for Java. (Debugger for Java, Language Support for Java, Test Runner for Java) (https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)
         - Debugger for Java. (https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-debug)
         - Language Support for Java. (https://marketplace.visualstudio.com/items?itemName=redhat.java)
-        - Markdown All in One. (https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)
+        - Markdown All in One. (https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one): Usada para la generación automática del índice de este documento.
         - Spring Boot Extension Pack (Spring Boot Dashboard, Spring Boot Tools, Spring Initializr Java Support) (https://marketplace.visualstudio.com/items?itemName=vmware.vscode-boot-dev-pack)
         - Vitest (https://marketplace.visualstudio.com/items?itemName=vitest.explorer)
+
 - **Arquitectura de despliegue**
     - OptiTour sigue una arquitectura cliente-servidor ubicada en dos procesos principales, empaquetados de manera independiente mediante Docker:
         - ***Frontend* (Cliente)**: Una Single Page Application desarrollada en React que sirve la aplicación desde el navegador del usuario.
@@ -344,17 +349,95 @@ A continuación se presenta un resumen más detallado de las herramientas y tecn
         - **Base de datos**: Base de datos relacional MySQL que actúa como capa de persistencia.
     - **Documentación de la API REST**: Realizada con OpenAPI.
       - Se puede consultar la documentación generada por OpenAPI desde la siguiente URL: https://raw.githack.com/codeurjc-students/2026-OptiTour/main/docs/api/index.html
-- **Control de calidad**:
+
+- **Control de calidad**: Actualmente sólo se prueba la funcionalidad mínima, es decir, el método getAllTours de la clase TourService. Este control de calidad se realiza mediante diferentes tipos de pruebas tanto en el lado del cliente como del servidor.
     - **Controles de calidad en el servidor**
-        - **Test unitarios**: JUnit. (https://junit.org/)
-        - **Dobles**: Mockito. (https://site.mockito.org/)
-        - **Test de integración y base de datos auxiliar (en test E2E)**: Testcontainers. (https://testcontainers.com/)
-        - **Pruebas End to End para el cliente**: Selenium. (https://www.selenium.dev/)
-        - **Pruebas End to End para el servidor**: RestAssured. (https://rest-assured.io/)
-    - **Controles de calidad en el cliente**
-        - **Test unitarios y de integración:** Vitest. (https://vitest.dev/)
+        - **Test unitarios**: Prueba el método getAllTours mediante un doble de la base de datos. JUnit (https://junit.org/) y Mockito. (https://site.mockito.org/)
+          ![Test unitario del servidor](docs/images/tour-service-unit-test.png)
+        - **Test de integración**: Se prueba la integración con la base de datos, mediante un contenedor Testcontainers (https://testcontainers.com/) para tener una base de datos temporal que funcione realmente en lugar de un doble. Se necesita que la máquina esté ejecutando Docker para que el test pase.
+          ![Test de integración del servidor](docs/images/tour-service-integration-test.png)
+        - **Pruebas de sistema End to End para el cliente**: Se utiliza Selenium (https://www.selenium.dev/) para comprobar que el cliente es capaz de recuperar los datos desde la base de datos y dibujarlos por pantalla. Se utiliza Testcontainers de nuevo para la base de datos. Para que el test pase, es necesario que la máquina esté ejecutando cliente, el servidor, y Docker.
+          ![Prueba End to End del cliente](docs/images/tour-service-e2e-client-test.png)
+        - **Pruebas de sistema End to End para el servidor**: Se utiliza RestAssured. (https://rest-assured.io/) para comprobar que el endpoint /tour/all de la API responde con los datos correctos ante una petición. Se utiliza Testcontainers de nuevo para la base de datos. Para que el test pase, se necesita que la máquina esté ejecutando el servidor y Docker.
+          ![Prueba End to End del servidor](docs/images/tour-service-e2e-test.png)
+    - **Controles de calidad en el cliente**: En ambos tipos se utiliza Vitest. (https://vitest.dev/)
+        - **Test unitario**: Se prueba que el componente Index es capaz de renderizar los datos que llegan a través de la petición que realiza tour-service. Para ello, se utilizan los dobles que ofrece Vitest para doblar la base de datos.
+          ![Test unitario del cliente](docs/images/tour-service-client-unit-test.png)
+        - **Test de integración**: Se prueba la integración del cliente con el servidor, comprobando si el cliente realiza la petición correctamente y si es capaz de extraer y renderizar los datos recibidos. Para que este test pase se necesita que la máquina esté ejecutando el servidor.
+          ![Test de integración del cliente](docs/images/tour-service-client-integration-test.png)
 - **Despliegue**:
     - **Empaquetado**: Tanto en el *frontend* como en el *backend*, la aplicación se empaquetará mediante contenedores Docker (https://www.docker.com/). Para la orquestación de estos servicios y la base de datos, se utilizará Docker Compose.
     - **Entorno de despliegue**: Se utilizará la infraestructura de Microsoft Azure para el despliegue.
-- **Proceso de desarrollo**: Se utilizará una metodología incremental, utilizando conceptos de DevOps para agilizar el proceso mediante CI y CD.
-    - El ciclo de vida de las versiones se automatizará mediante flujos de GitHub Actions. La aplicación en producción se actualizará automáticamente con las nuevas versiones cuando se lancen en nuevas *Releases* del repositorio de GitHub.
+- **Proceso de desarrollo**: Se utilizará una metodología incremental,  siguiendo los principios del Manifiesto Ágil, así como algunas buenas prácticas de la Programación Extrema y Kanban.
+    - **Gestión de tareas**: GitHub Issues y GitHub Projects con gestión visual mediante tablero.
+    - **Git**: Se ha utilizado un repositorio Git (por medio de GitHub). Se utiliza GitHub Flow como estrategia de ramas, de modo que los commits sólo se realizarán en ramas feature/* y fix/*, debiendo mezclar a main mediante Pull Request.
+    - **Integración Continua**: Se utilizan workflows de GitHub Actions para ejecutar los test unitarios con cada commit en ramas diferentes a main y para ejecutar todos los test cada vez que se quiera mezclar una rama con main (es decir, se abra una Pull Request).
+### Ejecución y edición de código
+
+Estas son las instrucciones para ejecutar la aplicación a partir del código del repositorio.
+
+- **Clonación del repositorio**
+  Ejecutar por terminal el comando:
+
+  ```bash
+  git clone https://github.com/codeurjc-students/2026-OptiTour
+  ```
+
+- **Ejecución de la base de datos**
+  El backend utiliza una base de datos MySQL. Es necesario iniciar el servicio de MySQL antes de ejecutar el servidor. La aplicación crea automáticamente la base de datos `optitour` si no existe, utilizando las credenciales configuradas en `application.properties`.
+
+- **Ejecución del servidor**
+  Ejecutar por terminal el siguiente comando:
+
+  ```bash
+  mvn spring-boot:run
+  ```
+
+  El servidor se inicia en el puerto 443 y la API está disponible bajo el prefijo `/api/v1`.
+
+- **Ejecución del cliente**
+  Ejecutar por terminal los siguientes comandos:
+
+  ```bash
+  npm install
+  npm run dev
+  ```
+
+- **Acceso a la página web en local**
+  Una vez iniciado el cliente, se puede acceder a la aplicación desde:
+
+  ```text
+  http://localhost:5173
+  ```
+
+### Uso de herramientas
+
+Visual Studio Code se utiliza como entorno principal para editar el código y ejecutar el proyecto. Las extensiones de Java permiten compilar, ejecutar y depurar el backend, así como ejecutar sus pruebas desde el propio entorno. La extensión de Vitest permite ejecutar y consultar los resultados de las pruebas del frontend.
+
+Docker se utiliza para ejecutar los servicios auxiliares necesarios durante las pruebas de integración y las pruebas End to End, especialmente los contenedores de base de datos gestionados mediante Testcontainers.
+
+### Uso de la API REST
+
+La API puede consultarse mediante la documentación OpenAPI y la colección de Postman incluida en el repositorio.
+
+- La documentación está disponible en [docs/api/index.html](docs/api/index.html).
+- La colección de Postman se encuentra en [docs/api/TFG_OptiTour.postman_collection.json](docs/api/TFG_OptiTour.postman_collection.json).
+- Para utilizar la colección, se debe iniciar el backend y configurar en Postman la variable `baseUrl` con el valor `http://localhost:443/api/v1`.
+- Actualmente, la API expone la siguiente operación:
+
+  ```http
+  GET {{baseUrl}}/tour/all
+  ```
+
+### Ejecución de las pruebas
+  Las pruebas del backend se ejecutan mediante Maven:
+
+  ```bash
+  mvn test
+  ```
+
+  Las pruebas del frontend se ejecutan mediante Vitest:
+
+  ```bash
+  npm run test
+  ```
