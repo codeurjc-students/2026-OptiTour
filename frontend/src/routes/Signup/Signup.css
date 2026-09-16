@@ -1,0 +1,161 @@
+.ot-register {
+    background-color: var(--ot-bg-soft);
+    padding: 2.5rem 1rem 3rem;
+}
+
+.ot-register__container {
+    max-width: 900px;
+}
+
+.ot-register__title {
+    font-weight: 800;
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 1.75rem;
+}
+
+.ot-register__card {
+    border: 1px solid var(--ot-border);
+    border-radius: var(--ot-radius);
+    background-color: #fff;
+    box-shadow: var(--ot-shadow);
+    padding: 1.75rem;
+}
+
+.ot-register__card--main {
+    margin-bottom: 1.5rem;
+}
+
+.ot-register__avatar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+}
+
+.ot-register__avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    border: 2px solid var(--ot-border);
+    background-color: var(--ot-bg-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ot-text-muted);
+    font-weight: 600;
+    font-size: 0.85rem;
+    line-height: 1.25;
+}
+
+.ot-register__avatar-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--ot-text-muted);
+}
+
+.ot-register__upload-btn {
+    border-radius: var(--ot-radius-pill);
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.4rem 1rem;
+    margin-top: 0.25rem;
+}
+
+.ot-register__card--password,
+.ot-register__card--actions {
+    height: 100%;
+}
+
+.ot-register__field {
+    margin-bottom: 1.25rem;
+}
+
+.ot-register__field:last-child {
+    margin-bottom: 0;
+}
+
+.ot-register__field label {
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.ot-register__input-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.ot-register__input-icon .form-control {
+    border-radius: 10px;
+    border-color: var(--ot-border);
+    padding: 0.6rem 2.5rem 0.6rem 0.9rem;
+}
+
+.ot-register__input-icon svg {
+    position: absolute;
+    right: 0.85rem;
+    color: var(--ot-text-muted);
+    pointer-events: none;
+}
+
+.ot-register__card--actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.ot-register__submit {
+    width: 100%;
+    max-width: 260px;
+    background-color: var(--ot-primary);
+    border-color: var(--ot-primary);
+    font-weight: 700;
+    border-radius: var(--ot-radius-pill);
+    padding: 0.6rem;
+}
+
+.ot-register__submit:hover {
+    background-color: var(--ot-primary-dark);
+    border-color: var(--ot-primary-dark);
+}
+
+.ot-register__login-text {
+    margin: 1.25rem 0 0.75rem;
+    color: var(--ot-text-muted);
+    font-size: 0.9rem;
+}
+
+.ot-register__login-btn {
+    width: 100%;
+    max-width: 260px;
+    border-color: var(--ot-secondary);
+    color: var(--ot-secondary);
+    font-weight: 700;
+    border-radius: var(--ot-radius-pill);
+    padding: 0.55rem;
+}
+
+.ot-register__login-btn:hover {
+    background-color: var(--ot-secondary);
+    border-color: var(--ot-secondary);
+    color: #fff;
+}
+
+/* ----- Responsive ----- */
+@media (max-width: 767.98px) {
+    .ot-register__card {
+        padding: 1.25rem;
+    }
+
+    .ot-register__bottom {
+        margin-top: 0;
+    }
+
+    .ot-register__card--password {
+        margin-bottom: 1.5rem;
+    }
+}

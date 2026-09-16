@@ -1,0 +1,64 @@
+.ot-tour-detail {
+    padding: 2rem 1rem 3rem;
+    max-width: 1200px;
+}
+
+.ot-tour-detail__title {
+    font-weight: 800;
+    font-size: 1.9rem;
+    margin-bottom: 1.25rem;
+}
+
+.ot-tour-detail__info {
+    margin: 1.25rem 0 0.5rem;
+}
+
+.ot-tour-detail__description,
+.ot-tour-detail__price {
+    color: var(--ot-text-muted);
+    margin-bottom: 0.4rem;
+    font-size: 0.95rem;
+}
+
+.ot-tour-detail__poi-heading {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--ot-text-muted);
+    margin: 1.25rem 0 0.75rem;
+}
+
+.ot-tour-detail__sidebar-card {
+    border: 1px solid var(--ot-border);
+    border-radius: var(--ot-radius);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.ot-tour-detail__sidebar-heading {
+    display: block;
+    font-weight: 700;
+    color: var(--ot-text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 0.9rem;
+}
+
+.ot-tour-detail__cta-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0;
+}
+
+.ot-tour-detail__cta-btn {
+    width: 100%;
+    border-radius: var(--ot-radius);
+    font-weight: 700;
+    padding: 0.75rem 1rem;
+    white-space: normal;
+}
+
+@media (max-width: 991.98px) {
+    .ot-tour-detail__sidebar-card {
+        margin-bottom: 1.25rem;
+    }
+}

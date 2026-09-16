@@ -1,0 +1,22 @@
+.ot-profile-layout {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--ot-bg-soft);
+}
+
+.ot-profile-layout__content {
+    flex: 1;
+    min-width: 0;
+    padding: 2rem;
+    background-color: #fff;
+}
+
+@media (max-width: 991.98px) {
+    .ot-profile-layout {
+        flex-direction: column;
+    }
+
+    .ot-profile-layout__content {
+        padding: 1.5rem 1rem 2.5rem;
+    }
+}

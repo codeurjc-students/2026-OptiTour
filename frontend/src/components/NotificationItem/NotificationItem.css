@@ -1,0 +1,72 @@
+.ot-notification {
+    display: flex;
+    gap: 1rem;
+    border: 1px solid var(--ot-border);
+    border-radius: var(--ot-radius);
+    padding: 1rem;
+    background-color: #fff;
+    margin-bottom: 0.75rem;
+}
+
+.ot-notification:last-child {
+    margin-bottom: 0;
+}
+
+.ot-notification__icon {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--ot-border);
+    background-color: var(--ot-bg-soft);
+    color: var(--ot-text-muted);
+}
+
+.ot-notification__icon--user,
+.ot-notification__icon--group {
+    border-radius: 50%;
+}
+
+.ot-notification__icon--tour {
+    border-radius: 10px;
+}
+
+.ot-notification__img-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.ot-notification__body {
+    flex: 1;
+    min-width: 0;
+}
+
+.ot-notification__message {
+    margin: 0 0 0.75rem;
+    font-weight: 600;
+}
+
+.ot-notification__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.ot-notification__actions .btn {
+    border-radius: var(--ot-radius-pill);
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.35rem 1.25rem;
+}
+
+.ot-notification__accept {
+    background-color: var(--ot-primary);
+    border-color: var(--ot-primary);
+}
+
+.ot-notification__accept:hover {
+    background-color: var(--ot-primary-dark);
+    border-color: var(--ot-primary-dark);
+}

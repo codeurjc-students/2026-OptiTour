@@ -1,0 +1,70 @@
+.ot-carousel {
+    border-radius: var(--ot-radius);
+    overflow: hidden;
+    border: 1px solid var(--ot-border);
+}
+
+.ot-carousel__slide {
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: #fff;
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.ot-carousel__slide--primary {
+    background: linear-gradient(135deg, var(--ot-primary) 0%, var(--ot-primary-dark) 100%);
+}
+
+.ot-carousel__slide--dark {
+    background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+}
+
+.ot-carousel__slide--image {
+    position: relative;
+    min-height: 220px;
+    padding: 0;
+}
+
+.ot-carousel__slide--image img {
+    width: 100%;
+    height: 100%;
+    min-height: 220px;
+    object-fit: cover;
+    display: block;
+}
+
+.ot-carousel__slide-caption {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+}
+
+.ot-carousel__slide-eyebrow {
+    font-size: 0.85rem;
+    opacity: 0.85;
+}
+
+.ot-carousel__slide-title {
+    font-weight: 800;
+    font-size: 2rem;
+    margin: 0;
+}
+
+@media (max-width: 575.98px) {
+    .ot-carousel__slide-title {
+        font-size: 1.5rem;
+    }
+}

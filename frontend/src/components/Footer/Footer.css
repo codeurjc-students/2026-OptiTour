@@ -1,0 +1,80 @@
+.ot-footer {
+  background-color: #fff;
+  border-top: 1px solid var(--ot-border);
+  padding: 3rem 0 1.5rem;
+  margin-top: 3rem;
+}
+
+.ot-footer__brand {
+  margin-bottom: 1.5rem;
+}
+
+.ot-footer__logo {
+  display: block;
+  height: 85px;
+  margin-top: -1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.ot-footer__tagline {
+  color: var(--ot-text-muted);
+  max-width: 260px;
+  font-size: 0.9rem;
+}
+
+.ot-footer__col {
+  margin-bottom: 1.5rem;
+}
+
+.ot-footer__heading {
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+}
+
+.ot-footer__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ot-footer__list a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--ot-text);
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.25rem 0.4rem;
+  margin: -0.25rem -0.4rem;
+  border-radius: 0.4rem;
+  transition: color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.ot-footer__list a:hover {
+  color: var(--ot-primary);
+  background: linear-gradient(90deg, var(--ot-primary-soft), rgba(233, 251, 234, 0));
+  transform: translateX(0.25rem);
+}
+
+.ot-footer__list a .bi {
+  font-size: 0.9em;
+  line-height: 1;
+}
+
+.ot-footer__divider {
+  border-color: var(--ot-border);
+}
+
+.ot-footer__bottom {
+  color: var(--ot-text-muted);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 767.98px) {
+  .ot-footer__logo {
+    margin-top: 0;
+  }
+}

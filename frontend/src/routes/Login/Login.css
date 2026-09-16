@@ -1,0 +1,191 @@
+.ot-login {
+  min-height: 100vh;
+  background-color: var(--ot-bg);
+}
+
+.ot-login__row {
+  min-height: 100vh;
+}
+
+/* ----- Panel izquierdo: logo + imagen de portada ----- */
+.ot-login__visual {
+  position: relative;
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--ot-primary) 0%, var(--ot-primary-dark) 100%);
+  padding: 2rem;
+}
+
+.ot-login__visual-content {
+  width: min(90%, 420px);
+  padding: 2.5rem 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: var(--ot-radius);
+  background-color: rgba(0, 0, 0, 0.28);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  text-align: center;
+  backdrop-filter: blur(2px);
+}
+
+.ot-login__visual-logo {
+  display: block;
+  width: min(100%, 260px);
+  height: auto;
+  margin: 0 auto 1.5rem;
+  filter: brightness(0) invert(1);
+}
+
+.ot-login__visual-tagline {
+  max-width: 320px;
+  margin: 0 auto;
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* ----- Panel derecho: formulario ----- */
+.ot-login__panel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem 5rem;
+}
+
+.ot-login__form-wrap {
+  max-width: 380px;
+  width: 100%;
+  padding: 0;
+}
+
+.ot-login__title {
+  font-weight: 800;
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.ot-login__field {
+  margin-bottom: 1.25rem;
+}
+
+.ot-login__field label {
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.ot-login__field .form-control {
+  border-radius: 10px;
+  border-color: var(--ot-border);
+  padding: 0.65rem 0.9rem;
+}
+
+.ot-login__field .form-control:focus {
+  border-color: var(--ot-primary);
+  box-shadow: 0 0 0 0.2rem rgba(38, 209, 42, 0.2);
+}
+
+.ot-login__submit {
+  display: block;
+  width: 100%;
+  margin-top: 0.5rem;
+  background-color: var(--ot-primary);
+  border-color: var(--ot-primary);
+  font-weight: 700;
+  border-radius: var(--ot-radius-pill);
+  padding: 0.6rem;
+}
+
+.ot-login__submit:hover {
+  background-color: var(--ot-primary-dark);
+  border-color: var(--ot-primary-dark);
+}
+
+.ot-login__register-text {
+  text-align: center;
+  margin: 1.75rem 0 0.75rem;
+  color: var(--ot-text-muted);
+  font-size: 0.9rem;
+}
+
+.ot-login__register-btn {
+  display: block;
+  width: 100%;
+  border-color: var(--ot-secondary);
+  color: var(--ot-secondary);
+  font-weight: 700;
+  border-radius: var(--ot-radius-pill);
+  padding: 0.55rem;
+}
+
+.ot-login__register-btn:hover {
+  background-color: var(--ot-secondary);
+  border-color: var(--ot-secondary);
+  color: #fff;
+}
+
+.ot-login__back-btn {
+  position: absolute;
+  left: 2rem;
+  bottom: 2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: auto;
+  max-width: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ot-text-muted);
+  background-color: transparent;
+  border: 1px solid var(--ot-border);
+  border-radius: var(--ot-radius);
+  padding: 0.5rem 0.75rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.ot-login__back-btn:hover {
+  background-color: var(--ot-bg-soft);
+  color: var(--ot-text);
+}
+
+/* ----- Responsive: apila los paneles en móvil/tablet ----- */
+@media (max-width: 767.98px) {
+  .ot-login__row {
+    min-height: auto;
+  }
+
+  .ot-login__visual {
+    min-height: 180px;
+    padding: 1.25rem;
+  }
+
+  .ot-login__visual-content {
+    width: min(100%, 360px);
+    padding: 1.75rem 1.25rem;
+  }
+
+  .ot-login__visual-logo {
+    width: min(100%, 210px);
+    margin-bottom: 1rem;
+  }
+
+  .ot-login__visual-tagline {
+    font-size: 0.9rem;
+  }
+
+  .ot-login__panel {
+    padding: 2.5rem 1.25rem 2.5rem;
+  }
+
+  .ot-login__back-btn {
+    position: static;
+    display: flex;
+    width: 100%;
+    margin-top: 2rem;
+    text-align: center;
+    justify-content: center;
+  }
+}

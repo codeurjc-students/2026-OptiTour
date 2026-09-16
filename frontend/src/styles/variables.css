@@ -1,0 +1,72 @@
+/* Tipografía de marca */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+:root {
+  /* Paleta OptiTour */
+  --ot-primary: #26D12A;
+  --ot-primary-dark: #1FA824;
+  --ot-primary-soft: #E9FBEA;
+  --ot-secondary: #000000;
+
+  /* Neutros de apoyo (no forman parte del logo, solo de soporte a la UI) */
+  --ot-bg: #FFFFFF;
+  --ot-bg-soft: #F6F8F6;
+  --ot-text: #1A1A1A;
+  --ot-text-muted: #6B7280;
+  --ot-border: #E4E7E4;
+
+  --ot-radius: 14px;
+  --ot-radius-pill: 999px;
+  --ot-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+
+  --font-base: 'Nunito', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-base);
+  color: var(--ot-text);
+  background-color: var(--ot-bg-soft);
+}
+
+/* ----- Utilidades del área personal ----- */
+.ot-panel-title {
+  font-weight: 800;
+  font-size: 1.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.ot-panel-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.ot-panel-header .ot-panel-title {
+  margin-bottom: 0;
+}
+
+.ot-panel-action {
+  background-color: var(--ot-primary);
+  border-color: var(--ot-primary);
+  font-weight: 700;
+  border-radius: var(--ot-radius-pill);
+  padding: 0.45rem 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.ot-panel-action--inline {
+  margin-bottom: 0;
+}
+
+.ot-panel-action:hover {
+  background-color: var(--ot-primary-dark);
+  border-color: var(--ot-primary-dark);
+}
