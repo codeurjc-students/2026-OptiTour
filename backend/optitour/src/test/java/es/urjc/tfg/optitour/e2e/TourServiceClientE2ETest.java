@@ -1,7 +1,5 @@
 package es.urjc.tfg.optitour.e2e;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.time.Duration;
 
 import org.junit.jupiter.api.AfterEach;
@@ -53,20 +51,19 @@ public class TourServiceClientE2ETest extends BaseIntegrationTest {
     public void getAllToursClientE2ETest() {
         driver.get("http://localhost:5173"); // We visit the frontend app
 
-        // We get the title element and check if it's correct.
-        WebElement title = driver.findElement(By.tagName("h1"));
-        String titleText = title.getText();
-
-        assertEquals(titleText, "OptiTour");
-
         // Now, get the list (waiting until it's visible) and check if one of its
         // elements is correct.
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(visibilityOfElementLocated(By.id("1")));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
+        wait.until(visibilityOfElementLocated(By.className("ot-tour-card__title")));
 
-        WebElement listItem = driver.findElement(By.id("1"));
-        String listItemText = listItem.getText();
+        WebElement tourTitle = driver.findElement(By.className("ot-tour-card__title"));
+        String listItemText = tourTitle.getText();
 
-        assertThat(listItemText, containsString("1: Tour 1"));
+        assertThat(listItemText, containsString("Tour 1"));
+
+        WebElement tourDesc = driver.findElement(By.className("ot-tour-desc"));
+        String tourDescText = tourDesc.getText();
+
+        assertThat(tourDescText, containsString("Tour de ejemplo numero 1"));
     }
 }
