@@ -1,0 +1,37 @@
+.ot-index {
+  padding: 2rem 1rem 1rem;
+  max-width: 1200px;
+}
+
+.ot-index__search {
+  margin-bottom: 1.5rem;
+}
+
+.ot-index__search .input-group-text {
+  background-color: #fff;
+  border-right: none;
+  border-color: var(--ot-border);
+  color: var(--ot-text-muted);
+  border-top-left-radius: var(--ot-radius-pill);
+  border-bottom-left-radius: var(--ot-radius-pill);
+}
+
+.ot-index__search input {
+  border-left: none;
+  border-color: var(--ot-border);
+  border-top-right-radius: var(--ot-radius-pill);
+  border-bottom-right-radius: var(--ot-radius-pill);
+}
+
+.ot-index__search input:focus {
+  box-shadow: none;
+  border-color: var(--ot-border);
+}
+
+.ot-index__carousel {
+  margin-bottom: 2rem;
+}
+
+.ot-index__grid-item {
+  margin-bottom: 1.5rem;
+}

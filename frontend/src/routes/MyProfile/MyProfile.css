@@ -1,0 +1,92 @@
+.ot-my-profile {
+    max-width: 640px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ot-my-profile__avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 2px solid var(--ot-border);
+    background-color: var(--ot-bg-soft);
+    color: var(--ot-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.ot-my-profile__name {
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin-bottom: 2rem;
+}
+
+.ot-my-profile__data {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2.5rem;
+    width: 100%;
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+.ot-my-profile__data dt {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--ot-text-muted);
+    margin-bottom: 0.2rem;
+}
+
+.ot-my-profile__data dd {
+    margin: 0;
+    font-weight: 600;
+}
+
+.ot-my-profile__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 320px;
+}
+
+.ot-my-profile__actions .btn {
+    border-radius: var(--ot-radius-pill);
+    font-weight: 700;
+    padding: 0.6rem 1rem;
+}
+
+.ot-my-profile__edit-btn,
+.ot-my-profile__password-btn {
+    transition: color 160ms ease, background 160ms ease, border-color 160ms ease, transform 160ms ease,
+        box-shadow 160ms ease;
+}
+
+.ot-my-profile__edit-btn:hover,
+.ot-my-profile__password-btn:hover {
+    background: var(--ot-primary);
+    border-color: var(--ot-primary);
+    color: #fff;
+    transform: translateX(0.25rem);
+    box-shadow: 0 4px 12px rgba(38, 209, 42, 0.18);
+}
+
+.ot-my-profile__delete-btn {
+    transition: color 160ms ease, background 160ms ease, border-color 160ms ease, transform 160ms ease,
+        box-shadow 160ms ease;
+}
+
+.ot-my-profile__delete-btn:hover {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: #fff;
+    transform: translateX(0.25rem);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+}

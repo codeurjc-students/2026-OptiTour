@@ -5,8 +5,6 @@ const base_tour_url = 'tour';
 export async function getAllTours() {
     const url = `${base_url}/${base_tour_url}/all`;
 
-    console.log(url);
-
     const response = await fetch(url);
 
     if (!response.ok) {

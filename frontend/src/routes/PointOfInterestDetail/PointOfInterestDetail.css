@@ -1,0 +1,53 @@
+.ot-poi-detail {
+    padding: 2rem 1rem 3rem;
+    max-width: 1200px;
+}
+
+.ot-poi-detail__title {
+    font-weight: 800;
+    font-size: 1.9rem;
+    margin-bottom: 1.25rem;
+}
+
+.ot-poi-detail__data {
+    margin: 1.5rem 0 0;
+}
+
+.ot-poi-detail__data-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--ot-border);
+}
+
+.ot-poi-detail__data-row:last-child {
+    border-bottom: none;
+}
+
+.ot-poi-detail__data dt {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--ot-text-muted);
+}
+
+.ot-poi-detail__data dd {
+    margin: 0;
+    font-weight: 600;
+}
+
+.ot-poi-detail__sidebar-card {
+    border: 1px solid var(--ot-border);
+    border-radius: var(--ot-radius);
+    padding: 1.25rem;
+}
+
+.ot-poi-detail__sidebar-heading {
+    display: block;
+    font-weight: 700;
+    color: var(--ot-text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 0.9rem;
+}

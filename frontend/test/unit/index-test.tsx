@@ -2,8 +2,9 @@ import { expect, test, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 
-import Index from '../../src/routes/index'
+import Index from '../../src/routes/Index/Index'
 import * as service from '../../src/service/tour_service'
+import { MemoryRouter } from 'react-router';
 
 // First of all, we mock the service that make the request to backend:
 vi.mock('../../src/service/tour_service');
@@ -15,19 +16,18 @@ test('Index displays tour list from request', async () => {
 
     // Now, we render the index component with the JSDOM virtual DOM
     // Thanks to useEffect, it will call getAllTours function, but it will recieve test data instead of real ones. 
-    render(<Index />);
+    render(
+        <MemoryRouter>
+            <Index />
+        </MemoryRouter>
+    );
 
     // Once the component is rendered, we check if the list has been created properly.
     // Using find method instead get method allowa us getting the element after the data is loaded from mocked request. 
-    const itemList = await screen.findAllByRole('listitem');
-
-    // We expect listItems to have 2 test tours:
+    const itemList = await screen.findAllByText('Test Title');
     expect(itemList).toHaveLength(2);
 
     // Also, we can check if tour text is correct: 
-    const tourTitle = await screen.findByText('1: Test Title');
     const tourDesc = await screen.findByText('Test Description 1');
-
-    expect(tourTitle).toBeInTheDocument();
     expect(tourDesc).toBeInTheDocument();
 });

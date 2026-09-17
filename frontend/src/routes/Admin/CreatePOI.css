@@ -1,0 +1,93 @@
+.ot-create-poi {
+    width: 100%;
+}
+
+.ot-create-poi__card {
+    border: 1px solid var(--ot-border);
+    border-radius: var(--ot-radius);
+    background-color: #fff;
+    box-shadow: var(--ot-shadow);
+    padding: 1.75rem;
+}
+
+.ot-create-poi__field {
+    margin-bottom: 1.5rem;
+}
+
+.ot-create-poi__field--last {
+    margin-bottom: 0;
+}
+
+.ot-create-poi__field label {
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.ot-create-poi__images {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.ot-create-poi__image-slot {
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    border: 1px dashed var(--ot-border);
+    background-color: var(--ot-bg-soft);
+    color: var(--ot-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.ot-create-poi__upload-btn {
+    border-radius: var(--ot-radius-pill);
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.45rem 1.1rem;
+}
+
+.ot-create-poi__actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.ot-create-poi__submit {
+    background-color: var(--ot-primary);
+    border-color: var(--ot-primary);
+    font-weight: 700;
+    border-radius: var(--ot-radius-pill);
+    padding: 0.55rem 1.5rem;
+}
+
+.ot-create-poi__submit:hover {
+    background-color: var(--ot-primary-dark);
+    border-color: var(--ot-primary-dark);
+}
+
+.ot-create-poi__cancel-btn {
+    font-weight: 700;
+    border-radius: var(--ot-radius-pill);
+    padding: 0.55rem 1.5rem;
+}
+
+@media (max-width: 575.98px) {
+    .ot-create-poi__card {
+        padding: 1.25rem;
+    }
+
+    .ot-create-poi__actions {
+        flex-direction: column-reverse;
+    }
+
+    .ot-create-poi__actions .btn {
+        width: 100%;
+    }
+}

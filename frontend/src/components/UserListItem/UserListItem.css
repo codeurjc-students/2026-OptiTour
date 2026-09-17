@@ -1,0 +1,64 @@
+.ot-user-item {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    border: 1px solid var(--ot-border);
+    border-radius: var(--ot-radius);
+    padding: 0.6rem 0.9rem;
+    background-color: #fff;
+    margin-bottom: 0.75rem;
+}
+
+.ot-user-item:last-child {
+    margin-bottom: 0;
+}
+
+.ot-user-item__avatar {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 1px solid var(--ot-border);
+    background-color: var(--ot-bg-soft);
+    color: var(--ot-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.ot-user-item__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ot-user-item__name {
+    flex: 1;
+    font-weight: 600;
+    min-width: 0;
+}
+
+.ot-user-item__actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.ot-user-item__actions .btn {
+    border-radius: var(--ot-radius-pill);
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.35rem 1rem;
+}
+
+@media (max-width: 575.98px) {
+    .ot-user-item {
+        flex-wrap: wrap;
+    }
+
+    .ot-user-item__actions {
+        width: 100%;
+        margin-left: calc(42px + 0.9rem);
+    }
+}

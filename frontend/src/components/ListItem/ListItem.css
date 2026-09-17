@@ -1,0 +1,112 @@
+/* Base — tarjeta con borde, igual que UserListItem */
+.ot-list-item {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    border: 1px solid var(--ot-border);
+    border-radius: var(--ot-radius);
+    padding: 0.6rem 0.9rem;
+    background-color: #fff;
+    margin-bottom: 0.75rem;
+}
+
+.ot-list-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Miniatura cuadrada */
+.ot-list-item__thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    background: var(--ot-bg-soft);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-size: 0.7rem;
+    color: var(--ot-text-muted);
+    border: 1px solid var(--ot-border);
+}
+
+.ot-list-item__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ot-list-item__title {
+    flex: 1;
+    font-weight: 600;
+    font-size: 0.95rem;
+    min-width: 0;
+}
+
+/* Acciones inline (a la derecha) */
+.ot-list-item__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.ot-list-item__actions .btn {
+    border-radius: var(--ot-radius-pill);
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.35rem 1rem;
+    white-space: nowrap;
+    border-color: #26D12A;
+    color: #26D12A;
+    background-color: transparent;
+}
+
+.ot-list-item__actions .btn:not(.btn-outline-danger):hover,
+.ot-list-item__actions .btn:not(.btn-outline-danger):active {
+    background-color: #26D12A;
+    border-color: #26D12A;
+    color: #fff;
+}
+
+.ot-list-item__actions .btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.ot-list-item__actions .btn-outline-danger:hover,
+.ot-list-item__actions .btn-outline-danger:active {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: #fff;
+}
+
+/* Variante apilada: acciones bajo el título */
+.ot-list-item--stacked {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+}
+
+.ot-list-item__head {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+}
+
+.ot-list-item--stacked .ot-list-item__actions .btn {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Responsive */
+@media (max-width: 575.98px) {
+    .ot-list-item:not(.ot-list-item--stacked) {
+        flex-wrap: wrap;
+    }
+
+    .ot-list-item:not(.ot-list-item--stacked) .ot-list-item__actions {
+        width: 100%;
+        margin-left: calc(48px + 0.9rem);
+    }
+}

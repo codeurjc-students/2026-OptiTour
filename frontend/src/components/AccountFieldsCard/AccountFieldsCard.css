@@ -1,0 +1,56 @@
+.ot-account-fields {
+    border: 1px solid var(--ot-border);
+    border-radius: var(--ot-radius);
+    background-color: #fff;
+    box-shadow: var(--ot-shadow);
+    padding: 1.75rem;
+}
+
+.ot-account-fields__avatar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+}
+
+.ot-account-fields__avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    border: 2px solid var(--ot-border);
+    background-color: var(--ot-bg-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ot-text-muted);
+    font-weight: 600;
+    font-size: 0.85rem;
+    line-height: 1.25;
+    overflow: hidden;
+}
+
+.ot-account-fields__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ot-account-fields__avatar-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--ot-text-muted);
+}
+
+.ot-account-fields__upload-btn {
+    border-radius: var(--ot-radius-pill);
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.4rem 1rem;
+    margin-top: 0.25rem;
+}
+
+.ot-account-fields label {
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
