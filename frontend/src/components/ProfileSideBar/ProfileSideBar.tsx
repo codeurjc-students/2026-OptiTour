@@ -6,6 +6,7 @@ export interface SidebarItem {
     label: string;
     to: string;
     icon?: ReactNode;
+    className?: string;
 }
 
 interface ProfileSidebarProps {
@@ -13,6 +14,8 @@ interface ProfileSidebarProps {
     avatarSrc?: string;
     items: SidebarItem[];
     profileTo?: string;
+    /** Ej. "Cuenta de administrador" — se muestra encima del nombre. */
+    roleLabel?: string;
 }
 
 function ProfileSidebar({
@@ -20,6 +23,7 @@ function ProfileSidebar({
     avatarSrc,
     items,
     profileTo = '/profile',
+    roleLabel,
 }: ProfileSidebarProps) {
     return (
         <aside className="ot-sidebar">
@@ -34,6 +38,7 @@ function ProfileSidebar({
                         </svg>
                     )}
                 </div>
+                {roleLabel && <span className="ot-sidebar__role">{roleLabel}</span>}
                 <span className="ot-sidebar__username">{userName}</span>
                 <Link to={profileTo} className="btn btn-outline-dark ot-sidebar__profile-btn">
                     Ver mi perfil
@@ -46,7 +51,7 @@ function ProfileSidebar({
                         key={item.to}
                         to={item.to}
                         className={({ isActive }) =>
-                            `ot-sidebar__link${isActive ? ' ot-sidebar__link--active' : ''}`
+                            `ot-sidebar__link${isActive ? ' ot-sidebar__link--active' : ''}${item.className ? ' ' + item.className : ''}`
                         }
                     >
                         {item.icon && <span className="ot-sidebar__link-icon">{item.icon}</span>}

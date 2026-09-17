@@ -1,0 +1,47 @@
+.ot-create-admin__main {
+    margin-bottom: 1.5rem;
+}
+
+.ot-create-admin__actions-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.9rem;
+    border: 1px solid var(--ot-border);
+    border-radius: var(--ot-radius);
+    background-color: #fff;
+    box-shadow: var(--ot-shadow);
+    padding: 1.75rem;
+    text-align: center;
+}
+
+.ot-create-admin__submit {
+    width: 100%;
+    max-width: 260px;
+    background-color: var(--ot-primary);
+    border-color: var(--ot-primary);
+    font-weight: 700;
+    border-radius: var(--ot-radius-pill);
+    padding: 0.6rem;
+}
+
+.ot-create-admin__submit:hover {
+    background-color: var(--ot-primary-dark);
+    border-color: var(--ot-primary-dark);
+}
+
+.ot-create-admin__cancel-btn {
+    width: 100%;
+    max-width: 260px;
+    font-weight: 700;
+    border-radius: var(--ot-radius-pill);
+    padding: 0.55rem;
+}
+
+@media (max-width: 767.98px) {
+    .ot-create-admin__actions-card {
+        margin-top: 1.5rem;
+    }
+}

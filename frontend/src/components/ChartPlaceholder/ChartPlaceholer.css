@@ -1,0 +1,27 @@
+.ot-chart-placeholder {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    border: 1px solid var(--ot-border);
+    border-radius: var(--ot-radius);
+    background-color: #fff;
+    padding: 1.5rem;
+    height: 100%;
+}
+
+.ot-chart-placeholder__icon {
+    flex-shrink: 0;
+    color: var(--ot-primary-dark);
+}
+
+.ot-chart-placeholder__label {
+    font-weight: 600;
+    color: var(--ot-text-muted);
+}
+
+@media (max-width: 575.98px) {
+    .ot-chart-placeholder {
+        flex-direction: column;
+        text-align: center;
+    }
+}

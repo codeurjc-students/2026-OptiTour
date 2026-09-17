@@ -1,0 +1,39 @@
+.ot-edit-profile {
+    width: 100%;
+}
+
+.ot-edit-profile__actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.ot-edit-profile__save-btn {
+    background-color: var(--ot-primary);
+    border-color: var(--ot-primary);
+    font-weight: 700;
+    border-radius: var(--ot-radius-pill);
+    padding: 0.55rem 1.5rem;
+}
+
+.ot-edit-profile__save-btn:hover {
+    background-color: var(--ot-primary-dark);
+    border-color: var(--ot-primary-dark);
+}
+
+.ot-edit-profile__cancel-btn {
+    font-weight: 700;
+    border-radius: var(--ot-radius-pill);
+    padding: 0.55rem 1.5rem;
+}
+
+@media (max-width: 575.98px) {
+    .ot-edit-profile__actions {
+        flex-direction: column-reverse;
+    }
+
+    .ot-edit-profile__actions .btn {
+        width: 100%;
+    }
+}

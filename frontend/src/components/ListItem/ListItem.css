@@ -62,10 +62,22 @@
     background-color: transparent;
 }
 
-.ot-list-item__actions .btn:hover,
-.ot-list-item__actions .btn:active {
+.ot-list-item__actions .btn:not(.btn-outline-danger):hover,
+.ot-list-item__actions .btn:not(.btn-outline-danger):active {
     background-color: #26D12A;
     border-color: #26D12A;
+    color: #fff;
+}
+
+.ot-list-item__actions .btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.ot-list-item__actions .btn-outline-danger:hover,
+.ot-list-item__actions .btn-outline-danger:active {
+    background-color: #dc3545;
+    border-color: #dc3545;
     color: #fff;
 }
 

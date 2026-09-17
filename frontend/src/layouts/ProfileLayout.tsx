@@ -41,10 +41,10 @@ const bellIcon = (
 
 const userMenu: SidebarItem[] = [
     { label: 'Lista de amigos', to: '/profile/friends', icon: friendsIcon },
-    { label: 'Mis grupos',      to: '/profile/groups',  icon: groupsIcon },
-    { label: 'Mis tours',       to: '/profile/tours',   icon: toursIcon },
-    { label: 'Mis pagos',       to: '/profile/payments', icon: paymentsIcon },
-    { label: 'Notificaciones',  to: '/profile/notifications', icon: bellIcon },
+    { label: 'Mis grupos', to: '/profile/groups', icon: groupsIcon },
+    { label: 'Mis tours', to: '/profile/tours', icon: toursIcon },
+    { label: 'Mis pagos', to: '/profile/payments', icon: paymentsIcon },
+    { label: 'Notificaciones', to: '/profile/notifications', icon: bellIcon },
 ];
 
 function ProfileLayout() {

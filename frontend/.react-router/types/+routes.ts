@@ -41,6 +41,36 @@ type Pages = {
   "/profile/notifications": {
     params: {};
   };
+  "/profile/payments": {
+    params: {};
+  };
+  "/profile/edit": {
+    params: {};
+  };
+  "/admin/users": {
+    params: {};
+  };
+  "/admin/poi": {
+    params: {};
+  };
+  "/admin/billing": {
+    params: {};
+  };
+  "/admin/profile": {
+    params: {};
+  };
+  "/admin/notifications": {
+    params: {};
+  };
+  "/admin/create": {
+    params: {};
+  };
+  "/admin/addpoi": {
+    params: {};
+  };
+  "/admin/tours": {
+    params: {};
+  };
   "/login": {
     params: {};
   };
@@ -49,7 +79,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/signup" | "/tourdetail" | "/poidetail" | "/route-builder" | "/profile" | "/profile/friends" | "/profile/tours" | "/profile/groups" | "/profile/notifications" | "/login";
+    page: "/" | "/signup" | "/tourdetail" | "/poidetail" | "/route-builder" | "/profile" | "/profile/friends" | "/profile/tours" | "/profile/groups" | "/profile/notifications" | "/profile/payments" | "/profile/edit" | "/admin/users" | "/admin/poi" | "/admin/billing" | "/admin/profile" | "/admin/notifications" | "/admin/create" | "/admin/addpoi" | "/admin/tours" | "/login";
   };
   "routes/home.tsx": {
     id: "routes/home";
@@ -77,27 +107,71 @@ type RouteFiles = {
   };
   "layouts/ProfileLayout.tsx": {
     id: "layouts/ProfileLayout";
-    page: "/profile" | "/profile/friends" | "/profile/tours" | "/profile/groups" | "/profile/notifications";
+    page: "/profile" | "/profile/friends" | "/profile/tours" | "/profile/groups" | "/profile/notifications" | "/profile/payments" | "/profile/edit";
   };
   "routes/MyProfile/MyProfile.tsx": {
     id: "routes/MyProfile/MyProfile";
     page: "/profile";
   };
-  "routes/MyFriends/MyFriends.tsx": {
-    id: "routes/MyFriends/MyFriends";
+  "routes/MyProfile/MyFriends.tsx": {
+    id: "routes/MyProfile/MyFriends";
     page: "/profile/friends";
   };
-  "routes/MyTours/MyTours.tsx": {
-    id: "routes/MyTours/MyTours";
+  "routes/MyProfile/MyTours.tsx": {
+    id: "routes/MyProfile/MyTours";
     page: "/profile/tours";
   };
-  "routes/MyGroups/MyGroups.tsx": {
-    id: "routes/MyGroups/MyGroups";
+  "routes/MyProfile/MyGroups.tsx": {
+    id: "routes/MyProfile/MyGroups";
     page: "/profile/groups";
   };
-  "routes/MyNotifications/MyNotifications.tsx": {
-    id: "routes/MyNotifications/MyNotifications";
+  "routes/MyProfile/MyNotifications.tsx": {
+    id: "routes/MyProfile/MyNotifications";
     page: "/profile/notifications";
+  };
+  "routes/MyProfile/MyPayments.tsx": {
+    id: "routes/MyProfile/MyPayments";
+    page: "/profile/payments";
+  };
+  "routes/MyProfile/EditProfile.tsx": {
+    id: "routes/MyProfile/EditProfile";
+    page: "/profile/edit";
+  };
+  "layouts/AdminLayout.tsx": {
+    id: "layouts/AdminLayout";
+    page: "/admin/users" | "/admin/poi" | "/admin/billing" | "/admin/profile" | "/admin/notifications" | "/admin/create" | "/admin/addpoi" | "/admin/tours";
+  };
+  "routes/Admin/UserManagement.tsx": {
+    id: "routes/Admin/UserManagement";
+    page: "/admin/users";
+  };
+  "routes/Admin/POIManagement.tsx": {
+    id: "routes/Admin/POIManagement";
+    page: "/admin/poi";
+  };
+  "routes/Admin/Billing.tsx": {
+    id: "routes/Admin/Billing";
+    page: "/admin/billing";
+  };
+  "routes/Admin/AdminProfile.tsx": {
+    id: "routes/Admin/AdminProfile";
+    page: "/admin/profile";
+  };
+  "routes/Admin/AdminNotifications.tsx": {
+    id: "routes/Admin/AdminNotifications";
+    page: "/admin/notifications";
+  };
+  "routes/Admin/CreateAdminAccount.tsx": {
+    id: "routes/Admin/CreateAdminAccount";
+    page: "/admin/create";
+  };
+  "routes/Admin/CreatePOI.tsx": {
+    id: "routes/Admin/CreatePOI";
+    page: "/admin/addpoi";
+  };
+  "routes/Admin/TourManagement.tsx": {
+    id: "routes/Admin/TourManagement";
+    page: "/admin/tours";
   };
   "routes/Login/Login.tsx": {
     id: "routes/Login/Login";
@@ -115,9 +189,20 @@ type RouteModules = {
   "routes/RouteBuilder/RouteBuilder": typeof import("./src/routes/RouteBuilder/RouteBuilder.tsx");
   "layouts/ProfileLayout": typeof import("./src/layouts/ProfileLayout.tsx");
   "routes/MyProfile/MyProfile": typeof import("./src/routes/MyProfile/MyProfile.tsx");
-  "routes/MyFriends/MyFriends": typeof import("./src/routes/MyFriends/MyFriends.tsx");
-  "routes/MyTours/MyTours": typeof import("./src/routes/MyTours/MyTours.tsx");
-  "routes/MyGroups/MyGroups": typeof import("./src/routes/MyGroups/MyGroups.tsx");
-  "routes/MyNotifications/MyNotifications": typeof import("./src/routes/MyNotifications/MyNotifications.tsx");
+  "routes/MyProfile/MyFriends": typeof import("./src/routes/MyProfile/MyFriends.tsx");
+  "routes/MyProfile/MyTours": typeof import("./src/routes/MyProfile/MyTours.tsx");
+  "routes/MyProfile/MyGroups": typeof import("./src/routes/MyProfile/MyGroups.tsx");
+  "routes/MyProfile/MyNotifications": typeof import("./src/routes/MyProfile/MyNotifications.tsx");
+  "routes/MyProfile/MyPayments": typeof import("./src/routes/MyProfile/MyPayments.tsx");
+  "routes/MyProfile/EditProfile": typeof import("./src/routes/MyProfile/EditProfile.tsx");
+  "layouts/AdminLayout": typeof import("./src/layouts/AdminLayout.tsx");
+  "routes/Admin/UserManagement": typeof import("./src/routes/Admin/UserManagement.tsx");
+  "routes/Admin/POIManagement": typeof import("./src/routes/Admin/POIManagement.tsx");
+  "routes/Admin/Billing": typeof import("./src/routes/Admin/Billing.tsx");
+  "routes/Admin/AdminProfile": typeof import("./src/routes/Admin/AdminProfile.tsx");
+  "routes/Admin/AdminNotifications": typeof import("./src/routes/Admin/AdminNotifications.tsx");
+  "routes/Admin/CreateAdminAccount": typeof import("./src/routes/Admin/CreateAdminAccount.tsx");
+  "routes/Admin/CreatePOI": typeof import("./src/routes/Admin/CreatePOI.tsx");
+  "routes/Admin/TourManagement": typeof import("./src/routes/Admin/TourManagement.tsx");
   "routes/Login/Login": typeof import("./src/routes/Login/Login.tsx");
 };

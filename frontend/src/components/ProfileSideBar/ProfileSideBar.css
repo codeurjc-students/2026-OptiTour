@@ -72,8 +72,8 @@
 
 .ot-sidebar__link {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: flex-start;
     gap: 0.6rem;
     padding: 0.9rem 1rem;
     text-decoration: none;
@@ -101,6 +101,11 @@
 .ot-sidebar__link-icon {
     display: flex;
     color: currentColor;
+    flex-shrink: 0;
+}
+
+.ot-sidebar__link--sm {
+    font-size: 0.8rem;
 }
 
 @media (max-width: 991.98px) {
@@ -148,4 +153,13 @@
         border-left-color: transparent;
         border-bottom-color: var(--ot-primary);
     }
+}
+
+.ot-sidebar__role {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--ot-secondary);
+    opacity: 0.75;
 }

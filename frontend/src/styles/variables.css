@@ -56,6 +56,7 @@ body {
 .ot-panel-action {
   background-color: var(--ot-primary);
   border-color: var(--ot-primary);
+  color: #fff !important;
   font-weight: 700;
   border-radius: var(--ot-radius-pill);
   padding: 0.45rem 1.25rem;
@@ -64,6 +65,7 @@ body {
 
 .ot-panel-action--inline {
   margin-bottom: 0;
+  align-self: center;
 }
 
 .ot-panel-action:hover {
