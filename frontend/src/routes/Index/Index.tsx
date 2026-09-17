@@ -2,20 +2,32 @@ import { Container, Form, InputGroup, Row, Col } from 'react-bootstrap';
 import TourCard from '../../components/TourCard/TourCard';
 import ImageCarousel from '../../components/ImageCarousel/ImageCarousel';
 import './Index.css';
-
-interface TourSummary {
-  id: number;
-  title: string;
-}
-
-const tours: TourSummary[] = [
-  { id: 1, title: 'Tour público 1' },
-  { id: 2, title: 'Tour público 2' },
-  { id: 3, title: 'Tour público 3' },
-  { id: 4, title: 'Tour público 4' },
-];
+import type { TourDTO } from '../../dto/TourDTO';
+import { useEffect, useState } from 'react';
+import { getAllTours } from '../../service/tour_service';
+import Spinner from '../../components/Spinner/Spinner';
 
 function Index() {
+  const [tours, setTours] = useState<TourDTO[]>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<String | null>(null);
+
+  async function handleGetTours() {
+    try {
+      setLoading(true);
+      const response = await getAllTours();
+      setTours(response);
+    }
+    catch (error) {
+      setError('No se han podido cargar los datos desde el servidor. Inténtalo de nuevo más tarde.');
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => { handleGetTours() }, []);
+
   return (
     <Container className="ot-index">
       <Form className="ot-index__search">
@@ -39,15 +51,19 @@ function Index() {
         />
       </div>
 
-      <Row className="ot-index__grid" xs={1} sm={2} md={4}>
-        {tours.map((tour) => (
-          <Col key={tour.id} className="ot-index__grid-item">
-            <TourCard title={tour.title} to="/tourdetail" />
-          </Col>
-        ))}
-      </Row>
+      {loading && <Spinner />}
+
+      {error ? <p>{error}</p> :
+        <Row className="ot-index__grid" xs={1} sm={2} md={4}>
+          {tours?.map((tour) => (
+            <Col key={tour.id} className="ot-index__grid-item" data-testid="tour-card">
+              <TourCard title={tour.name} desc={tour.description} to="/tourdetail" />
+            </Col>
+          ))}
+        </Row>
+      }
+
     </Container>
   );
 }
-
 export default Index;

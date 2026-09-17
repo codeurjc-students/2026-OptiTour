@@ -4,11 +4,12 @@ import './TourCard.css';
 
 interface TourCardProps {
   title: string;
+  desc: string;
   imageSrc?: string;
   to?: string;
 }
 
-function TourCard({ title, imageSrc, to = '#' }: TourCardProps) {
+function TourCard({ title, desc, imageSrc, to = '#' }: TourCardProps) {
   return (
     <Card className="ot-tour-card">
       <div className="ot-tour-card__image">
@@ -20,6 +21,7 @@ function TourCard({ title, imageSrc, to = '#' }: TourCardProps) {
       </div>
       <Card.Body className="ot-tour-card__body">
         <Card.Title className="ot-tour-card__title">{title}</Card.Title>
+        <p className="ot-tour-desc">{desc}</p>
         <Link to={to} className="btn btn-outline-success ot-tour-card__btn">
           Ver más
         </Link>

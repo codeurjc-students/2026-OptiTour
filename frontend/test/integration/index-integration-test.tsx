@@ -1,18 +1,20 @@
 import { expect, test, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
-
-import Index from '../../src/routes/index'
-import { TourDTO } from '../../src/dto/TourDTO';
-
+import { MemoryRouter } from 'react-router';
+import Index from '../../src/routes/Index/Index';
 
 test('Checks if tour-service calls the API and receive data correctly', async () => {
     // We render the index page at the JDOM virtual DOM.
     // With the useEffect function, it will call the API when rendered for first time.
-    render(<Index />);
+    render(
+        <MemoryRouter>
+            <Index />
+        </MemoryRouter>
+    );
 
     //We get the tour list and check if has 5 elements
-    const itemList = await screen.findAllByRole('listitem');
+    const itemList = await screen.findAllByTestId('tour-card');
 
     expect(itemList).toHaveLength(5);
 
@@ -21,7 +23,7 @@ test('Checks if tour-service calls the API and receive data correctly', async ()
     let tourDescs = new Array();
 
     for (let i = 1; i < 6; i++) {
-        tourTitles.push(await screen.findByText(i + ': Tour ' + i));
+        tourTitles.push(await screen.findByText('Tour ' + i));
         tourDescs.push(await screen.findByText('Tour de ejemplo numero ' + i));
     }
 
@@ -33,6 +35,4 @@ test('Checks if tour-service calls the API and receive data correctly', async ()
     tourDescs.forEach(desc => {
         expect(desc).toBeInTheDocument();
     });
-
-
 });
