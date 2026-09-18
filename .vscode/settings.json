@@ -1,3 +1,19 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.autobuild.enabled": false,
+    "java.compile.nullAnalysis.mode": "disabled",
+    "java.import.exclusions": [
+        "**/node_modules/**",
+        "**/.metadata/**",
+        "**/archetype-resources/**",
+        "**/META-INF/maven/**",
+        "frontend/**",
+        "docs/**"
+    ],
+    "files.watcherExclude": {
+        "**/target/**": true
+    },
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": [],
+    "java.import.generatesMetadataFilesAtProjectRoot": false
 }
