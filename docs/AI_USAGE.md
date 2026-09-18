@@ -113,3 +113,12 @@ Este documento registra el uso que se le da a diferentes herramientas de intelig
 * **Herramienta:** Chat de Visual Studio Code.
 * **Modelo concreto:** GitHub Copilot.
 * **Cómo ha sido usada:** La IA se utilizó como apoyo para resolver problemas relacionados con la configuración de MySQL nativo en los runners de GitHub Actions, incluyendo la autenticación del usuario `root`, la creación de la base de datos y la configuración de las credenciales utilizadas por Spring Boot. También ayudó con otros problemas como condiciones de carrera entre forntend y backend.
+
+## Fase 3
+
+* **Fecha:** 17/09/2026
+* **Fase:** Fase 3
+* **Objetivo:** Maquetación de la interfaz de usuario en frontend
+* **Herramienta:** Claude Design.
+* **Modelo concreto:** Sonnet 5.
+* **Cómo ha sido usada:** Utilizada para maquetar en React los bocetos de pantallas dibujados a mano durante la fase 1. A la IA se le pasan dichos bocetos para que genere a partir de ellos plantillas sin funcionalidad en React, agilizando el desarrollo del diseño estético de la interfaz de usuario.
