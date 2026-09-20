@@ -12,6 +12,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import es.urjc.tfg.optitour.security.jwt.JwtRequestFilter;
 
 @Configuration
 @EnableWebSecurity // This annotation activates Spring Security
@@ -19,8 +22,11 @@ public class SecurityConfiguration {
 
     private final RepositoryUserDetailsService userDetailsService;
 
-    public SecurityConfiguration(RepositoryUserDetailsService userDetailsService) {
+    private final JwtRequestFilter jwtRequestFilter;
+
+    public SecurityConfiguration(RepositoryUserDetailsService userDetailsService, JwtRequestFilter jwtRequestFilter) {
         this.userDetailsService = userDetailsService;
+        this.jwtRequestFilter = jwtRequestFilter;
     }
 
     @Bean
@@ -50,9 +56,14 @@ public class SecurityConfiguration {
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(authorize -> authorize
                         // PUBLIC ENDPOINTS
-                        .requestMatchers(HttpMethod.POST, "/api/v1/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
                         // PRIVATE ENDPOINTS
-                        .requestMatchers(HttpMethod.GET, "/api/v1/**").hasRole("USER"));
+                        .requestMatchers(HttpMethod.GET, "/**").permitAll());
+
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        http.httpBasic(httpBasic -> httpBasic.disable());
+        http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
         return http.build();
 
     }
