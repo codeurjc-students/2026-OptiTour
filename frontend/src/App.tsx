@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./routes/home";
-import Index from "./routes/Index/Index.tsx";
-import Login from "./routes/Login/Login";
-import Signup from "./routes/Signup/Signup";
+import Index from "./routes/index/index.tsx";
+import Login from "./routes/login/login";
+import Signup from "./routes/signup/signup";
 
 function App() {
   return (

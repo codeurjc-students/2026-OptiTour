@@ -2,12 +2,12 @@ import { expect, test, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 
-import Index from '../../src/routes/Index/Index'
-import * as service from '../../src/service/tour_service'
+import Index from '../../src/routes/index/index'
+import * as service from '../../src/service/tour-service'
 import { MemoryRouter } from 'react-router';
 
 // First of all, we mock the service that make the request to backend:
-vi.mock('../../src/service/tour_service');
+vi.mock('../../src/service/tour-service');
 
 test('Index displays tour list from request', async () => {
     // We create test data and set it to mocked service
