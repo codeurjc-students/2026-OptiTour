@@ -2,6 +2,7 @@ package es.urjc.tfg.optitour.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -49,10 +50,9 @@ public class SecurityConfiguration {
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(authorize -> authorize
                         // PUBLIC ENDPOINTS
-                        .requestMatchers("/api/v1/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/login").permitAll()
                         // PRIVATE ENDPOINTS
-                        .requestMatchers("/api/v1/**").authenticated()
-                        .anyRequest().authenticated());
+                        .requestMatchers(HttpMethod.GET, "/api/v1/**").hasRole("USER"));
         return http.build();
 
     }
