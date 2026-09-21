@@ -3,23 +3,35 @@ import { Link, useNavigate } from 'react-router';
 import logo from '../../assets/OptiTourLogo.png';
 import './login.css';
 import { login } from '../../service/auth-service';
-import { type SubmitEvent } from 'react';
+import { useState, type SubmitEvent } from 'react';
+import Spinner from '../../components/spinner/spinner';
 
 function Login() {
 
   const navigate = useNavigate();
+
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   async function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
 
     const formData = new FormData(event.target);
 
-    await login({
-      email: formData.get("email") as string,
-      password: formData.get("pass") as string
-    });
-
-    navigate("/");
+    try {
+      setLoading(true);
+      await login({
+        email: formData.get("email") as string,
+        password: formData.get("pass") as string
+      });
+      navigate("/");
+    }
+    catch (error) {
+      setError("Credenciales incorrectas.");
+    }
+    finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -48,6 +60,12 @@ function Login() {
                 <Form.Label>Contraseña:</Form.Label>
                 <Form.Control type="password" placeholder="" name="pass" />
               </Form.Group>
+
+              {loading && <Spinner />}
+
+              {error &&
+                <p style={{ color: "red" }}>{error}</p>
+              }
 
               <Button type="submit" className="ot-login__submit">
                 Acceder
