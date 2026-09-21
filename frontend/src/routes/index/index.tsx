@@ -6,11 +6,12 @@ import type { TourDTO } from '../../dto/tour-dto';
 import { useEffect, useState } from 'react';
 import { getAllTours } from '../../service/tour-service';
 import Spinner from '../../components/spinner/spinner';
+import ErrorCard from '../../components/error-card/error-card';
 
 function Index() {
   const [tours, setTours] = useState<TourDTO[]>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<String | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleGetTours() {
     try {
@@ -53,7 +54,7 @@ function Index() {
 
       {loading && <Spinner />}
 
-      {error ? <p>{error}</p> :
+      {error ? <ErrorCard text={error} /> :
         <Row className="ot-index__grid" xs={1} sm={2} md={4}>
           {tours?.map((tour) => (
             <Col key={tour.id} className="ot-index__grid-item" data-testid="tour-card">

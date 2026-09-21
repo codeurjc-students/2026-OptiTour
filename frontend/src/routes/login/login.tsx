@@ -5,6 +5,7 @@ import './login.css';
 import { login } from '../../service/auth-service';
 import { useState, type SubmitEvent } from 'react';
 import Spinner from '../../components/spinner/spinner';
+import ErrorCard from '../../components/error-card/error-card';
 
 function Login() {
 
@@ -64,7 +65,7 @@ function Login() {
               {loading && <Spinner />}
 
               {error &&
-                <p style={{ color: "red" }}>{error}</p>
+                <ErrorCard text={error} />
               }
 
               <Button type="submit" className="ot-login__submit">
