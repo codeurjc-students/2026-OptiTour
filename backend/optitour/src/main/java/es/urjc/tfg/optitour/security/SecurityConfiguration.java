@@ -51,12 +51,14 @@ public class SecurityConfiguration {
     public SecurityFilterChain fileterChain(HttpSecurity http) throws Exception {
         http.authenticationProvider(authenticationProvider());
 
-        http.csrf(csrf -> csrf.disable())
+        http.cors(org.springframework.security.config.Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(authorize -> authorize
                         // PUBLIC ENDPOINTS
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // PRIVATE ENDPOINTS
                         .requestMatchers(HttpMethod.GET, "/**").permitAll());
 

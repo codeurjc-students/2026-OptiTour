@@ -1,9 +1,27 @@
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import logo from '../../assets/OptiTourLogo.png';
 import './login.css';
+import { login } from '../../service/auth-service';
+import { type SubmitEvent } from 'react';
 
 function Login() {
+
+  const navigate = useNavigate();
+
+  async function handleSubmit(event: SubmitEvent) {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+
+    await login({
+      email: formData.get("email") as string,
+      password: formData.get("pass") as string
+    });
+
+    navigate("/");
+  }
+
   return (
     <div className="ot-login">
       <Row className="ot-login__row g-0">
@@ -20,15 +38,15 @@ function Login() {
           <Container className="ot-login__form-wrap">
             <h1 className="ot-login__title">Inicio de sesión</h1>
 
-            <Form className="ot-login__form">
+            <Form className="ot-login__form" onSubmit={handleSubmit}>
               <Form.Group className="ot-login__field" controlId="loginEmail">
                 <Form.Label>Correo electrónico:</Form.Label>
-                <Form.Control type="email" placeholder="" />
+                <Form.Control type="email" placeholder="" name="email" />
               </Form.Group>
 
               <Form.Group className="ot-login__field" controlId="loginPassword">
                 <Form.Label>Contraseña:</Form.Label>
-                <Form.Control type="password" placeholder="" />
+                <Form.Control type="password" placeholder="" name="pass" />
               </Form.Group>
 
               <Button type="submit" className="ot-login__submit">

@@ -28,5 +28,4 @@ export default [
         route("/admin/tours", "routes/admin/tour-management.tsx")
     ]),
     route("/login", "routes/login/login.tsx")
-
 ] satisfies RouteConfig;
