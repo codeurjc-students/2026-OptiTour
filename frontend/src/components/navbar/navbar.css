@@ -57,3 +57,14 @@
   background-color: var(--ot-primary-dark);
   border-color: var(--ot-primary-dark);
 }
+
+.ot-navbar__btn--profile {
+  border-color: var(--ot-primary);
+  color: var(--ot-primary);
+}
+
+.ot-navbar__btn--profile:hover {
+  background-color: var(--ot-primary);
+  border-color: var(--ot-primary);
+  color: #fff;
+}

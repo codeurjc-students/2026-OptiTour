@@ -19,3 +19,34 @@ export async function login(credentials: authDTO) {
 
     return await response.json();
 }
+
+export async function getLoggedUser() {
+    const url = `${base_url}/logged`;
+
+    const response = await fetch(url, {
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+    }
+
+    return await response.json();
+}
+
+export async function logout() {
+    const url = `${base_url}/logout`;
+
+    const response = await fetch(url, {
+        method: "POST",
+        credentials: "include"
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+    }
+
+    return await response.json();
+}

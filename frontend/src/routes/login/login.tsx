@@ -2,7 +2,7 @@ import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router';
 import logo from '../../assets/OptiTourLogo.png';
 import './login.css';
-import { login } from '../../service/auth-service';
+import { useAuthStore } from '../../store/auth-store';
 import { useState, type SubmitEvent } from 'react';
 import Spinner from '../../components/spinner/spinner';
 import ErrorCard from '../../components/error-card/error-card';
@@ -10,6 +10,7 @@ import ErrorCard from '../../components/error-card/error-card';
 function Login() {
 
   const navigate = useNavigate();
+  const { doLogin } = useAuthStore();
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -17,11 +18,11 @@ function Login() {
   async function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
 
-    const formData = new FormData(event.target);
+    const formData = new FormData(event.target as HTMLFormElement);
 
     try {
       setLoading(true);
-      await login({
+      await doLogin({
         email: formData.get("email") as string,
         password: formData.get("pass") as string
       });

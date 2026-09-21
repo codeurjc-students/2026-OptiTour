@@ -1,8 +1,9 @@
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./styles/variables.css";
+import { useAuthStore } from "./store/auth-store";
 
 export function Layout({ children }: { children: ReactNode }) {
     return (
@@ -24,5 +25,11 @@ export function Layout({ children }: { children: ReactNode }) {
 }
 
 export default function Root() {
+    const { getLogged } = useAuthStore();
+
+    useEffect(() => {
+        getLogged();
+    }, [getLogged]);
+
     return <Outlet />;
 }
