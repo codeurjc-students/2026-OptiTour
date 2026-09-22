@@ -14,7 +14,6 @@ interface ProfileSidebarProps {
     avatarSrc?: string;
     items: SidebarItem[];
     profileTo?: string;
-    /** Ej. "Cuenta de administrador" — se muestra encima del nombre. */
     roleLabel?: string;
 }
 

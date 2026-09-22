@@ -2,8 +2,14 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router';
 import logo from '../../assets/OptiTourLogo.png';
 import './footer.css';
+import { useAuthStore } from '../../store/auth-store';
 
 function Footer() {
+
+  const { loggedUser } = useAuthStore();
+  const { doLogout } = useAuthStore();
+
+
   return (
     <footer className="ot-footer">
       <Container className="ot-footer__container">
@@ -13,15 +19,6 @@ function Footer() {
             <p className="ot-footer__tagline">
               Rutas turísticas optimizadas para aprovechar cada minuto de tu viaje.
             </p>
-          </Col>
-
-          <Col xs={6} md={4} className="ot-footer__col">
-            <h6 className="ot-footer__heading">Explorar</h6>
-            <ul className="ot-footer__list">
-              <li><Link to="/"><i className="bi bi-compass" aria-hidden="true" />Tours destacados</Link></li>
-              <li><Link to="/tours"><i className="bi bi-map" aria-hidden="true" />Todos los tours</Link></li>
-              <li><Link to="/como-funciona"><i className="bi bi-question-circle" aria-hidden="true" />Cómo funciona</Link></li>
-            </ul>
           </Col>
 
           <Col xs={6} md={4} className="ot-footer__col">
@@ -37,8 +34,29 @@ function Footer() {
                   <i className="bi bi-github" aria-hidden="true" />Sobre nosotros
                 </a>
               </li>
-              <li><Link to="/contacto"><i className="bi bi-envelope" aria-hidden="true" />Contacto</Link></li>
-              <li><Link to="/login"><i className="bi bi-box-arrow-in-right" aria-hidden="true" />Iniciar sesión</Link></li>
+            </ul>
+          </Col>
+
+          <Col xs={6} md={4} className="ot-footer__col">
+            {
+              loggedUser ? <h6 className="ot-footer__heading">Tu cuenta</h6> : <h6 className="ot-footer__heading">Accede</h6>
+            }
+            <ul className="ot-footer__list">
+              {loggedUser ?
+                <>
+                  <li>
+                    <Link to="/" onClick={async () => await doLogout()}>
+                      <i className="bi bi-box-arrow-right"></i>Cerrar sesión
+                    </Link>
+                  </li>
+                  <li><Link to="/login"><i className="bi bi-person-circle"></i>Mi perfil</Link></li>
+                  <li><Link to="/profile/notifications"><i className="bi bi-bell fs-7"></i>Notificaciones</Link></li>
+                </>
+
+                :
+                <li><Link to="/login"><i className="bi bi-box-arrow-in-right" aria-hidden="true" />Iniciar sesión</Link></li>
+              }
+
             </ul>
           </Col>
         </Row>

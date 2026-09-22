@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router';
 import ProfileSidebar, { type SidebarItem } from '../components/profile-side-bar/profile-side-bar';
 import './profile-layout.css';
+import { useAuthStore } from '../store/auth-store';
 
 const usersIcon = (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
@@ -56,6 +57,12 @@ const adminMenu: SidebarItem[] = [
 ];
 
 function AdminLayout() {
+    const { loggedUser } = useAuthStore();
+
+    if (!loggedUser) {
+        return null;
+    }
+
     return (
         <div className="ot-profile-layout">
             <ProfileSidebar
