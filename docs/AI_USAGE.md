@@ -122,3 +122,10 @@ Este documento registra el uso que se le da a diferentes herramientas de intelig
 * **Herramienta:** Claude Design.
 * **Modelo concreto:** Sonnet 5.
 * **Cómo ha sido usada:** Utilizada para maquetar en React los bocetos de pantallas dibujados a mano durante la fase 1. A la IA se le pasan dichos bocetos para que genere a partir de ellos plantillas sin funcionalidad en React, agilizando el desarrollo del diseño estético de la interfaz de usuario.
+
+* **Fecha:** 22/09/2026
+* **Fase:** Fase 3
+* **Objetivo:** Ayuda para implementar urls restringidas y protección de rutas.
+* **Herramienta:** Cuderno de Google Gemini.
+* **Modelo concreto:** Gemini 3.1 Pro.
+* **Cómo ha sido usada:** La IA se utilizó como apoyo para implementar el sistema de rutas protegidas mediante React Router, diagnosticar y resolver problemas de caché e hidratación asíncrona con Zustand, corregir errores de renderizado condicional en Layouts y configurar redirecciones tras el login. En general, la IA se ha usado como asistente o guía, pues siempre se le han hecho indiciaciones de no proporcionar código (exceptuando dudas de sintaxis en react), si no de proporcionar validación de ideas.

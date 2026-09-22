@@ -49,8 +49,9 @@ function Footer() {
                       <i className="bi bi-box-arrow-right"></i>Cerrar sesión
                     </Link>
                   </li>
-                  <li><Link to="/login"><i className="bi bi-person-circle"></i>Mi perfil</Link></li>
+                  <li><Link to="/profile"><i className="bi bi-person-circle"></i>Mi perfil</Link></li>
                   <li><Link to="/profile/notifications"><i className="bi bi-bell fs-7"></i>Notificaciones</Link></li>
+                  {(loggedUser.roles || []).includes("ADMIN") && <li><Link to="/admin/profile"><i className="bi bi-shield-lock fs-7 me-2"></i>Panel de administración</Link></li>}
                 </>
 
                 :

@@ -18,7 +18,8 @@ export const useAuthStore = create<AuthStore>()(
             loggedUser: null,
             setLoggedUser: (user) => set({ loggedUser: user }),
             doLogin: async ({ email, password }: authDTO) => {
-                const user = await login({ email, password });
+                await login({ email, password });
+                const user = await getLoggedUser();
                 set({ loggedUser: user });
             },
             getLogged: async () => {

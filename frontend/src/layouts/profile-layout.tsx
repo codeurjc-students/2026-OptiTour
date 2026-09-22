@@ -2,6 +2,7 @@ import { Outlet } from 'react-router';
 import ProfileSidebar, { type SidebarItem } from '../components/profile-side-bar/profile-side-bar';
 import './profile-layout.css';
 import { useAuthStore } from '../store/auth-store';
+import ProtectedRoute from '../routes/protected-route';
 
 const friendsIcon = (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -51,20 +52,18 @@ const userMenu: SidebarItem[] = [
 function ProfileLayout() {
     const { loggedUser } = useAuthStore();
 
-    if (!loggedUser) {
-        return null;
-    }
-
     return (
-        <div className="ot-profile-layout">
-            <ProfileSidebar
-                userName={loggedUser!.userName}
-                items={userMenu}
-            />
-            <main className="ot-profile-layout__content">
-                <Outlet />
-            </main>
-        </div>
+        <ProtectedRoute>
+            <div className="ot-profile-layout">
+                <ProfileSidebar
+                    userName={loggedUser?.userName || ''}
+                    items={userMenu}
+                />
+                <main className="ot-profile-layout__content">
+                    <Outlet />
+                </main>
+            </div>
+        </ProtectedRoute>
     );
 }
 

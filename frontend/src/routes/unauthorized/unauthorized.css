@@ -1,0 +1,52 @@
+.ot-unauthorized {
+    /* Push the footer down by taking at least the full viewport height minus typical navbar/footer heights */
+    min-height: 80vh; 
+    padding: 4rem 1rem;
+}
+
+.ot-unauthorized__card {
+    max-width: 650px;
+    width: 100%;
+    background-color: var(--bs-white);
+    border: 1px solid var(--bs-gray-200);
+    /* Soft shadow to make it stand out */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.ot-unauthorized__card h1 {
+    font-weight: 600;
+    font-size: 2rem;
+    color: var(--bs-gray-900);
+}
+
+.ot-unauthorized__actions {
+    margin-top: 2rem;
+}
+
+.ot-unauthorized__btn {
+    min-width: 150px;
+    font-weight: 700;
+    border-radius: var(--ot-radius-pill);
+}
+
+.ot-unauthorized__btn--fill {
+    background-color: var(--ot-primary) !important;
+    border-color: var(--ot-primary) !important;
+    color: #fff !important;
+}
+
+.ot-unauthorized__btn--fill:hover {
+    background-color: var(--ot-primary-dark) !important;
+    border-color: var(--ot-primary-dark) !important;
+}
+
+.ot-unauthorized__btn--outline {
+    border-color: var(--ot-primary) !important;
+    color: var(--ot-primary) !important;
+}
+
+.ot-unauthorized__btn--outline:hover {
+    background-color: var(--ot-primary) !important;
+    border-color: var(--ot-primary) !important;
+    color: #fff !important;
+}

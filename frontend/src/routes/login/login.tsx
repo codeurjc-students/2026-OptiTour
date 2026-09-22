@@ -6,6 +6,7 @@ import { useAuthStore } from '../../store/auth-store';
 import { useState, type SubmitEvent } from 'react';
 import Spinner from '../../components/spinner/spinner';
 import ErrorCard from '../../components/error-card/error-card';
+import { useSearchParams } from 'react-router-dom';
 
 function Login() {
 
@@ -14,6 +15,7 @@ function Login() {
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [searchParams] = useSearchParams();
 
   async function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
@@ -26,7 +28,9 @@ function Login() {
         email: formData.get("email") as string,
         password: formData.get("pass") as string
       });
-      navigate("/");
+
+      const redirectTo = searchParams.get("redirect") || "/";
+      navigate(redirectTo, { replace: true });
     }
     catch (error) {
       setError("Credenciales incorrectas.");
@@ -51,6 +55,8 @@ function Login() {
         <Col md={6} className="ot-login__panel">
           <Container className="ot-login__form-wrap">
             <h1 className="ot-login__title">Inicio de sesión</h1>
+
+            {searchParams.get("redirect") && <ErrorCard text={`Para acceder a la página solicitada necesitas autenticación.`} />}
 
             <Form className="ot-login__form" onSubmit={handleSubmit}>
               <Form.Group className="ot-login__field" controlId="loginEmail">

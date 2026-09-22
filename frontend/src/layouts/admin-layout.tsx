@@ -2,6 +2,7 @@ import { Outlet } from 'react-router';
 import ProfileSidebar, { type SidebarItem } from '../components/profile-side-bar/profile-side-bar';
 import './profile-layout.css';
 import { useAuthStore } from '../store/auth-store';
+import ProtectedRoute from '../routes/protected-route';
 
 const usersIcon = (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
@@ -33,13 +34,6 @@ const bellIcon = (
     </svg>
 );
 
-const profileIcon = (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
-        <circle cx="12" cy="8" r="4" />
-        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-    </svg>
-);
-
 const toursIcon = (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
         <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
@@ -59,22 +53,20 @@ const adminMenu: SidebarItem[] = [
 function AdminLayout() {
     const { loggedUser } = useAuthStore();
 
-    if (!loggedUser) {
-        return null;
-    }
-
     return (
-        <div className="ot-profile-layout">
-            <ProfileSidebar
-                userName="Nombre de usuario"
-                items={adminMenu}
-                roleLabel="Cuenta de administrador"
-                profileTo="/admin/profile"
-            />
-            <main className="ot-profile-layout__content">
-                <Outlet />
-            </main>
-        </div>
+        <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <div className="ot-profile-layout">
+                <ProfileSidebar
+                    userName={loggedUser?.userName || ''}
+                    items={adminMenu}
+                    roleLabel="Cuenta de administrador"
+                    profileTo="/admin/profile"
+                />
+                <main className="ot-profile-layout__content">
+                    <Outlet />
+                </main>
+            </div>
+        </ProtectedRoute>
     );
 }
 

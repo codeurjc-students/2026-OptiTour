@@ -26,6 +26,9 @@ type Pages = {
   "/route-builder": {
     params: {};
   };
+  "/unauthorized": {
+    params: {};
+  };
   "/profile": {
     params: {};
   };
@@ -79,11 +82,11 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/signup" | "/tourdetail" | "/poidetail" | "/route-builder" | "/profile" | "/profile/friends" | "/profile/tours" | "/profile/groups" | "/profile/notifications" | "/profile/payments" | "/profile/edit" | "/admin/users" | "/admin/poi" | "/admin/billing" | "/admin/profile" | "/admin/notifications" | "/admin/create" | "/admin/addpoi" | "/admin/tours" | "/login";
+    page: "/" | "/signup" | "/tourdetail" | "/poidetail" | "/route-builder" | "/unauthorized" | "/profile" | "/profile/friends" | "/profile/tours" | "/profile/groups" | "/profile/notifications" | "/profile/payments" | "/profile/edit" | "/admin/users" | "/admin/poi" | "/admin/billing" | "/admin/profile" | "/admin/notifications" | "/admin/create" | "/admin/addpoi" | "/admin/tours" | "/login";
   };
   "routes/home.tsx": {
     id: "routes/home";
-    page: "/" | "/signup" | "/tourdetail" | "/poidetail" | "/route-builder";
+    page: "/" | "/signup" | "/tourdetail" | "/poidetail" | "/route-builder" | "/unauthorized";
   };
   "routes/index/index.tsx": {
     id: "routes/index/index";
@@ -104,6 +107,10 @@ type RouteFiles = {
   "routes/route-builder/route-builder.tsx": {
     id: "routes/route-builder/route-builder";
     page: "/route-builder";
+  };
+  "routes/unauthorized/unauthorized.tsx": {
+    id: "routes/unauthorized/unauthorized";
+    page: "/unauthorized";
   };
   "layouts/profile-layout.tsx": {
     id: "layouts/profile-layout";
@@ -187,6 +194,7 @@ type RouteModules = {
   "routes/tour-detail/tour-detail": typeof import("./src/routes/tour-detail/tour-detail.tsx");
   "routes/point-of-interest-detail/point-of-interest-detail": typeof import("./src/routes/point-of-interest-detail/point-of-interest-detail.tsx");
   "routes/route-builder/route-builder": typeof import("./src/routes/route-builder/route-builder.tsx");
+  "routes/unauthorized/unauthorized": typeof import("./src/routes/unauthorized/unauthorized.tsx");
   "layouts/profile-layout": typeof import("./src/layouts/profile-layout.tsx");
   "routes/my-profile/my-profile": typeof import("./src/routes/my-profile/my-profile.tsx");
   "routes/my-profile/my-friends": typeof import("./src/routes/my-profile/my-friends.tsx");
