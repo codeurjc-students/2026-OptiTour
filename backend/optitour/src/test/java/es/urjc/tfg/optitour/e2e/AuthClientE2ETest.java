@@ -3,6 +3,7 @@ package es.urjc.tfg.optitour.e2e;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 
 import java.time.Duration;
 
@@ -48,12 +49,13 @@ public class AuthClientE2ETest {
     @DisplayName("Check if login form works properly")
     public void loginFormTest() {
         driver.get("http://localhost:5173");
+        try { Thread.sleep(1000); } catch (Exception e) {}
 
         // We define de wait object
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         // We wait to the loginButton and click on it
-        WebElement loginNavButton = wait.until(visibilityOfElementLocated(By.className("loginButton")));
+        WebElement loginNavButton = wait.until(elementToBeClickable(By.className("loginButton")));
         loginNavButton.click();
 
         // Now, we wait to the page to render. We can simply wait for one of the form
@@ -88,9 +90,10 @@ public class AuthClientE2ETest {
     @DisplayName("If credentials are incorrect, error card should be shown")
     void badLoginFormTest() {
         driver.get("http://localhost:5173");
+        try { Thread.sleep(1000); } catch (Exception e) {}
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        WebElement loginNavButton = wait.until(visibilityOfElementLocated(By.className("loginButton")));
+        WebElement loginNavButton = wait.until(elementToBeClickable(By.className("loginButton")));
         loginNavButton.click();
 
         WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));

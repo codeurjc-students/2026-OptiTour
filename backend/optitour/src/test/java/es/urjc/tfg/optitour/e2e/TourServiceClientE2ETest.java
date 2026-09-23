@@ -50,6 +50,7 @@ public class TourServiceClientE2ETest {
     @DisplayName("Check if rendered list in frontend is correct")
     public void getAllToursClientE2ETest() {
         driver.get("http://localhost:5173"); // We visit the frontend app
+        try { Thread.sleep(1000); } catch (Exception e) {}
 
         // Now, get the list (waiting until it's visible) and check if one of its
         // elements is correct.
