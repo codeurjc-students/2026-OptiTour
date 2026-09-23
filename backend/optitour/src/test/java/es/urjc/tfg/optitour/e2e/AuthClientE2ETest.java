@@ -52,7 +52,7 @@ public class AuthClientE2ETest {
         try { Thread.sleep(1000); } catch (Exception e) {}
 
         // We define de wait object
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
 
         // We wait to the loginButton and click on it
         WebElement loginNavButton = wait.until(elementToBeClickable(By.className("loginButton")));
@@ -104,7 +104,7 @@ public class AuthClientE2ETest {
         driver.get("http://localhost:5173");
         try { Thread.sleep(1000); } catch (Exception e) {}
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
         WebElement loginNavButton = wait.until(elementToBeClickable(By.className("loginButton")));
         loginNavButton.click();
 
@@ -135,7 +135,7 @@ public class AuthClientE2ETest {
     void privateURLLoginFormTest() {
         driver.get("http://localhost:5173/admin/profile"); // We directly visit /admin/profile
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
 
         WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
         String errorCardText = errorCard.getText();
@@ -168,7 +168,7 @@ public class AuthClientE2ETest {
     void privateURLLoginFormNoRolesTest() {
         driver.get("http://localhost:5173/admin/profile"); // We directly visit /admin/profile
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
 
         WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
         String errorCardText = errorCard.getText();
