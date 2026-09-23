@@ -11,7 +11,7 @@ interface TourCardProps {
 
 function TourCard({ title, desc, imageSrc, to = '#' }: TourCardProps) {
   return (
-    <Card className="ot-tour-card">
+    <Card className="ot-tour-card" data-testid="tour-card">
       <div className="ot-tour-card__image">
         {imageSrc ? (
           <img src={imageSrc} alt={title} />

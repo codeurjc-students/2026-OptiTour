@@ -18,7 +18,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User getUserByEmail(String email) {
+    public User getUserByEmail(String email) throws ResponseStatusException {
         Optional<User> op = userRepository.findByEmail(email);
 
         if (op.isPresent()) {
@@ -27,6 +27,6 @@ public class UserService {
         }
 
         throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "User with email " + email + "wasn't found.");
+                "User with email " + email + " wasn't found.");
     }
 }

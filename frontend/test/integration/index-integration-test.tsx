@@ -1,3 +1,6 @@
+// @ts-ignore
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 import { expect, test, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'

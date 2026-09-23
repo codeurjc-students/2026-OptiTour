@@ -36,11 +36,13 @@ public class SampleDataService {
             }
         }
 
-        if (userRepository.count() == 0) {
+        if (userRepository.findByEmail("example@example.com").isEmpty()) {
             userRepository.save(new User("example@example.com",
                     passwordEncoder.encode("demo1234"), "ExampleName", "123 456 789", false,
                     "USER"));
+        }
 
+        if (userRepository.findByEmail("admin@optitour.com").isEmpty()) {
             userRepository.save(new User("admin@optitour.com", passwordEncoder.encode("admin1234"), "ExampleAdmin",
                     "111 111 111", false, "USER", "ADMIN"));
         }

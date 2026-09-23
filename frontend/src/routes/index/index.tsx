@@ -57,7 +57,7 @@ function Index() {
       {error ? <ErrorCard text={error} /> :
         <Row className="ot-index__grid" xs={1} sm={2} md={4}>
           {tours?.map((tour) => (
-            <Col key={tour.id} className="ot-index__grid-item" data-testid="tour-card">
+            <Col key={tour.id} className="ot-index__grid-item">
               <TourCard title={tour.name} desc={tour.description} to="/tourdetail" />
             </Col>
           ))}

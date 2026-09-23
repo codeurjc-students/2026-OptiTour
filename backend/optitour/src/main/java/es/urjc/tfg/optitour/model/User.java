@@ -45,6 +45,10 @@ public class User {
         return id;
     }
 
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -61,7 +65,7 @@ public class User {
         return phoneNumber;
     }
 
-    public boolean isBanned() {
+    public boolean getIsBanned() {
         return isBanned;
     }
 

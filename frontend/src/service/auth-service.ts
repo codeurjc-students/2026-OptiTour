@@ -1,6 +1,6 @@
 import type { authDTO } from "../dto/auth-dto";
 
-const base_url = "https://localhost:443/api/v1/auth";
+const base_url = import.meta.env.VITE_API_BASE_URL ? `${import.meta.env.VITE_API_BASE_URL}/auth` : "https://localhost:443/api/v1/auth";
 
 export async function login(credentials: authDTO) {
     const url = `${base_url}/login`;

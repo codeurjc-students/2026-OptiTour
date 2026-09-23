@@ -40,7 +40,7 @@ function OptiTourNavbar() {
                   (loggedUser.roles || []).includes("ADMIN") &&
                   <Link
                     to="/admin/profile"
-                    className="btn ot-navbar__btn ot-navbar__btn--profile d-flex align-items-center gap-2"
+                    className="btn ot-navbar__btn ot-navbar__btn--profile d-flex align-items-center gap-2 adminButton"
                   >
                     <i className="bi bi-shield-lock fs-5"></i>
                     <span>Panel de administración</span>
@@ -62,7 +62,7 @@ function OptiTourNavbar() {
                 >
                   Registrarse
                 </Link>
-                <Link to="/login" className="btn btn-primary ot-navbar__btn ot-navbar__btn--fill">
+                <Link to="/login" className="btn btn-primary ot-navbar__btn ot-navbar__btn--fill loginButton">
                   Iniciar sesión
                 </Link>
               </>
