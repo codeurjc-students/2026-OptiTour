@@ -35,6 +35,8 @@ public class TourServiceE2ETest extends BaseIntegrationTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        RestAssured.baseURI = "https://localhost";
+        RestAssured.useRelaxedHTTPSValidation();
         jdbcTemplate.execute("TRUNCATE TABLE tour RESTART IDENTITY");
 
         for (int i = 0; i < 5; i++) {
