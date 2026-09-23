@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -81,13 +82,19 @@ public class UserLoginService {
 		return "logout successfully";
 	}
 
+	@Value("${app.cookie.secure:true}")
+	private boolean secureCookie;
+
+	@Value("${app.cookie.samesite:None}")
+	private String sameSiteCookie;
+
 	private Cookie buildTokenCookie(TokenType type, String token) {
 		Cookie cookie = new Cookie(type.cookieName, token);
 		cookie.setMaxAge((int) type.duration.getSeconds());
 		cookie.setHttpOnly(true);
 		cookie.setPath("/");
-		cookie.setAttribute("SameSite", "None");
-		cookie.setSecure(true);
+		cookie.setAttribute("SameSite", sameSiteCookie);
+		cookie.setSecure(secureCookie);
 		return cookie;
 	}
 
@@ -96,8 +103,8 @@ public class UserLoginService {
 		cookie.setMaxAge(0);
 		cookie.setHttpOnly(true);
 		cookie.setPath("/");
-		cookie.setAttribute("SameSite", "None");
-		cookie.setSecure(true);
+		cookie.setAttribute("SameSite", sameSiteCookie);
+		cookie.setSecure(secureCookie);
 		return cookie;
 	}
 }

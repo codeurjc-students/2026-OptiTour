@@ -60,7 +60,13 @@ public class AuthClientE2ETest {
 
         // Now, we wait to the page to render. We can simply wait for one of the form
         // fields.
-        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
+        WebElement emailField = null;
+        try {
+            emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
+        } catch (org.openqa.selenium.TimeoutException e) {
+            System.err.println("TIMEOUT in badLoginFormTest waiting for emailField. Page source: " + driver.getPageSource());
+            throw e;
+        }
 
         // We get the rest of the form elements: fields and submmit button
         driver.findElement(By.id("loginEmail"));
@@ -73,7 +79,13 @@ public class AuthClientE2ETest {
         submitButton.click();
 
         // We wait to the index page to render
-        WebElement logoutButton = wait.until(visibilityOfElementLocated(By.className("btn-outline-danger")));
+        WebElement logoutButton = null;
+        try {
+            logoutButton = wait.until(visibilityOfElementLocated(By.className("btn-outline-danger")));
+        } catch (org.openqa.selenium.TimeoutException e) {
+            System.err.println("TIMEOUT in loginFormTest. Page source: " + driver.getPageSource());
+            throw e;
+        }
 
         // We check if admin buttons appear. If this buttons exist, then logging was
         // succesful and user roles are working correctly.
@@ -96,7 +108,13 @@ public class AuthClientE2ETest {
         WebElement loginNavButton = wait.until(elementToBeClickable(By.className("loginButton")));
         loginNavButton.click();
 
-        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
+        WebElement emailField = null;
+        try {
+            emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
+        } catch (org.openqa.selenium.TimeoutException e) {
+            System.err.println("TIMEOUT in badLoginFormTest waiting for emailField. Page source: " + driver.getPageSource());
+            throw e;
+        }
         WebElement passField = driver.findElement(By.id("loginPassword"));
         WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
 
@@ -133,7 +151,13 @@ public class AuthClientE2ETest {
         passField.sendKeys("admin1234");
         submitButton.click();
 
-        WebElement userName = wait.until(visibilityOfElementLocated(By.className("ot-my-profile__name")));
+        WebElement userName = null;
+        try {
+            userName = wait.until(visibilityOfElementLocated(By.className("ot-my-profile__name")));
+        } catch (org.openqa.selenium.TimeoutException e) {
+            System.err.println("TIMEOUT in privateURLLoginFormTest waiting for userName. Page source: " + driver.getPageSource());
+            throw e;
+        }
         String userNameText = userName.getText();
 
         assertEquals(userNameText, "ExampleAdmin");
