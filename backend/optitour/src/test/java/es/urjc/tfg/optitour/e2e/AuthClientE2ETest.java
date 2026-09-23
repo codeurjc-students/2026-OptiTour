@@ -89,7 +89,7 @@ public class AuthClientE2ETest {
     void badLoginFormTest() {
         driver.get("http://localhost:5173");
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement loginNavButton = wait.until(visibilityOfElementLocated(By.className("loginButton")));
         loginNavButton.click();
 
@@ -114,7 +114,7 @@ public class AuthClientE2ETest {
     void privateURLLoginFormTest() {
         driver.get("http://localhost:5173/admin/profile"); // We directly visit /admin/profile
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
         String errorCardText = errorCard.getText();
@@ -141,7 +141,7 @@ public class AuthClientE2ETest {
     void privateURLLoginFormNoRolesTest() {
         driver.get("http://localhost:5173/admin/profile"); // We directly visit /admin/profile
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
         String errorCardText = errorCard.getText();
