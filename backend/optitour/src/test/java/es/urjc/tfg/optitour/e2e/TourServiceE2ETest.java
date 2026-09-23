@@ -35,6 +35,8 @@ public class TourServiceE2ETest extends BaseIntegrationTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        RestAssured.baseURI = "https://localhost";
+        RestAssured.useRelaxedHTTPSValidation();
         jdbcTemplate.execute("TRUNCATE TABLE tour RESTART IDENTITY");
 
         for (int i = 0; i < 5; i++) {
@@ -43,7 +45,7 @@ public class TourServiceE2ETest extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("Calling api at /api/v1/tour/all should return the SampleDataService example tours")
+    @DisplayName("Calling api at /tour/all should return the SampleDataService example tours")
     public void tourServiceE2Etest() {
         // We make the api call, check the HTTP status code and get the sample tour list
         List<TourDTO> result = get("/api/v1/tour/all")

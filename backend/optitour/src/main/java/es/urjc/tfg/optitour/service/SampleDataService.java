@@ -4,18 +4,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import es.urjc.tfg.optitour.model.Tour;
+import es.urjc.tfg.optitour.model.User;
 import es.urjc.tfg.optitour.repository.TourRepository;
+import es.urjc.tfg.optitour.repository.UserRepository;
 
 @Service
 @Profile("!test")
 public class SampleDataService {
 
-    private final TourRepository repository;
+    private final TourRepository tourRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    SampleDataService(TourRepository repository) {
-        this.repository = repository;
+    SampleDataService(TourRepository tourRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.tourRepository = tourRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -23,10 +30,22 @@ public class SampleDataService {
 
         // We insert some example tours with a for loop, only if there are no tours in
         // database.
-        if (repository.count() == 0) {
+        if (tourRepository.count() == 0) {
             for (int i = 0; i < 5; i++) {
-                repository.save(new Tour("Tour " + (i + 1), "Tour de ejemplo numero " + (i + 1)));
+                tourRepository.save(new Tour("Tour " + (i + 1), "Tour de ejemplo numero " + (i + 1)));
             }
         }
+
+        if (userRepository.findByEmail("example@example.com").isEmpty()) {
+            userRepository.save(new User("example@example.com",
+                    passwordEncoder.encode("demo1234"), "ExampleName", "123 456 789", false,
+                    "USER"));
+        }
+
+        if (userRepository.findByEmail("admin@optitour.com").isEmpty()) {
+            userRepository.save(new User("admin@optitour.com", passwordEncoder.encode("admin1234"), "ExampleAdmin",
+                    "111 111 111", false, "USER", "ADMIN"));
+        }
+
     }
 }

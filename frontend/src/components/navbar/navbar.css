@@ -1,0 +1,70 @@
+.ot-navbar {
+  border-bottom: 1px solid var(--ot-border);
+  padding: 0 1rem;
+}
+
+.ot-navbar__container {
+  max-width: none;
+}
+
+.ot-navbar__brand {
+  padding: 0;
+  line-height: 0;
+}
+
+.ot-navbar__logo {
+  height: 75px;
+  width: auto;
+}
+
+@media (max-width: 575.98px) {
+  .ot-navbar__logo {
+    height: 48px;
+  }
+}
+
+.ot-navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ot-navbar__btn {
+  font-family: var(--font-base);
+  font-weight: 700;
+  border-radius: var(--ot-radius-pill);
+  padding: 0.5rem 1.25rem;
+}
+
+.ot-navbar__btn--outline {
+  border-color: var(--ot-secondary);
+  color: var(--ot-secondary);
+}
+
+.ot-navbar__btn--outline:hover {
+  background-color: var(--ot-secondary);
+  border-color: var(--ot-secondary);
+  color: #fff;
+}
+
+.ot-navbar__btn--fill {
+  background-color: var(--ot-primary);
+  border-color: var(--ot-primary);
+  color: #fff;
+}
+
+.ot-navbar__btn--fill:hover {
+  background-color: var(--ot-primary-dark);
+  border-color: var(--ot-primary-dark);
+}
+
+.ot-navbar__btn--profile {
+  border-color: var(--ot-primary);
+  color: var(--ot-primary);
+}
+
+.ot-navbar__btn--profile:hover {
+  background-color: var(--ot-primary);
+  border-color: var(--ot-primary);
+  color: #fff;
+}

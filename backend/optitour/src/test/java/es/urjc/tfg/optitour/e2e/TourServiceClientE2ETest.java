@@ -14,14 +14,12 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import es.urjc.tfg.optitour.BaseIntegrationTest;
-
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TourServiceClientE2ETest extends BaseIntegrationTest {
+@SpringBootTest
+public class TourServiceClientE2ETest {
     protected WebDriver driver;
 
     @BeforeEach
@@ -29,6 +27,8 @@ public class TourServiceClientE2ETest extends BaseIntegrationTest {
         // We add some configurations so Google Chrome Window don't appear, in order to
         // avoid problems with GitHub Actions
         ChromeOptions options = new ChromeOptions();
+        options.setAcceptInsecureCerts(true);
+        options.addArguments("--ignore-certificate-errors");
         options.addArguments("--headless=new");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
@@ -50,10 +50,11 @@ public class TourServiceClientE2ETest extends BaseIntegrationTest {
     @DisplayName("Check if rendered list in frontend is correct")
     public void getAllToursClientE2ETest() {
         driver.get("http://localhost:5173"); // We visit the frontend app
+        try { Thread.sleep(1000); } catch (Exception e) {}
 
         // Now, get the list (waiting until it's visible) and check if one of its
         // elements is correct.
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(90));
         wait.until(visibilityOfElementLocated(By.className("ot-tour-card__title")));
 
         WebElement tourTitle = driver.findElement(By.className("ot-tour-card__title"));

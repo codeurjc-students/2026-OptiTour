@@ -1,8 +1,11 @@
+// @ts-ignore
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 import { expect, test, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import { MemoryRouter } from 'react-router';
-import Index from '../../src/routes/Index/Index';
+import Index from '../../src/routes/index/index';
 
 test('Checks if tour-service calls the API and receive data correctly', async () => {
     // We render the index page at the JDOM virtual DOM.
