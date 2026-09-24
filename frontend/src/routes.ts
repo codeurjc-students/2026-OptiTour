@@ -6,7 +6,8 @@ export default [
         route("/signup", "routes/signup/signup.tsx"),
         route("/tourdetail", "routes/tour-detail/tour-detail.tsx"),
         route("/poidetail", "routes/point-of-interest-detail/point-of-interest-detail.tsx"),
-        route("/unauthorized", "routes/unauthorized/unauthorized.tsx")
+        route("/unauthorized", "routes/error-routes/unauthorized.tsx"),
+        route("*", "routes/error-routes/not-found.tsx", { id: "catch-all" })
     ]),
     layout("layouts/profile-layout.tsx", [
         route("/profile", "routes/my-profile/my-profile.tsx"),

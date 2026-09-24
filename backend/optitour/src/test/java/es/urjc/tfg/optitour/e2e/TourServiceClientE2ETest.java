@@ -54,7 +54,7 @@ public class TourServiceClientE2ETest {
 
         // Now, get the list (waiting until it's visible) and check if one of its
         // elements is correct.
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(90));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         wait.until(visibilityOfElementLocated(By.className("ot-tour-card__title")));
 
         WebElement tourTitle = driver.findElement(By.className("ot-tour-card__title"));

@@ -49,10 +49,13 @@ public class AuthClientE2ETest {
     @DisplayName("Check if login form works properly")
     public void loginFormTest() {
         driver.get("http://localhost:5173");
-        try { Thread.sleep(1000); } catch (Exception e) {}
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {
+        }
 
         // We define de wait object
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(90));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         // We wait to the loginButton and click on it
         WebElement loginNavButton = wait.until(elementToBeClickable(By.className("loginButton")));
@@ -64,7 +67,8 @@ public class AuthClientE2ETest {
         try {
             emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
         } catch (org.openqa.selenium.TimeoutException e) {
-            System.err.println("TIMEOUT in badLoginFormTest waiting for emailField. Page source: " + driver.getPageSource());
+            System.err.println(
+                    "TIMEOUT in badLoginFormTest waiting for emailField. Page source: " + driver.getPageSource());
             throw e;
         }
 
@@ -102,15 +106,19 @@ public class AuthClientE2ETest {
     @DisplayName("If credentials are incorrect, error card should be shown")
     void badLoginFormTest() {
         driver.get("http://localhost:5173/login");
-        try { Thread.sleep(1000); } catch (Exception e) {}
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {
+        }
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(90));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         WebElement emailField = null;
         try {
             emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
         } catch (org.openqa.selenium.TimeoutException e) {
-            System.err.println("TIMEOUT in badLoginFormTest waiting for emailField. Page source: " + driver.getPageSource());
+            System.err.println(
+                    "TIMEOUT in badLoginFormTest waiting for emailField. Page source: " + driver.getPageSource());
             throw e;
         }
         WebElement passField = driver.findElement(By.id("loginPassword"));
@@ -133,7 +141,7 @@ public class AuthClientE2ETest {
     void privateURLLoginFormTest() {
         driver.get("http://localhost:5173/admin/profile"); // We directly visit /admin/profile
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(90));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
         String errorCardText = errorCard.getText();
@@ -153,7 +161,8 @@ public class AuthClientE2ETest {
         try {
             userName = wait.until(visibilityOfElementLocated(By.className("ot-my-profile__name")));
         } catch (org.openqa.selenium.TimeoutException e) {
-            System.err.println("TIMEOUT in privateURLLoginFormTest waiting for userName. Page source: " + driver.getPageSource());
+            System.err.println(
+                    "TIMEOUT in privateURLLoginFormTest waiting for userName. Page source: " + driver.getPageSource());
             throw e;
         }
         String userNameText = userName.getText();
@@ -166,7 +175,7 @@ public class AuthClientE2ETest {
     void privateURLLoginFormNoRolesTest() {
         driver.get("http://localhost:5173/admin/profile"); // We directly visit /admin/profile
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(90));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
         String errorCardText = errorCard.getText();
@@ -192,5 +201,22 @@ public class AuthClientE2ETest {
         String unauthorizedErrorText = unauthorizedError.getText();
 
         assertEquals(unauthorizedErrorText, "No tienes permisos suficientes para acceder a esta página.");
+    }
+
+    @Test
+    @DisplayName("Checks if 404 page works properly")
+    void notFoundPageTest() {
+        driver.get("http://localhost:5173/non-existing-page");
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+        wait.until(textToBePresentInElementLocated(
+                By.className("ot-error-card"),
+                "La página solicitada no existe."));
+
+        WebElement errorCard = driver.findElement(By.className("ot-error-card"));
+        String errorCardText = errorCard.getText();
+
+        assertEquals(errorCardText, "La página solicitada no existe.");
     }
 }

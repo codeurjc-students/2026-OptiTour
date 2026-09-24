@@ -47,7 +47,12 @@ jobs:
 
       - name: Run backend
         working-directory: ./backend/optitour
-        run: mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=8080 --server.ssl.enabled=false --app.cookie.secure=false --app.cookie.samesite=Lax" &
+        env:
+          SERVER_PORT: 8080
+          SERVER_SSL_ENABLED: false
+          APP_COOKIE_SECURE: false
+          APP_COOKIE_SAMESITE: Lax
+        run: mvn spring-boot:run &
 
       - name: Wait for backend startup
         run: sleep 30
@@ -78,7 +83,12 @@ jobs:
       
       - name: Run backend
         working-directory: ./backend/optitour
-        run: mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=8080 --server.ssl.enabled=false --app.cookie.secure=false --app.cookie.samesite=Lax" &
+        env:
+          SERVER_PORT: 8080
+          SERVER_SSL_ENABLED: false
+          APP_COOKIE_SECURE: false
+          APP_COOKIE_SAMESITE: Lax
+        run: mvn spring-boot:run &
 
       - name: Wait for backend startup
         run: sleep 30
