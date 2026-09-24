@@ -129,3 +129,31 @@ Este documento registra el uso que se le da a diferentes herramientas de intelig
 * **Herramienta:** Cuderno de Google Gemini.
 * **Modelo concreto:** Gemini 3.1 Pro.
 * **Cómo ha sido usada:** La IA se utilizó como apoyo para implementar el sistema de rutas protegidas mediante React Router, diagnosticar y resolver problemas de caché e hidratación asíncrona con Zustand, corregir errores de renderizado condicional en Layouts y configurar redirecciones tras el login. En general, la IA se ha usado como asistente o guía, pues siempre se le han hecho indiciaciones de no proporcionar código (exceptuando dudas de sintaxis en react), si no de proporcionar validación de ideas.
+
+* **Fecha:** 23/09/2026
+* **Fase:** Fase 3
+* **Objetivo:** Ayuda para implementar los test E2E de servidor.
+* **Herramienta:** Cuderno de Google Gemini.
+* **Modelo concreto:** Gemini 3.1 Pro.
+* **Cómo ha sido usada:** Se utilizó la IA como asistente para implementar los test E2E de servidor, que involucran RestAssured, a raíz de errores con los endpoints de autorización al no conocer cómo usar la librería para recibir las cookies o enviar peticiones POST. 
+
+* **Fecha:** 23/09/2026
+* **Fase:** Fase 3
+* **Objetivo:** Resolución de errores de renderizado y timeouts en pruebas E2E con Selenium.
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro 
+* **Cómo ha sido usada:** Se recurrió a la IA para depurar y arreglar excepciones de `TimeoutException` al no encontrar elementos del DOM en las pruebas E2E de cliente. La IA analizó los cuellos de botella de renderizado para ajustar los tiempos de espera de `WebDriverWait` y cambiar las estrategias de navegación directa a rutas específicas.
+
+* **Fecha:** 23/09/2026
+* **Fase:** Fase 3
+* **Objetivo:** Corrección y ejecución de pruebas de integración en frontend con Vitest.
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro 
+* **Cómo ha sido usada:** Se utilizó la IA para resolver errores de petición a los endpoints de autorización, causados por el cambio a HTTPS en el backend
+
+* **Fecha:** 23/09/2026
+* **Fase:** Fase 3
+* **Objetivo:** Depuración del workflow de integración continua (GitHub Actions) y problemas con CORS/SSL.
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro 
+* **Cómo ha sido usada:** La IA actuó de forma autónoma para investigar y resolver un problema complejo entre el navegador Headless de Selenium, problemas de CORS provenientes del cambio de HTTP a HTTPS en el backend y los certificados SSL autofirmados en el runner de GitHub Actions. Diagnosticó que Chrome bloqueaba las peticiones por seguridad e implementó la solución de desactivar HTTPS temporalmente en el entorno de pruebas, permitiendo la ejecución exitosa los test en el entorno CI.
