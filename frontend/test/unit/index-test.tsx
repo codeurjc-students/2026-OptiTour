@@ -11,8 +11,11 @@ vi.mock('../../src/service/tour-service');
 
 test('Index displays tour list from request', async () => {
     // We create test data and set it to mocked service
-    const testTour = [{ id: 1, name: 'Test Title', description: 'Test Description 1' }, { id: 2, name: 'Test Title', description: 'Test Description 2' }];
-    vi.mocked(service.getAllTours).mockResolvedValue(testTour);
+    const testTourPage = { 
+        content: [{ id: 1, name: 'Test Title', description: 'Test Description 1' }, { id: 2, name: 'Test Title', description: 'Test Description 2' }],
+        page: { number: 0, totalPages: 1 }
+    };
+    vi.mocked(service.getToursByPage).mockResolvedValue(testTourPage as any);
 
     // Now, we render the index component with the JSDOM virtual DOM
     // Thanks to useEffect, it will call getAllTours function, but it will recieve test data instead of real ones. 
