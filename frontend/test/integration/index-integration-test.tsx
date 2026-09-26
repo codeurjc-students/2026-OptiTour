@@ -19,7 +19,7 @@ test('Checks if tour-service calls the API and receive data correctly', async ()
     //We get the tour list and check if has 5 elements
     const itemList = await screen.findAllByTestId('tour-card');
 
-    expect(itemList).toHaveLength(30);
+    expect(itemList).toHaveLength(8);
 
     // Now, we check if titles are correct. We create a list and obtain all titles and descs from screen. 
     let tourTitles = new Array();

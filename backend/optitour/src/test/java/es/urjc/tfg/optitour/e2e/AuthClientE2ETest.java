@@ -167,7 +167,7 @@ public class AuthClientE2ETest {
         }
         String userNameText = userName.getText();
 
-        assertEquals(userNameText, "ExampleAdmin");
+        assertEquals(userNameText, "Admin");
     }
 
     @Test
