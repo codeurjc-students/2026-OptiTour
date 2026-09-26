@@ -133,7 +133,6 @@ public class AuthClientE2ETest {
 
         assertEquals(errorCardText, "Credenciales incorrectas.");
 
-        driver.quit();
     }
 
     @Test
