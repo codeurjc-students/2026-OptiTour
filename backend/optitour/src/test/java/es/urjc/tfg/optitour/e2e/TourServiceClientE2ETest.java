@@ -8,12 +8,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -33,6 +35,7 @@ public class TourServiceClientE2ETest {
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--disable-gpu");
+        options.addArguments("--window-size=1920,1080");
 
         driver = new ChromeDriver(options);
 
@@ -50,7 +53,10 @@ public class TourServiceClientE2ETest {
     @DisplayName("Check if rendered list in frontend is correct")
     public void getAllToursClientE2ETest() {
         driver.get("http://localhost:5173"); // We visit the frontend app
-        try { Thread.sleep(1000); } catch (Exception e) {}
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {
+        }
 
         // Now, get the list (waiting until it's visible) and check if one of its
         // elements is correct.
@@ -65,6 +71,29 @@ public class TourServiceClientE2ETest {
         WebElement tourDesc = driver.findElement(By.className("ot-tour-desc"));
         String tourDescText = tourDesc.getText();
 
-        assertThat(tourDescText, containsString("Descubre la capital de España, sus museos y su vibrante vida nocturna."));
+        assertThat(tourDescText,
+                containsString("Descubre la capital de España, sus museos y su vibrante vida nocturna."));
+    }
+
+    @Test
+    @DisplayName("Checks if loadMore botton works properly")
+    public void loadMoreTest() throws InterruptedException {
+        driver.get("http://localhost:5173");
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+        WebElement loadMoreButton = wait.until(elementToBeClickable(By.className("load-more-button")));
+
+        // Do scroll to button
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", loadMoreButton);
+        Thread.sleep(500); // Give half second to get to the button
+
+        loadMoreButton.click();
+
+        WebElement newTourCard = wait.until(visibilityOfElementLocated(By.xpath(
+                "//div[contains(@class, 'ot-tour-card__title') and text()='Roma, Italia']")));
+
+        String romaTitle = newTourCard.getText();
+        assertThat(romaTitle, containsString("Roma, Italia"));
     }
 }

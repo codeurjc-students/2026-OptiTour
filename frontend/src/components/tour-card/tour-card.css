@@ -33,6 +33,7 @@
   flex-direction: column;
   gap: 0.75rem;
   align-items: flex-start;
+  flex-grow: 1;
 }
 
 .ot-tour-card__title {
@@ -47,6 +48,7 @@
   padding: 0.4rem 1.1rem;
   border-color: var(--ot-primary);
   color: var(--ot-primary);
+  margin-top: auto;
 }
 
 .ot-tour-card__btn:hover {
