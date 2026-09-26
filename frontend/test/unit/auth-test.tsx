@@ -19,9 +19,9 @@ test('Profile displays logged user data', async () => {
     // Given: a sample user
     const testUser: UserDTO = {
         id: 1,
-        email: "example@example.com",
-        userName: "example",
-        phoneNumber: "111 111 111",
+        email: "carmen@example.com",
+        userName: "Carmen García",
+        phoneNumber: "611 223 344",
         roles: ["USER"],
     }
 
@@ -36,9 +36,9 @@ test('Profile displays logged user data', async () => {
     );
 
     // Then: the user data are rendered in the component
-    const userName = await screen.findByText("example");
-    const email = await screen.findByText("example@example.com");
-    const phoneNumber = await screen.findByText("111 111 111");
+    const userName = await screen.findByText("Carmen García");
+    const email = await screen.findByText("carmen@example.com");
+    const phoneNumber = await screen.findByText("611 223 344");
 
     expect(userName).toBeInTheDocument();
     expect(email).toBeInTheDocument();
@@ -49,9 +49,9 @@ test('Check if store does logout correctly', async () => {
     // Given: a sample user
     const testUser: UserDTO = {
         id: 1,
-        email: "example@example.com",
-        userName: "example",
-        phoneNumber: "111 111 111",
+        email: "carmen@example.com",
+        userName: "Carmen García",
+        phoneNumber: "611 223 344",
         roles: ["USER"],
     }
 

@@ -60,11 +60,11 @@ public class TourServiceClientE2ETest {
         WebElement tourTitle = driver.findElement(By.className("ot-tour-card__title"));
         String listItemText = tourTitle.getText();
 
-        assertThat(listItemText, containsString("Tour 1"));
+        assertThat(listItemText, containsString("Madrid, España"));
 
         WebElement tourDesc = driver.findElement(By.className("ot-tour-desc"));
         String tourDescText = tourDesc.getText();
 
-        assertThat(tourDescText, containsString("Tour de ejemplo numero 1"));
+        assertThat(tourDescText, containsString("Descubre la capital de España, sus museos y su vibrante vida nocturna."));
     }
 }

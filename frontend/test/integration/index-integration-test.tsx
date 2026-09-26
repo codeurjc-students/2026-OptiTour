@@ -19,15 +19,26 @@ test('Checks if tour-service calls the API and receive data correctly', async ()
     //We get the tour list and check if has 5 elements
     const itemList = await screen.findAllByTestId('tour-card');
 
-    expect(itemList).toHaveLength(5);
+    expect(itemList).toHaveLength(30);
 
     // Now, we check if titles are correct. We create a list and obtain all titles and descs from screen. 
     let tourTitles = new Array();
     let tourDescs = new Array();
 
-    for (let i = 1; i < 6; i++) {
-        tourTitles.push(await screen.findByText('Tour ' + i));
-        tourDescs.push(await screen.findByText('Tour de ejemplo numero ' + i));
+    const expectedTitles = [
+        "Madrid, España", "Barcelona, España", "Sevilla, España", "Valencia, España", "Bilbao, España"
+    ];
+    const expectedDescs = [
+        "Descubre la capital de España, sus museos y su vibrante vida nocturna.",
+        "Maravíllate con la arquitectura de Gaudí y pasea por las Ramblas.",
+        "Disfruta de la Giralda, el Alcázar y el encanto andaluz.",
+        "Conoce la Ciudad de las Artes y las Ciencias y prueba la auténtica paella.",
+        "Visita el museo Guggenheim y degusta los mejores pintxos."
+    ];
+
+    for (let i = 0; i < 5; i++) {
+        tourTitles.push(await screen.findByText(expectedTitles[i]));
+        tourDescs.push(await screen.findByText(expectedDescs[i]));
     }
 
     // Then, we check all of this texts are in the document:

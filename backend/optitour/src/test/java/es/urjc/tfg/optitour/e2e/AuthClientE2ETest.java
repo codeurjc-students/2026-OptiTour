@@ -187,7 +187,7 @@ public class AuthClientE2ETest {
         WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
 
         // We fill the form with an account with no admin role.
-        emailField.sendKeys("example@example.com");
+        emailField.sendKeys("carmen@example.com");
         passField.sendKeys("demo1234");
         submitButton.click();
 

@@ -9,11 +9,11 @@ interface TourSummary {
 }
 
 const relatedTours: TourSummary[] = [
-    { id: 1, title: 'Tour 1' },
-    { id: 2, title: 'Tour 2' },
-    { id: 3, title: 'Tour 3' },
-    { id: 4, title: 'Tour 4' },
-    { id: 5, title: 'Tour 5' },
+    { id: 1, title: 'Madrid, España' },
+    { id: 2, title: 'Barcelona, España' },
+    { id: 3, title: 'Sevilla, España' },
+    { id: 4, title: 'Valencia, España' },
+    { id: 5, title: 'Bilbao, España' },
 ];
 
 function PointOfInterestDetailPage() {
