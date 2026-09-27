@@ -1,9 +1,12 @@
 package es.urjc.tfg.optitour.model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 
 @Entity
 public class Tour {
@@ -13,10 +16,26 @@ public class Tour {
     private long id;
 
     private String name;
-
     private String description;
 
+    @ManyToMany(cascade = jakarta.persistence.CascadeType.ALL)
+    private List<PointOfInterest> pois;
+
     public Tour() {
+    }
+
+    public Tour(String name, String description, List<PointOfInterest> pois) {
+        this.name = name;
+        this.description = description;
+        this.pois = pois;
+    }
+
+    public List<PointOfInterest> getPoiList() {
+        return pois;
+    }
+
+    public void setPoiList(List<PointOfInterest> pois) {
+        this.pois = pois;
     }
 
     public long getId() {
