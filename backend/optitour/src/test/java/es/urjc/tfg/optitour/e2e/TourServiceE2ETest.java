@@ -37,7 +37,7 @@ public class TourServiceE2ETest extends BaseIntegrationTest {
         RestAssured.port = port;
         RestAssured.baseURI = "https://localhost";
         RestAssured.useRelaxedHTTPSValidation();
-        jdbcTemplate.execute("TRUNCATE TABLE tour RESTART IDENTITY");
+        jdbcTemplate.execute("TRUNCATE TABLE tour RESTART IDENTITY CASCADE");
 
         String[] tourNames = {
                 "Madrid, España", "Barcelona, España", "Sevilla, España", "Valencia, España", "Bilbao, España",
