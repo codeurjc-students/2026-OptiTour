@@ -157,3 +157,10 @@ Este documento registra el uso que se le da a diferentes herramientas de intelig
 * **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
 * **Modelo concreto:** Google Gemini 3.1 Pro 
 * **Cómo ha sido usada:** La IA actuó de forma autónoma para investigar y resolver un problema complejo entre el navegador Headless de Selenium, problemas de CORS provenientes del cambio de HTTP a HTTPS en el backend y los certificados SSL autofirmados en el runner de GitHub Actions. Diagnosticó que Chrome bloqueaba las peticiones por seguridad e implementó la solución de desactivar HTTPS temporalmente en el entorno de pruebas, permitiendo la ejecución exitosa los test en el entorno CI.
+
+* **Fecha:** 25/09/2026
+* **Fase:** Fase 3
+* **Objetivo:** Generación de tours y usuarios de ejemplo.
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro 
+* **Cómo ha sido usada:** Se le pide a la IA generar 30 tours de ejemplo, variando entre ciudades españolas y capitales de otros países, y 10 usuarios de ejemplo que combinan diferentes nombres y apellidos españoles.
