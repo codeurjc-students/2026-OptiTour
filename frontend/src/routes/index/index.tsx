@@ -96,7 +96,7 @@ function Index() {
                 className="ot-index__grid-item ot-index__grid-item-animate"
                 style={{ animationDelay: `${(index % 4) * 0.2}s` }}
               >
-                <TourCard title={tour.name} desc={tour.description} to="/tourdetail" />
+                <TourCard title={tour.name} desc={tour.description} to={`/tour/${tour.id}`} />
               </Col>
             ))}
           </Row>

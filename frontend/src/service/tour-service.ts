@@ -29,3 +29,16 @@ export async function getToursByPage(page: number, size: number): Promise<PageRe
 
     return await response.json();
 }
+
+export async function getTourById(id: number) {
+    const url = `${base_url}/${base_tour_url}/${id}`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+    }
+
+    return await response.json();
+}
