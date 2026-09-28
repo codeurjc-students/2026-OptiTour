@@ -8,6 +8,8 @@ import { useEffect, useState } from 'react';
 import { getTourById } from '../../service/tour-service';
 import { useParams } from 'react-router';
 import Spinner from '../../components/spinner/spinner';
+import ErrorPage from '../../components/error-page/error-page';
+import { ApiError } from '../../service/api-error';
 
 interface PointOfInterest {
     id: number;
@@ -29,6 +31,8 @@ function TourDetailPage() {
     const [tour, setTour] = useState<TourDTO>();
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [errCode, setErrCode] = useState<number | null>(null);
+    const [errTitle, setErrTitle] = useState<string | null>(null);
 
     const { id } = useParams();
 
@@ -39,10 +43,13 @@ function TourDetailPage() {
             setTour(response);
         }
         catch (error) {
-            if (error instanceof Error)
+            if (error instanceof ApiError) {
                 setError(error.message);
+                setErrCode(error.status);
+                setErrTitle(error.errorTitle);
+            }
             else
-                setError("No se han obtener los datos del servidor. Inténtalo de nuevo más tarde");
+                setError("No se han obtener los datos del tour del servidor. Inténtalo de nuevo más tarde");
         }
         finally {
             setLoading(false);
@@ -51,6 +58,21 @@ function TourDetailPage() {
     }
 
     useEffect(() => { handleLoadTour(); }, []);
+
+    // If this hooks are not null, then recevied error is an ApiError. 
+    // We catch all information from api so we can show api messages on screen if tour is not found:
+    if (error)
+        if (errCode && errTitle) {
+            let errorPageMessage: string = '';
+
+            errCode == 404 ? errorPageMessage = "Tour no encontrado" : errorPageMessage = error!;
+
+            return (
+                <ErrorPage errNum={errCode} errText={error!} errTitle={errorPageMessage} />
+            );
+        }
+        else
+            return (<ErrorPage errNum={503} errText={error} errTitle={"El servidor no responde"} />)
 
     return (
         <>

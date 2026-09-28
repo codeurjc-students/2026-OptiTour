@@ -1,5 +1,6 @@
 import type { TourDTO } from "../dto/tour-dto";
 import type { PageResponse } from "../routes/page-response";
+import { ApiError } from "./api-error";
 
 const base_url = import.meta.env.VITE_API_BASE_URL || "https://localhost:443/api/v1";
 const base_tour_url = 'tour';
@@ -37,7 +38,7 @@ export async function getTourById(id: number) {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message);
+        throw new ApiError(errorData.message, errorData.status, errorData.error);
     }
 
     return await response.json();

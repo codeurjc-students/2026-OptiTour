@@ -34,6 +34,6 @@ public class TourService {
             return tour;
         }
 
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe ningún tour con el id " + id);
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe ningún tour con el ID " + id + ".");
     }
 }
