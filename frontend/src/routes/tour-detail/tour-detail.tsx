@@ -6,10 +6,11 @@ import './tour-detail.css';
 import type { TourDTO } from '../../dto/tour-dto';
 import { useEffect, useState } from 'react';
 import { getTourById } from '../../service/tour-service';
-import { useParams } from 'react-router';
+import { useParams, useLocation, Link } from 'react-router-dom';
 import Spinner from '../../components/spinner/spinner';
 import ErrorPage from '../../components/error-page/error-page';
 import { ApiError } from '../../service/api-error';
+import { useAuthStore } from '../../store/auth-store';
 
 const publicGroups = ['Grupo 1', 'Grupo 2'];
 
@@ -21,7 +22,10 @@ function TourDetailPage() {
     const [errCode, setErrCode] = useState<number | null>(null);
     const [errTitle, setErrTitle] = useState<string | null>(null);
 
+    const { loggedUser } = useAuthStore();
+
     const { id } = useParams();
+    const location = useLocation();
 
     async function handleLoadTour() {
         try {
@@ -97,20 +101,39 @@ function TourDetailPage() {
                         </div>
                     </Col>
 
-                    <Col lg={4}>
-                        <Card className="ot-tour-detail__sidebar-card">
-                            <span className="ot-tour-detail__sidebar-heading">Grupos públicos</span>
-                            {publicGroups.map((group) => (
-                                <GroupListItem key={group} name={group} />
-                            ))}
-                        </Card>
+                    {loggedUser ? (
+                        <Col lg={4}>
+                            <Card className="ot-tour-detail__sidebar-card">
+                                <span className="ot-tour-detail__sidebar-heading">Amigos que se han apuntado</span>
+                                <GroupListItem name="Amigo 1" />
 
-                        <Card className="ot-tour-detail__sidebar-card ot-tour-detail__cta-card">
-                            <Button variant="outline-dark" className="ot-tour-detail__cta-btn">
-                                Iniciar sesión para apuntarse
-                            </Button>
-                        </Card>
-                    </Col>
+                                <span className="ot-tour-detail__sidebar-heading mt-4">Grupos en común / Grupos públicos</span>
+                                <GroupListItem name="Grupo 1" />
+                            </Card>
+
+                            <Card className="ot-tour-detail__sidebar-card ot-tour-detail__cta-card">
+                                <span className="ot-tour-detail__sidebar-heading">¡Apúntate ya!</span>
+                                <Button variant="outline-dark" className="ot-tour-detail__cta-btn">
+                                    Apuntarme al Tour
+                                </Button>
+                            </Card>
+                        </Col>
+                    ) :
+                        <Col lg={4}>
+                            <Card className="ot-tour-detail__sidebar-card">
+                                <span className="ot-tour-detail__sidebar-heading">Grupos públicos</span>
+                                {publicGroups.map((group) => (
+                                    <GroupListItem key={group} name={group} />
+                                ))}
+                            </Card>
+
+                            <Card className="ot-tour-detail__sidebar-card ot-tour-detail__cta-card">
+                                <span className="ot-tour-detail__sidebar-heading">¿Quieres unirte al tour?</span>
+                                <Link to={`/login?redirect=${encodeURIComponent(location.pathname)}&errorCard=false`} className="btn btn-outline-dark ot-tour-detail__cta-btn">
+                                    Iniciar sesión para apuntarse
+                                </Link>
+                            </Card>
+                        </Col>}
                 </Row>
             </Container>}
 

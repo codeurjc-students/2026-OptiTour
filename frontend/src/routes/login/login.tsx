@@ -56,7 +56,7 @@ function Login() {
           <Container className="ot-login__form-wrap">
             <h1 className="ot-login__title">Inicio de sesión</h1>
 
-            {searchParams.get("redirect") && <ErrorCard text={`Para acceder a la página solicitada necesitas autenticación.`} />}
+            {searchParams.get("redirect") && searchParams.get("errorCard") === "true" && <ErrorCard text={`Para acceder a la página solicitada necesitas autenticación.`} />}
 
             <Form className="ot-login__form" onSubmit={handleSubmit}>
               <Form.Group className="ot-login__field" controlId="loginEmail">
@@ -85,15 +85,29 @@ function Login() {
               Registrarse
             </Link>
 
-            <Link to="/" className="btn btn-light ot-login__back-btn">
-              <span className="ot-sidebar__link-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z" />
-                  <polyline points="9 21 9 12 15 12 15 21" />
-                </svg>
-              </span>
-              Volver a la página principal
-            </Link>
+            <div className="ot-login__back-actions">
+              {searchParams.get("errorCard") === "false" && (
+                <Link to={searchParams.get("redirect") || "/"} className="btn btn-light ot-login__back-btn">
+                  <span className="ot-sidebar__link-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M19 12H5" />
+                      <polyline points="12 19 5 12 12 5" />
+                    </svg>
+                  </span>
+                  Volver a la página anterior
+                </Link>
+              )}
+
+              <Link to="/" className="btn btn-light ot-login__back-btn">
+                <span className="ot-sidebar__link-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z" />
+                    <polyline points="9 21 9 12 15 12 15 21" />
+                  </svg>
+                </span>
+                Volver a la página principal
+              </Link>
+            </div>
           </Container>
         </Col>
       </Row>
