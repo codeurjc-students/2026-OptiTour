@@ -11,20 +11,7 @@ import Spinner from '../../components/spinner/spinner';
 import ErrorPage from '../../components/error-page/error-page';
 import { ApiError } from '../../service/api-error';
 
-interface PointOfInterest {
-    id: number;
-    title: string;
-}
-
-const pointsOfInterest: PointOfInterest[] = [
-    { id: 1, title: 'Punto de interés 1' },
-    { id: 2, title: 'Punto de interés 2' },
-    { id: 3, title: 'Punto de interés 3' },
-];
-
 const publicGroups = ['Grupo 1', 'Grupo 2'];
-
-
 
 function TourDetailPage() {
 
@@ -83,20 +70,26 @@ function TourDetailPage() {
                     <Col lg={8}>
                         <ImageCarousel slides={[{ title: 'Carrusel de imágenes del Tour', variant: 'primary' }]} />
 
-                        <div className="ot-tour-detail__info">
-                            <p className="ot-tour-detail__description">{tour?.description}</p>
-                            <p className="ot-tour-detail__price">Precio del tour (si procede)</p>
-                        </div>
+                        <dl className="ot-tour-detail__data">
+                            <div className="ot-tour-detail__data-row">
+                                <dt>Descripción</dt>
+                                <dd>{tour?.description}</dd>
+                            </div>
+                            <div className="ot-tour-detail__data-row">
+                                <dt>Precio</dt>
+                                <dd>Precio del tour (si procede)</dd>
+                            </div>
+                        </dl>
 
                         <h2 className="ot-tour-detail__poi-heading">
                             Lista de puntos de interés (ordenados en orden de visita)
                         </h2>
 
                         <div className="ot-tour-detail__poi-list">
-                            {pointsOfInterest.map((poi) => (
+                            {tour?.pois.map((poi) => (
                                 <ListItem
                                     key={poi.id}
-                                    title={poi.title}
+                                    title={poi.name}
                                     to={`/poidetail`}
                                     actionLabel="Ver más"
                                 />

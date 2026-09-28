@@ -9,15 +9,33 @@
     margin-bottom: 1.25rem;
 }
 
-.ot-tour-detail__info {
-    margin: 1.25rem 0 0.5rem;
+.ot-tour-detail__data {
+    margin: 1.5rem 0 0;
 }
 
-.ot-tour-detail__description,
-.ot-tour-detail__price {
+.ot-tour-detail__data-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--ot-border);
+}
+
+.ot-tour-detail__data-row:last-child {
+    border-bottom: none;
+}
+
+.ot-tour-detail__data dt {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
     color: var(--ot-text-muted);
-    margin-bottom: 0.4rem;
-    font-size: 0.95rem;
+}
+
+.ot-tour-detail__data dd {
+    margin: 0;
+    font-weight: 600;
 }
 
 .ot-tour-detail__poi-heading {
