@@ -16,6 +16,15 @@ public class PointOfInterest {
     private long id;
 
     private String name;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     private String description;
     private String city;
     private String address;
@@ -27,7 +36,16 @@ public class PointOfInterest {
     public PointOfInterest() {
     }
 
-    public PointOfInterest(String name, String description, String address, String coords) {
+    public PointOfInterest(String name, String description, String city, String address, String coords) {
+        this.name = name;
+        this.description = description;
+        this.address = address;
+        this.coords = coords;
+        this.city = city;
+    }
+
+    public PointOfInterest(long id, String name, String description, String address, String coords) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.address = address;

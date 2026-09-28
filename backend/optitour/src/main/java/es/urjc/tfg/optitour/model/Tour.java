@@ -30,11 +30,11 @@ public class Tour {
         this.pois = pois;
     }
 
-    public List<PointOfInterest> getPoiList() {
+    public List<PointOfInterest> getPois() {
         return pois;
     }
 
-    public void setPoiList(List<PointOfInterest> pois) {
+    public void setPois(List<PointOfInterest> pois) {
         this.pois = pois;
     }
 
