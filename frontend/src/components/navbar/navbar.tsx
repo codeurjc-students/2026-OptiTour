@@ -1,5 +1,5 @@
 import { Navbar, Container, Nav } from 'react-bootstrap';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import logo from '../../assets/OptiTourLogo.png';
 import './navbar.css';
 import { useAuthStore } from '../../store/auth-store';
@@ -8,6 +8,8 @@ function OptiTourNavbar() {
 
   const { loggedUser } = useAuthStore();
   const { doLogout } = useAuthStore();
+
+  const location = useLocation();
 
   return (
     <Navbar bg="white" expand="md" className="ot-navbar" sticky="top">
@@ -62,7 +64,7 @@ function OptiTourNavbar() {
                 >
                   Registrarse
                 </Link>
-                <Link to="/login" className="btn btn-primary ot-navbar__btn ot-navbar__btn--fill loginButton">
+                <Link to={`/login?redirect=${encodeURIComponent(location.pathname)}&errorCard=false`} className="btn btn-primary ot-navbar__btn ot-navbar__btn--fill loginButton">
                   Iniciar sesión
                 </Link>
               </>

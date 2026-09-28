@@ -86,7 +86,7 @@ function Login() {
             </Link>
 
             <div className="ot-login__back-actions">
-              {searchParams.get("errorCard") === "false" && (
+              {searchParams.get("errorCard") === "false" && searchParams.get("redirect") !== "/" && (
                 <Link to={searchParams.get("redirect") || "/"} className="btn btn-light ot-login__back-btn">
                   <span className="ot-sidebar__link-icon">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
