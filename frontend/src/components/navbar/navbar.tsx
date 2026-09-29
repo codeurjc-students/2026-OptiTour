@@ -1,5 +1,5 @@
 import { Navbar, Container, Nav } from 'react-bootstrap';
-import { Link, useLocation } from 'react-router';
+import { Link, useLocation } from 'react-router-dom';
 import logo from '../../assets/OptiTourLogo.png';
 import './navbar.css';
 import { useAuthStore } from '../../store/auth-store';

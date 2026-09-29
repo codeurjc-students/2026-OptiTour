@@ -9,7 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 
 @Entity
-public class PointOfInterest {
+public class PointOfInterest { // Abbreviated "POI" in the rest of the project's variables and comments
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

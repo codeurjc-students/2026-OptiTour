@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { NavLink, Link } from 'react-router';
+import { NavLink, Link } from 'react-router-dom';
 import './profile-side-bar.css';
 
 export interface SidebarItem {

@@ -1,5 +1,5 @@
 import { Card } from 'react-bootstrap';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import './tour-card.css';
 
 interface TourCardProps {

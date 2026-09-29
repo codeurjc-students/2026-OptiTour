@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router';
+import { Outlet } from 'react-router-dom';
 import ProfileSidebar, { type SidebarItem } from '../components/profile-side-bar/profile-side-bar';
 import './profile-layout.css';
 import { useAuthStore } from '../store/auth-store';

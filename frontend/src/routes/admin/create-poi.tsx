@@ -1,5 +1,5 @@
 import { Card, Form, Row, Col, Button } from 'react-bootstrap';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import './create-poi.css';
 
 function CreatePointOfInterest() {

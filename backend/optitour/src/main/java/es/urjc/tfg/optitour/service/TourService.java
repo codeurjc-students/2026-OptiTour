@@ -34,6 +34,7 @@ public class TourService {
             return tour;
         }
 
+        // We set the exception message in Spanish because we want to show it on screen
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe ningún tour con el ID " + id + ".");
     }
 }

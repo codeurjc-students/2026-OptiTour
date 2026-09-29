@@ -1,5 +1,5 @@
 import { Button } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router-dom';
 import PanelSearch from '../../components/panel-search/panel-search';
 import ListItem from '../../components/list-item/list-item';
 

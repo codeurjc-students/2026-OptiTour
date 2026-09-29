@@ -1,5 +1,5 @@
 import { Button, Row, Col } from 'react-bootstrap';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import StatCard from '../../components/stat-card/stat-card';
 import ChartPlaceholder from '../../components/chart-placeholder/chart-placeholder';
 import MediaListItem from '../../components/list-item/list-item';

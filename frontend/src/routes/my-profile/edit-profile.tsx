@@ -1,5 +1,5 @@
 import { Button } from 'react-bootstrap';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import AccountFieldsCard from '../../components/account-fields-card/account-fields-card';
 import './edit-profile.css';
 

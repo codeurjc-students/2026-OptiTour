@@ -164,3 +164,26 @@ Este documento registra el uso que se le da a diferentes herramientas de intelig
 * **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
 * **Modelo concreto:** Google Gemini 3.1 Pro 
 * **Cómo ha sido usada:** Se le pide a la IA generar 30 tours de ejemplo, variando entre ciudades españolas y capitales de otros países, y 10 usuarios de ejemplo que combinan diferentes nombres y apellidos españoles.
+
+* **Fecha:** 28/09/2026
+* **Fase:** Fase 3
+* **Objetivo:** Resolución de errores de estado residual en pruebas de integración, excepciones LazyInitializationException y ayuda con certificados SSL locales.
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro
+* **Cómo ha sido usada:** . La IA corrige de forma autónoma un fallo de estado residual por el que los tests de integración del endopoint `getTourById` fallaban al ejecutarse en conjunto debido a que la base de datos incrementaba el ID y el test buscaba un identificador "1" harcodeado (solucionado obteniéndolo de forma dinámica).
+
+* **Fecha:** 29/09/2026
+* **Fase:** Fase 3
+* **Objetivo:** Resolución de errores de contexto de React Router en pruebas unitarias de frontend con Vitest.
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro
+* **Cómo ha sido usada:** Se utiliza la IA para solucionar un error en las pruebas unitarias que indicaba que el hook `useLocation()` solo puede usarse dentro de un componente `<Router>`, al formar parte de la librería React Router. La herramienta explicó el uso de `<MemoryRouter>` y cómo inyectar rutas ficticias usando la propiedad `initialEntries` para falsear el estado de la URL, proporcionando el siguiente patrón de envoltorio para los tests:
+  ```tsx
+  render(
+      <MemoryRouter initialEntries={["/tour/1"]}>
+          <Routes>
+              <Route path="/tour/:id" element={<TourDetail />} />
+          </Routes>
+      </MemoryRouter>
+  );
+  ```

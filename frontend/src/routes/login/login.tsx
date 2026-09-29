@@ -1,5 +1,5 @@
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/OptiTourLogo.png';
 import './login.css';
 import { useAuthStore } from '../../store/auth-store';
