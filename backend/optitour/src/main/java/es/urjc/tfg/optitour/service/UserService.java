@@ -27,6 +27,6 @@ public class UserService {
         }
 
         throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "User with email " + email + " wasn't found.");
+                "No se encontró el usuario con el email " + email);
     }
 }

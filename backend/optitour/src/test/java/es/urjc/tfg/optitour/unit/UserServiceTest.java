@@ -58,6 +58,6 @@ public class UserServiceTest {
             testService.getUserByEmail("bademail@example.com");
         });
 
-        assertEquals("404 NOT_FOUND \"User with email bademail@example.com wasn't found.\"", ex.getMessage());
+        assertEquals("404 NOT_FOUND \"No se encontró el usuario con el email bademail@example.com\"", ex.getMessage());
     }
 }

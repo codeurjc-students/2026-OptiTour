@@ -126,10 +126,17 @@
   color: #fff;
 }
 
-.ot-login__back-btn {
+.ot-login__back-actions {
   position: absolute;
   left: 2rem;
   bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.ot-login__back-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -180,11 +187,19 @@
     padding: 2.5rem 1.25rem 2.5rem;
   }
 
-  .ot-login__back-btn {
+  .ot-login__back-actions {
     position: static;
     display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
     width: 100%;
     margin-top: 2rem;
+  }
+
+  .ot-login__back-btn {
+    display: flex;
+    width: 100%;
+    margin-top: 0;
     text-align: center;
     justify-content: center;
   }

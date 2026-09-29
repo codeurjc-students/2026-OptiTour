@@ -4,8 +4,10 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 import { expect, test, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter } from 'react-router-dom';
 import Index from '../../src/routes/index/index';
+import { Route, Routes } from 'react-router-dom';
+import TourDetail from '../../src/routes/tour-detail/tour-detail';
 
 test('Checks if tour-service calls the API and receive data correctly', async () => {
     // We render the index page at the JDOM virtual DOM.
@@ -49,4 +51,23 @@ test('Checks if tour-service calls the API and receive data correctly', async ()
     tourDescs.forEach(desc => {
         expect(desc).toBeInTheDocument();
     });
+});
+
+test('Checks if tour detail page receives data correclty from actual API', async () => {
+    render(
+        <MemoryRouter initialEntries={["/tour/1"]}>
+            <Routes>
+                <Route path="/tour/:id" element={<TourDetail />} />
+            </Routes>
+        </MemoryRouter>
+    );
+
+    const title = await screen.findByText("Madrid, España");
+    expect(title).toBeInTheDocument();
+
+    const desc = await screen.findByText("Descubre la capital de España, sus museos y su vibrante vida nocturna.");
+    expect(desc).toBeInTheDocument();
+
+    const poiTitle = await screen.findByText("Parque del Retiro");
+    expect(poiTitle).toBeInTheDocument();
 });

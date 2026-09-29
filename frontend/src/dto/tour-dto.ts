@@ -1,5 +1,8 @@
+import type { PointOfInterestDTO } from "./point-of-interest-dto";
+
 export interface TourDTO {
     id: number,
     name: string,
-    description: string
+    description: string,
+    pois: PointOfInterestDTO[];
 }

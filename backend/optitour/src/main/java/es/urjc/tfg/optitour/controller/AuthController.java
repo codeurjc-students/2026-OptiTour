@@ -64,7 +64,7 @@ public class AuthController {
 
         if (principal == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
-                    "There's no user logged");
+                    "No hay ningún usuario logueado");
         }
 
         String userEmail = principal.getName();

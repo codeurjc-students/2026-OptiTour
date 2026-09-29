@@ -1,5 +1,6 @@
 import type { TourDTO } from "../dto/tour-dto";
 import type { PageResponse } from "../routes/page-response";
+import { ApiError } from "./api-error";
 
 const base_url = import.meta.env.VITE_API_BASE_URL || "https://localhost:443/api/v1";
 const base_tour_url = 'tour';
@@ -25,6 +26,19 @@ export async function getToursByPage(page: number, size: number): Promise<PageRe
     if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message);
+    }
+
+    return await response.json();
+}
+
+export async function getTourById(id: number) {
+    const url = `${base_url}/${base_tour_url}/${id}`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new ApiError(errorData.message, errorData.status, errorData.error);
     }
 
     return await response.json();

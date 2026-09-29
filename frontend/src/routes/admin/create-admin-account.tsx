@@ -1,5 +1,5 @@
 import { Button, Row, Col } from 'react-bootstrap';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import AccountFieldsCard from '../../components/account-fields-card/account-fields-card';
 import PasswordFieldsCard from '../../components/password-fields-card/password-fields-card';
 import './create-admin-account.css';

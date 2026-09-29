@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Button } from 'react-bootstrap';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import './list-item.css';
 
 interface ListItemProps {

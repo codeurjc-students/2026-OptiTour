@@ -53,9 +53,11 @@ public class UserServiceIntegrationTest {
     @Test
     @DisplayName("getUserByEmail method shouldn't return any user if email doesn't exist")
     void getUserByBadEmailTest() {
-        assertThrows(ResponseStatusException.class, () -> {
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> {
             User result = service.getUserByEmail("bademail@example.com");
             assertNull(result);
         });
+
+        assertEquals("404 NOT_FOUND \"No se encontró el usuario con el email bademail@example.com\"", ex.getMessage());
     }
 }

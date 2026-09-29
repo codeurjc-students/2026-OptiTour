@@ -1,5 +1,5 @@
 import { Container, Row, Col } from 'react-bootstrap';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import logo from '../../assets/OptiTourLogo.png';
 import './footer.css';
 import { useAuthStore } from '../../store/auth-store';

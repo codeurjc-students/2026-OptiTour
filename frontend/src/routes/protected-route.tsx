@@ -14,7 +14,7 @@ export default function ProtectedRoute({ allowedRoles, children }: ProtectedRout
 
     // If there's no logged, we redirect to login page.
     if (!loggedUser) {
-        return <Navigate to={`/login?redirect=${encodeURIComponent(location.pathname)}`} replace />;
+        return <Navigate to={`/login?redirect=${encodeURIComponent(location.pathname)}&errorCard=true`} replace />;
     }
 
     // If user has not neccessary roles, we redirect to unauthorized error page

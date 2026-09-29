@@ -9,7 +9,8 @@ import org.mapstruct.ReportingPolicy;
 import es.urjc.tfg.optitour.DTO.TourDTO;
 import es.urjc.tfg.optitour.model.Tour;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {
+        PointOfInterestMapper.class })
 public interface TourMapper {
 
     TourDTO toDTO(Tour tour);
