@@ -122,7 +122,7 @@ public class TourServiceE2ETest extends BaseIntegrationTest {
                 assertEquals("Test description 0", correctResult.description());
                 assertNotNull(correctResult.pois());
 
-                List<es.urjc.tfg.optitour.DTO.PointOfInterestDTO> resultList = correctResult.pois();
+                List<es.urjc.tfg.optitour.DTO.PointOfInterestNoListDTO> resultList = correctResult.pois();
                 assertNotNull(resultList);
                 assertEquals("Test POI 1", resultList.get(1).name());
                 assertEquals("Test desc 1", resultList.get(1).description());
