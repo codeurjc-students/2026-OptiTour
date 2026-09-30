@@ -5,6 +5,9 @@
     justify-content: center;
     gap: 0.75rem;
     padding: 1rem;
+    min-height: 60vh;
+    height: 100%;
+    flex-grow: 1;
 }
 
 .ot-spinner {

@@ -111,18 +111,18 @@ public class TourServiceE2ETest extends BaseIntegrationTest {
         void getTourByIdE2ETest() {
                 List<Tour> allList = repository.findAll();
                 long firstId = allList.get(0).getId();
-                
-                TourDTO correctResult = get("/api/v1/tour/" + firstId)
+
+                TourDTO result = get("/api/v1/tour/" + firstId)
                                 .then()
                                 .statusCode(200)
                                 .extract().as(TourDTO.class);
 
-                assertNotNull(correctResult);
-                assertEquals("Test tour 0", correctResult.name());
-                assertEquals("Test description 0", correctResult.description());
-                assertNotNull(correctResult.pois());
+                assertNotNull(result);
+                assertEquals("Test tour 0", result.name());
+                assertEquals("Test description 0", result.description());
+                assertNotNull(result.pois());
 
-                List<es.urjc.tfg.optitour.DTO.PointOfInterestDTO> resultList = correctResult.pois();
+                List<es.urjc.tfg.optitour.DTO.PointOfInterestNoListDTO> resultList = result.pois();
                 assertNotNull(resultList);
                 assertEquals("Test POI 1", resultList.get(1).name());
                 assertEquals("Test desc 1", resultList.get(1).description());
