@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom';
 import Spinner from '../../components/spinner/spinner';
 import { ApiError } from '../../service/api-error';
 import ErrorPage from '../../components/error-page/error-page';
+import InteractiveMap from '../../components/interactive-map/interactive-map';
 
 function PointOfInterestDetailPage() {
 
@@ -72,6 +73,10 @@ function PointOfInterestDetailPage() {
                                     <div className="ot-poi-detail__data-row">
                                         <dt>Ciudad y dirección</dt>
                                         <dd>{poi?.city}: {poi?.address}</dd>
+                                    </div>
+                                    <div className="ot-poi-detail__data-row">
+                                        <dt>Mapa</dt>
+                                        <dd><InteractiveMap coords={poi?.coords} /></dd>
                                     </div>
                                     <div className="ot-poi-detail__data-row">
                                         <dt>Coordenadas</dt>
