@@ -5,6 +5,7 @@ import './list-item.css';
 
 interface ListItemProps {
     title: string;
+    desc?: string;
     imageSrc?: string;
     to?: string;
 
@@ -19,6 +20,7 @@ interface ListItemProps {
 
 function ListItem({
     title,
+    desc,
     imageSrc,
     to = '#',
     actionLabel,
@@ -40,14 +42,20 @@ function ListItem({
         </div>
     );
 
-    const className = `ot-list-item ot-list-item--${size} ot-list-item--${layout}`;
+    const className = `ot-list-item ot-list-item--${size} ot-list-item--${layout} ${desc ? 'ot-list-item--with-desc' : ''}`;
 
+    const content = (
+        <div className="ot-list-item__content">
+            <span className="ot-list-item__title">{title}</span>
+            {desc && <span className="ot-list-item__desc">{desc}</span>}
+        </div>
+    );
 
     if (!resolvedActions) {
         return (
             <Link to={to} className={`${className} ot-list-item--link`}>
                 {thumb}
-                <span className="ot-list-item__title">{title}</span>
+                {content}
             </Link>
         );
     }
@@ -57,7 +65,7 @@ function ListItem({
             <div className={className}>
                 <div className="ot-list-item__head">
                     {thumb}
-                    <span className="ot-list-item__title">{title}</span>
+                    {content}
                 </div>
                 <div className="ot-list-item__actions">{resolvedActions}</div>
             </div>
@@ -67,7 +75,7 @@ function ListItem({
     return (
         <div className={className}>
             {thumb}
-            <span className="ot-list-item__title">{title}</span>
+            {content}
             <div className="ot-list-item__actions">{resolvedActions}</div>
         </div>
     );

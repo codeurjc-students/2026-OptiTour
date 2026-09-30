@@ -2,6 +2,7 @@ import { Button, Container } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import ErrorCard from "../error-card/error-card";
 import './error-page.css';
+import { useAuthStore } from "../../store/auth-store";
 
 interface errorPageProps {
     errNum: number,
@@ -11,6 +12,7 @@ interface errorPageProps {
 
 export default function ErrorPage({ errNum, errTitle, errText }: errorPageProps) {
     const navigate = useNavigate();
+    const { loggedUser } = useAuthStore()
 
     return (
         <Container className="ot-unauthorized d-flex flex-column justify-content-center align-items-center">
@@ -22,9 +24,12 @@ export default function ErrorPage({ errNum, errTitle, errText }: errorPageProps)
                     <Button onClick={() => navigate("/")} variant="outline-success" className="ot-unauthorized__btn ot-unauthorized__btn--outline">
                         Volver al inicio
                     </Button>
-                    <Button onClick={() => navigate("/profile")} variant="success" className="ot-unauthorized__btn ot-unauthorized__btn--fill">
-                        Ir a mi perfil
-                    </Button>
+                    {
+                        loggedUser && <Button onClick={() => navigate("/profile")} variant="success" className="ot-unauthorized__btn ot-unauthorized__btn--fill">
+                            Ir a mi perfil
+                        </Button>
+                    }
+
                 </div>
             </div>
         </Container>

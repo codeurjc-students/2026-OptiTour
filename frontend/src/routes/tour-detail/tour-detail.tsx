@@ -19,8 +19,9 @@ function TourDetailPage() {
     const [tour, setTour] = useState<TourDTO>();
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const [errCode, setErrCode] = useState<number | null>(null);
     const [errTitle, setErrTitle] = useState<string | null>(null);
+    const [errCode, setErrCode] = useState<number | null>(null);
+
 
     const { loggedUser } = useAuthStore();
 
@@ -33,11 +34,11 @@ function TourDetailPage() {
             const response = await getTourById(Number(id));
             setTour(response);
         }
-        catch (error) {
-            if (error instanceof ApiError) {
-                setError(error.message);
-                setErrCode(error.status);
-                setErrTitle(error.errorTitle);
+        catch (err) {
+            if (err instanceof ApiError) {
+                setError(err.message);
+                setErrCode(err.status);
+                setErrTitle(err.errorTitle);
             }
             else
                 setError("No se han obtener los datos del tour del servidor. Inténtalo de nuevo más tarde");
@@ -56,14 +57,14 @@ function TourDetailPage() {
         if (errCode && errTitle) {
             let errorPageMessage: string = '';
 
-            errCode == 404 ? errorPageMessage = "Tour no encontrado" : errorPageMessage = error!;
+            errCode == 404 ? errorPageMessage = "Tour no encontrado" : errorPageMessage = errTitle!;
 
             return (
                 <ErrorPage errNum={errCode} errText={error!} errTitle={errorPageMessage} />
             );
         }
         else
-            return (<ErrorPage errNum={503} errText={error} errTitle={"El servidor no responde"} />)
+            return (<ErrorPage errNum={503} errText={error} errTitle={"El servidor no responde. Inténtalo de nuevo más tarde"} />)
 
     return (
         <>
@@ -94,7 +95,8 @@ function TourDetailPage() {
                                 <ListItem
                                     key={poi.id}
                                     title={poi.name}
-                                    to={`/poidetail`}
+                                    desc={poi.description}
+                                    to={`/point-of-interest/${poi.id}`}
                                     actionLabel="Ver más"
                                 />
                             ))}
