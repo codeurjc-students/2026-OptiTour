@@ -25,6 +25,7 @@ public class PointOfInterestService {
             return poi;
         }
 
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe ningún punto de interés con el ID " + id);
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "No existe ningún punto de interés con el ID " + id + ".");
     }
 }

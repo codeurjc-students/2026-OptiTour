@@ -18,10 +18,12 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import es.urjc.tfg.optitour.model.User;
 import es.urjc.tfg.optitour.repository.UserRepository;
 import es.urjc.tfg.optitour.service.UserService;
+import jakarta.transaction.Transactional;
 
 @SpringBootTest
 @ActiveProfiles("test")
 @Testcontainers
+@Transactional
 public class UserServiceIntegrationTest {
     @Autowired
     private UserService service;

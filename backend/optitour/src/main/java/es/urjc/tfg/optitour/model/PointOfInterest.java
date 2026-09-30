@@ -44,14 +44,6 @@ public class PointOfInterest { // Abbreviated "POI" in the rest of the project's
         this.city = city;
     }
 
-    public PointOfInterest(long id, String name, String description, String address, String coords) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.address = address;
-        this.coords = coords;
-    }
-
     public PointOfInterest(long id, String name, String description, String city, String address, String coords,
             List<Tour> tours) {
         this.id = id;

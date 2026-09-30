@@ -11,7 +11,7 @@ import { ApiError } from '../../service/api-error';
 import ErrorPage from '../../components/error-page/error-page';
 import InteractiveMap from '../../components/interactive-map/interactive-map';
 
-function PointOfInterestDetailPage() {
+export default function PointOfInterestDetail() {
 
     const [poi, setPoi] = useState<PointOfInterestDTO>();
     const [loading, setLoading] = useState<boolean>(false);
@@ -107,5 +107,3 @@ function PointOfInterestDetailPage() {
         </>
     );
 }
-
-export default PointOfInterestDetailPage;
