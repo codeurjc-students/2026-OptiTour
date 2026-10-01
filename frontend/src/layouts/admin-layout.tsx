@@ -57,9 +57,7 @@ function AdminLayout() {
         <ProtectedRoute allowedRoles={["ADMIN"]}>
             <div className="ot-profile-layout">
                 <ProfileSidebar
-                    userName={loggedUser?.userName || ''}
                     items={adminMenu}
-                    roleLabel="Cuenta de administrador"
                     profileTo="/admin/profile"
                 />
                 <main className="ot-profile-layout__content">

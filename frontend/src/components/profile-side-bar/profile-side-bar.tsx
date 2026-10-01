@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import './profile-side-bar.css';
+import ProfileImage from '../profile-image/profile-image';
+import { useAuthStore } from '../../store/auth-store';
 
 export interface SidebarItem {
     label: string;
@@ -10,35 +12,23 @@ export interface SidebarItem {
 }
 
 interface ProfileSidebarProps {
-    userName: string;
-    avatarSrc?: string;
     items: SidebarItem[];
     profileTo?: string;
-    roleLabel?: string;
 }
 
 function ProfileSidebar({
-    userName,
-    avatarSrc,
     items,
     profileTo = '/profile',
-    roleLabel,
 }: ProfileSidebarProps) {
+    const { loggedUser } = useAuthStore();
+    const roleLabel = loggedUser?.roles?.includes('ADMIN') ? 'Cuenta de administrador' : undefined;
+
     return (
         <aside className="ot-sidebar">
             <div className="ot-sidebar__user">
-                <div className="ot-sidebar__avatar">
-                    {avatarSrc ? (
-                        <img src={avatarSrc} alt={userName} />
-                    ) : (
-                        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                            <circle cx="12" cy="9" r="3.5" />
-                            <path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6" />
-                        </svg>
-                    )}
-                </div>
+                <ProfileImage className="ot-sidebar__avatar" />
                 {roleLabel && <span className="ot-sidebar__role">{roleLabel}</span>}
-                <span className="ot-sidebar__username">{userName}</span>
+                <span className="ot-sidebar__username">{loggedUser?.userName}</span>
                 <Link to={profileTo} className="btn btn-outline-dark ot-sidebar__profile-btn">
                     Ver mi perfil
                 </Link>
