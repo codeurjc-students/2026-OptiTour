@@ -38,8 +38,7 @@ function TourDetailPage() {
             const response = await getTourById(Number(id));
             setTour(response);
 
-            response.images.map((image: ImageDTO) => imageUrls.push(`${base_url}/image/${image.id}`));
-            setImagesUrls(imageUrls);
+            setImagesUrls((response.images ?? []).map((image: ImageDTO) => `${base_url}/image/${image.id}`));
         }
         catch (err) {
             if (err instanceof ApiError) {
@@ -107,7 +106,7 @@ function TourDetailPage() {
                                     desc={poi.description}
                                     to={`/point-of-interest/${poi.id}`}
                                     actionLabel="Ver más"
-                                    imageSrc={poi.images.length > 0
+                                    imageSrc={poi.images?.length
                                         ? `${base_url}/image/${poi.images[0].id}`
                                         : undefined}
                                 />

@@ -30,8 +30,7 @@ export default function PointOfInterestDetail() {
             const response = await getPoiById(id);
             setPoi(response);
 
-            response.images.map((image: ImageDTO) => { imageUrls.push(`${base_url}/image/${image.id}`) });
-            setImageUrls(imageUrls);
+            setImageUrls((response.images ?? []).map((image: ImageDTO) => `${base_url}/image/${image.id}`));
         }
         catch (err) {
             if (err instanceof ApiError) {
@@ -103,7 +102,7 @@ export default function PointOfInterestDetail() {
                                                 to={`/tour/${tour.id}`}
                                                 actionLabel="Ver más"
                                                 size="sm"
-                                                imageSrc={tour.images.length > 0
+                                                imageSrc={tour.images?.length
                                                     ? `${base_url}/image/${tour.images[0].id}`
                                                     : undefined}
                                             />

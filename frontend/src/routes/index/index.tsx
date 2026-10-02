@@ -8,6 +8,8 @@ import { getToursByPage } from '../../service/tour-service';
 import Spinner from '../../components/spinner/spinner';
 import ErrorCard from '../../components/error-card/error-card';
 
+const base_url = import.meta.env.VITE_API_BASE_URL ? `${import.meta.env.VITE_API_BASE_URL}` : "https://localhost:443/api/v1";
+
 function Index() {
   const [tours, setTours] = useState<TourDTO[]>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -93,7 +95,12 @@ function Index() {
                 className="ot-index__grid-item ot-index__grid-item-animate"
                 style={{ animationDelay: `${(index % 4) * 0.2}s` }}
               >
-                <TourCard title={tour.name} desc={tour.description} to={`/tour/${tour.id}`} />
+                <TourCard
+                  title={tour.name}
+                  desc={tour.description}
+                  to={`/tour/${tour.id}`}
+                  imageSrc={tour.images?.[0] ? `${base_url}/image/${tour.images[0].id}` : undefined}
+                />
               </Col>
             ))}
           </Row>
