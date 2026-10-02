@@ -2,6 +2,7 @@ package es.urjc.tfg.optitour.service;
 
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.sql.Blob;
 import java.util.List;
 
@@ -12,11 +13,13 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.PointOfInterest;
 import es.urjc.tfg.optitour.model.Tour;
 import es.urjc.tfg.optitour.model.User;
 import es.urjc.tfg.optitour.repository.TourRepository;
 import es.urjc.tfg.optitour.repository.UserRepository;
+import org.springframework.core.io.Resource;
 
 @Service
 @Profile("!test")
@@ -25,12 +28,14 @@ public class SampleDataService {
         private final TourRepository tourRepository;
         private final UserRepository userRepository;
         private final PasswordEncoder passwordEncoder;
+        private final ImageService imageService;
 
         SampleDataService(TourRepository tourRepository, UserRepository userRepository,
-                        PasswordEncoder passwordEncoder) {
+                        PasswordEncoder passwordEncoder, ImageService imageService) {
                 this.tourRepository = tourRepository;
                 this.userRepository = userRepository;
                 this.passwordEncoder = passwordEncoder;
+                this.imageService = imageService;
         }
 
         private Blob loadProfilePicture(String filename) {
@@ -47,8 +52,28 @@ public class SampleDataService {
                 }
         }
 
+        private void addImageToTour(Tour tour, String classpathResource) throws IOException {
+                Resource image = new ClassPathResource(classpathResource);
+                if (image.exists()) {
+                        Image createdImage = imageService.createImage(image.getInputStream());
+                        createdImage.setTour(tour);
+                        tour.getImages().add(createdImage);
+                        imageService.saveImage(createdImage);
+                }
+        }
+
+        private void addImageToPoi(PointOfInterest poi, String classpathResource) throws IOException {
+                Resource image = new ClassPathResource(classpathResource);
+                if (image.exists()) {
+                        Image createdImage = imageService.createImage(image.getInputStream());
+                        createdImage.setPoi(poi);
+                        poi.getImages().add(createdImage);
+                        imageService.saveImage(createdImage);
+                }
+        }
+
         @EventListener(ApplicationReadyEvent.class)
-        public void init() {
+        public void init() throws IOException {
 
                 if (userRepository.findByEmail("carmen@example.com").isEmpty()) {
                         userRepository.save(new User("carmen@example.com", passwordEncoder.encode("demo1234"),
@@ -92,7 +117,7 @@ public class SampleDataService {
                 if (tourRepository.count() == 0)
 
                 {
-                        tourRepository.save(new Tour("Madrid, España",
+                        Tour madridTour = new Tour("Madrid, España",
                                         "Descubre la capital de España, sus museos y su vibrante vida nocturna.",
                                         List.of(
                                                         new PointOfInterest("Museo del Prado",
@@ -114,7 +139,17 @@ public class SampleDataService {
                                                         new PointOfInterest("Puerta del Sol",
                                                                         "Kilómetro cero de las carreteras radiales españolas y reloj emblemático.",
                                                                         "Madrid", "Plaza de la Puerta del Sol",
-                                                                        "40.4167278,-3.7033387"))));
+                                                                        "40.4167278,-3.7033387")));
+                        tourRepository.save(madridTour);
+
+                        addImageToTour(madridTour, "/sample-images/tour/madrid/madrid-1.jpg");
+                        addImageToTour(madridTour, "/sample-images/tour/madrid/madrid-2.jpg");
+                        addImageToTour(madridTour, "/sample-images/tour/madrid/madrid-3.jpg");
+
+                        PointOfInterest museoDelPrado = madridTour.getPois().get(0);
+                        addImageToPoi(museoDelPrado, "/sample-images/poi/museo-del-prado/museo-del-prado-1.jpg");
+                        addImageToPoi(museoDelPrado, "/sample-images/poi/museo-del-prado/museo-del-prado-2.jpg");
+                        addImageToPoi(museoDelPrado, "/sample-images/poi/museo-del-prado/museo-del-prado-3.jpg");
 
                         tourRepository.save(new Tour("Barcelona, España",
                                         "Maravíllate con la arquitectura de Gaudí y pasea por las Ramblas.", List.of(

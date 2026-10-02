@@ -9,5 +9,6 @@ public record PointOfInterestDTO(
         String city,
         String address,
         String coords,
-        List<TourNoListDTO> tours) {
+        List<TourNoListDTO> tours,
+        List<ImageDTO> images) {
 }

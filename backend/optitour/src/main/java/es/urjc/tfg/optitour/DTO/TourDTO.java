@@ -6,5 +6,6 @@ public record TourDTO(
         long id,
         String name,
         String description,
-        List<PointOfInterestNoListDTO> pois) {
+        List<PointOfInterestNoListDTO> pois,
+        List<ImageDTO> images) {
 }
