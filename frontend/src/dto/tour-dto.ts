@@ -1,3 +1,4 @@
+import type { ImageDTO } from "./image-dto";
 import type { PointOfInterestDTO } from "./point-of-interest-dto";
 
 export interface TourDTO {
@@ -5,4 +6,5 @@ export interface TourDTO {
     name: string,
     description: string,
     pois: PointOfInterestDTO[];
+    images: ImageDTO[]
 }

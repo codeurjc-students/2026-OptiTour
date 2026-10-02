@@ -1,5 +1,7 @@
 package es.urjc.tfg.optitour.DTO;
 
+import java.util.List;
+
 /**
  * This DTO is created to avoid circular references caused by the N:M
  * relationship between Tour and PointOfInterest
@@ -7,5 +9,6 @@ package es.urjc.tfg.optitour.DTO;
 
 public record TourNoListDTO(
                 long id,
-                String name) {
+                String name,
+                List<ImageDTO> images) {
 }

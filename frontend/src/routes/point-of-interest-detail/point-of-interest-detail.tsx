@@ -10,6 +10,9 @@ import Spinner from '../../components/spinner/spinner';
 import { ApiError } from '../../service/api-error';
 import ErrorPage from '../../components/error-page/error-page';
 import InteractiveMap from '../../components/interactive-map/interactive-map';
+import type { ImageDTO } from '../../dto/image-dto';
+
+const base_url = import.meta.env.VITE_API_BASE_URL ? `${import.meta.env.VITE_API_BASE_URL}` : "https://localhost:443/api/v1";
 
 export default function PointOfInterestDetail() {
 
@@ -18,6 +21,7 @@ export default function PointOfInterestDetail() {
     const [error, setError] = useState<string | null>(null);
     const [errTitle, setErrTitle] = useState<string | null>(null);
     const [errCode, setErrCode] = useState<number | null>(null);
+    const [imageUrls, setImageUrls] = useState<string[]>([]);
     const { id } = useParams();
 
     async function handleGetPoi(id: number) {
@@ -25,6 +29,9 @@ export default function PointOfInterestDetail() {
             setLoading(true);
             const response = await getPoiById(id);
             setPoi(response);
+
+            response.images.map((image: ImageDTO) => { imageUrls.push(`${base_url}/image/${image.id}`) });
+            setImageUrls(imageUrls);
         }
         catch (err) {
             if (err instanceof ApiError) {
@@ -62,7 +69,7 @@ export default function PointOfInterestDetail() {
                         <Row className="g-4">
                             <Col lg={7}>
                                 <ImageCarousel
-                                    slides={[{ title: 'Carrusel de imágenes del punto de interés', variant: 'primary' }]}
+                                    images={imageUrls}
                                 />
 
                                 <dl className="ot-poi-detail__data">
@@ -96,6 +103,9 @@ export default function PointOfInterestDetail() {
                                                 to={`/tour/${tour.id}`}
                                                 actionLabel="Ver más"
                                                 size="sm"
+                                                imageSrc={tour.images.length > 0
+                                                    ? `${base_url}/image/${tour.images[0].id}`
+                                                    : undefined}
                                             />
                                         ))}
                                     </div>

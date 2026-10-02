@@ -74,10 +74,7 @@ function Index() {
 
       <div className="ot-index__carousel">
         <ImageCarousel
-          slides={[
-            { eyebrow: 'Carrusel de imágenes', title: 'Tours destacados', variant: 'primary' },
-            { eyebrow: 'Carrusel de imágenes', title: 'Descubre nuevas rutas', variant: 'dark' },
-          ]}
+          images={[]}
         />
       </div>
 
