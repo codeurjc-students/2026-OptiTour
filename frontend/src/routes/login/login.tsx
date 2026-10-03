@@ -47,7 +47,7 @@ function Login() {
     setRandomId(Math.floor(Math.random() * max) + 1);
   }
 
-  useEffect(() => { handleRandom(6) }, []);
+  useEffect(() => { handleRandom(540) }, []);
 
   return (
     <div className="ot-login">

@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.PointOfInterest;
@@ -54,25 +55,74 @@ public class SampleDataService {
 
         private void addImageToTour(Tour tour, String classpathResource) throws IOException {
                 Resource image = new ClassPathResource(classpathResource);
-                if (image.exists()) {
-                        Image createdImage = imageService.createImage(image.getInputStream());
-                        createdImage.setTour(tour);
-                        tour.getImages().add(createdImage);
-                        imageService.saveImage(createdImage);
+                if (!image.exists()) {
+                        throw new IOException("Sample image not found: " + classpathResource);
                 }
+                Image createdImage = imageService.createImage(image.getInputStream());
+                createdImage.setTour(tour);
+                tour.getImages().add(createdImage);
+                imageService.saveImage(createdImage);
         }
 
         private void addImageToPoi(PointOfInterest poi, String classpathResource) throws IOException {
                 Resource image = new ClassPathResource(classpathResource);
-                if (image.exists()) {
-                        Image createdImage = imageService.createImage(image.getInputStream());
-                        createdImage.setPoi(poi);
-                        poi.getImages().add(createdImage);
-                        imageService.saveImage(createdImage);
+                if (!image.exists()) {
+                        throw new IOException("Sample image not found: " + classpathResource);
+                }
+                Image createdImage = imageService.createImage(image.getInputStream());
+                createdImage.setPoi(poi);
+                poi.getImages().add(createdImage);
+                imageService.saveImage(createdImage);
+        }
+
+        private Tour findSampleTour(List<Tour> tours, String name) {
+                return tours.stream()
+                                .filter(tour -> tour.getName().equals(name))
+                                .findFirst()
+                                .orElseThrow(() -> new IllegalStateException("Sample tour not found: " + name));
+        }
+
+        private void addImagesToSampleTour(List<Tour> tours, String name, String tourFolder, String tourPrefix,
+                        String... poiFolders) throws IOException {
+                Tour tour = findSampleTour(tours, name);
+                String poiTourFolder = tourFolder.equals("amsteradm") ? "amsterdam" : tourFolder;
+                for (int imageNumber = 1; imageNumber <= 3; imageNumber++) {
+                        String filename = tourPrefix + "-" + imageNumber + ".jpg";
+                        if (tourFolder.equals("barcelona") && imageNumber == 3) {
+                                filename = "barcelona-3.ppg.jpg";
+                        }
+                        addImageToTour(tour, "/sample-images/tour/" + tourFolder + "/" + filename);
+                }
+
+                for (int poiIndex = 0; poiIndex < poiFolders.length; poiIndex++) {
+                        String poiFolder = poiFolders[poiIndex];
+                        PointOfInterest poi = tour.getPois().get(poiIndex);
+                        for (int imageNumber = 1; imageNumber <= 3; imageNumber++) {
+                                String filename = poiFolder + "-" + imageNumber + ".jpg";
+                                if (poiFolder.equals("alhambra") && imageNumber == 3) {
+                                        filename = "alhambra-3jpg.jpg";
+                                } else if (poiFolder.equals("sinagoga") && imageNumber == 3) {
+                                        filename = "sinagoga-3jpg.jpg";
+                                } else if (poiFolder.equals("puerta-del-sol")) {
+                                        filename = "sol-" + imageNumber + ".jpg";
+                                } else if (poiFolder.equals("jardín-turia")) {
+                                        filename = "jardin-turia-" + imageNumber + ".jpg";
+                                } else if (poiFolder.equals("mercado-abastos")) {
+                                        filename = "mercado-asbastos-" + imageNumber + ".jpg";
+                                } else if (poiFolder.equals("tratro-romano")) {
+                                        filename = "teatro-romano-" + imageNumber + ".jpg";
+                                } else if (poiFolder.equals("hofburg")) {
+                                        filename = imageNumber == 1 ? "hofburg-1-jpg.JPG"
+                                                        : "hofburg-" + imageNumber + ".JPG";
+                                }
+                                addImageToPoi(poi, "/sample-images/poi/" + poiTourFolder + "/" + poiFolder + "/"
+                                                + filename);
+                        }
                 }
         }
 
         @EventListener(ApplicationReadyEvent.class)
+        @Transactional
         public void init() throws IOException {
 
                 if (userRepository.findByEmail("carmen@example.com").isEmpty()) {
@@ -141,15 +191,6 @@ public class SampleDataService {
                                                                         "Madrid", "Plaza de la Puerta del Sol",
                                                                         "40.4167278,-3.7033387")));
                         tourRepository.save(madridTour);
-
-                        addImageToTour(madridTour, "/sample-images/tour/madrid/madrid-1.jpg");
-                        addImageToTour(madridTour, "/sample-images/tour/madrid/madrid-2.jpg");
-                        addImageToTour(madridTour, "/sample-images/tour/madrid/madrid-3.jpg");
-
-                        PointOfInterest museoDelPrado = madridTour.getPois().get(0);
-                        addImageToPoi(museoDelPrado, "/sample-images/poi/museo-del-prado/museo-del-prado-1.jpg");
-                        addImageToPoi(museoDelPrado, "/sample-images/poi/museo-del-prado/museo-del-prado-2.jpg");
-                        addImageToPoi(museoDelPrado, "/sample-images/poi/museo-del-prado/museo-del-prado-3.jpg");
 
                         tourRepository.save(new Tour("Barcelona, España",
                                         "Maravíllate con la arquitectura de Gaudí y pasea por las Ramblas.", List.of(
@@ -833,6 +874,73 @@ public class SampleDataService {
                                                         new PointOfInterest("Barrio de Gion",
                                                                         "Distrito tradicional con casas de té machiya frecuentadas por geishas.",
                                                                         "Kioto", "Gion", "35.003700,135.777200"))));
+
+                        List<Tour> sampleTours = tourRepository.findAll();
+                        addImagesToSampleTour(sampleTours, "Madrid, España", "madrid", "madrid",
+                                        "museo-del-prado", "retiro", "palacio-real", "plaza-mayor", "puerta-del-sol");
+                        addImagesToSampleTour(sampleTours, "Barcelona, España", "barcelona", "barcelona",
+                                        "sagrada-familia", "parque-guell", "casa-batllo", "ramblas", "barrio-gotico");
+                        addImagesToSampleTour(sampleTours, "Sevilla, España", "sevilla", "sevilla",
+                                        "catedral-giralda", "real-alcazar", "plaza-españa", "torre-oro",
+                                        "barrio-santa-cruz");
+                        addImagesToSampleTour(sampleTours, "Valencia, España", "valencia", "valencia",
+                                        "ciudad-artes-ciencias", "catedral", "mercado-central", "lonja-seda",
+                                        "jardín-turia");
+                        addImagesToSampleTour(sampleTours, "Bilbao, España", "bilbao", "bilbao",
+                                        "museo-guggenheim", "casco-viejo", "zubizuri", "teatro-arriaga", "artxanda");
+                        addImagesToSampleTour(sampleTours, "Granada, España", "granada", "granada",
+                                        "alhambra", "generalife", "mirador-san-nicolas", "catedral", "barrio-sacromonte");
+                        addImagesToSampleTour(sampleTours, "Málaga, España", "malaga", "malaga",
+                                        "alcazaba", "castillo-gibralfaro", "museo-picasso", "catedral", "tratro-romano");
+                        addImagesToSampleTour(sampleTours, "Toledo, España", "toledo", "toledo",
+                                        "catedral", "alcazar", "sinagoga", "mon-san-juan", "mirador-valle");
+                        addImagesToSampleTour(sampleTours, "Córdoba, España", "cordoba", "cordoba",
+                                        "mezquita-catedral", "alcazar-reyes-cris", "puente-romano", "calleja-flores",
+                                        "medina-azahara");
+                        addImagesToSampleTour(sampleTours, "Santiago de Compostela, España", "santiago", "santiago",
+                                        "catedral", "praza-obradoiro", "alameda", "mercado-abastos", "mon-san-martiño");
+                        addImagesToSampleTour(sampleTours, "París, Francia", "paris", "paris",
+                                        "torre-eiffel", "museo-louvre", "notre-dame", "arco-triunfo", "sagrado-corazon");
+                        addImagesToSampleTour(sampleTours, "Roma, Italia", "roma", "roma",
+                                        "coliseo", "fontana-trevi", "panteon-agripa", "bas-san-pedro", "foro-romano");
+                        addImagesToSampleTour(sampleTours, "Londres, Reino Unido", "londres", "londres",
+                                        "big-ben", "london-eye", "torre-londres", "tower-bridge", "museo-britanico");
+                        addImagesToSampleTour(sampleTours, "Berlín, Alemania", "berlin", "berlin",
+                                        "puerta-brandenburg", "reichstag", "east-side", "monumento-holocausto",
+                                        "isla-museos");
+                        addImagesToSampleTour(sampleTours, "Ámsterdam, Países Bajos", "amsteradm", "amsterdam",
+                                        "casa-ana-frank", "plaza-dam", "vondelpark", "rijkmuseum", "museo-van-gogh");
+                        addImagesToSampleTour(sampleTours, "Praga, República Checa", "praga", "praga",
+                                        "puente-carlos", "castillo", "reloj-astronómico", "plaza-ciudad-vieja",
+                                        "catedral-san-vito");
+                        addImagesToSampleTour(sampleTours, "Viena, Austria", "viena", "viena",
+                                        "schonbrunn", "hofburg", "catedral-san-est", "belvedere", "opera");
+                        addImagesToSampleTour(sampleTours, "Budapest, Hungría", "budapest", "budapest",
+                                        "parlamento", "bastion-pescadores", "puente-cadenas", "szechenyi", "castillo-buda");
+                        addImagesToSampleTour(sampleTours, "Atenas, Grecia", "atenas", "atenas",
+                                        "partenon", "museo-acropolis", "agora", "plaka", "estadio-pantenaico");
+                        addImagesToSampleTour(sampleTours, "Nueva York, EE. UU.", "nueva-york", "nueva-york",
+                                        "central-park", "times-square", "empire-state", "estatua-libertad", "puente-brooklyn");
+                        addImagesToSampleTour(sampleTours, "Tokio, Japón", "tokio", "tokio",
+                                        "cruce-shibuya", "senso-ji", "skytree", "meiji", "akihabara");
+                        addImagesToSampleTour(sampleTours, "Sídney, Australia", "sidney", "sidney",
+                                        "opera", "puente-bahía", "bondi-beach", "jardin-botanico", "the-rocks");
+                        addImagesToSampleTour(sampleTours, "Río de Janeiro, Brasil", "rio-janeiro", "rio-janeiro",
+                                        "cristo-redentor", "pan-azucar", "copacabana", "escalera-selaron", "estadio-maracana");
+                        addImagesToSampleTour(sampleTours, "Buenos Aires, Argentina", "buenos-aires", "buenos-aires",
+                                        "obelisco", "plaza-mayo", "teatro-colon", "caminito", "cementerio-recoleta");
+                        addImagesToSampleTour(sampleTours, "Ciudad del Cabo, Sudáfrica", "ciudad-cabo", "ciudad-cabo",
+                                        "table-mountain", "v&a-waterfront", "isla-robben", "kirstenbosch", "bo-kaap");
+                        addImagesToSampleTour(sampleTours, "El Cairo, Egipto", "el-cairo", "el-cairo",
+                                        "piramides-guzia", "museo-egipcio", "jan-el-jalili", "saladino", "tahir");
+                        addImagesToSampleTour(sampleTours, "Estambul, Turquía", "estambul", "estambul",
+                                        "basilica-santa-sofia", "mezquita-azul", "topkapi", "gran-bazar", "cisterna-basilica");
+                        addImagesToSampleTour(sampleTours, "Bangkok, Tailandia", "bangkok", "bangkok",
+                                        "gran-palacio", "wat-phra-kaew", "wat-pho", "wat-arun", "mercado-catuchak");
+                        addImagesToSampleTour(sampleTours, "Dubái, EAU", "dubai", "dubai",
+                                        "burj-khalifa", "dubai-mall", "burj-al-arab", "dubai-marina", "palma-jumeirah");
+                        addImagesToSampleTour(sampleTours, "Kioto, Japón", "kioto", "kioto",
+                                        "fushimi-irami-taisha", "kinkaku-ji", "bosque-bambu", "kiyomizu-dera", "barrio-gion");
                 }
         }
 }
