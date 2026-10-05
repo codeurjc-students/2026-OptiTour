@@ -56,7 +56,6 @@ function ProfileLayout() {
         <ProtectedRoute>
             <div className="ot-profile-layout">
                 <ProfileSidebar
-                    userName={loggedUser?.userName || ''}
                     items={userMenu}
                 />
                 <main className="ot-profile-layout__content">

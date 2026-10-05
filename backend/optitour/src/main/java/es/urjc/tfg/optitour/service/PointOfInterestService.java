@@ -28,4 +28,8 @@ public class PointOfInterestService {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "No existe ningún punto de interés con el ID " + id + ".");
     }
+
+    public void savePoi(PointOfInterest poi) {
+        repository.save(poi);
+    }
 }

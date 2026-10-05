@@ -1,5 +1,6 @@
 package es.urjc.tfg.optitour.model;
 
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 
 @Entity
@@ -24,6 +26,9 @@ public class User {
     private String phoneNumber;
     private boolean isBanned;
 
+    @Lob
+    private Blob profileImage;
+
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles;
 
@@ -38,6 +43,17 @@ public class User {
         this.userName = userName;
         this.phoneNumber = phoneNumber;
         this.isBanned = isBanned;
+        this.roles = List.of(roles);
+    }
+
+    public User(String email, String password, String userName, String phoneNumber, boolean isBanned, Blob profileImage,
+            String... roles) {
+        this.email = email;
+        this.password = password;
+        this.userName = userName;
+        this.phoneNumber = phoneNumber;
+        this.isBanned = isBanned;
+        this.profileImage = profileImage;
         this.roles = List.of(roles);
     }
 
@@ -99,6 +115,14 @@ public class User {
 
     public void setRoles(ArrayList<String> roles) {
         this.roles = roles;
+    }
+
+    public Blob getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(Blob profileImage) {
+        this.profileImage = profileImage;
     }
 
 }

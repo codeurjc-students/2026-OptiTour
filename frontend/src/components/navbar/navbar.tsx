@@ -1,8 +1,9 @@
-import { Navbar, Container, Nav } from 'react-bootstrap';
+import { Navbar, Container, Nav, Dropdown } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
 import logo from '../../assets/OptiTourLogo.png';
 import './navbar.css';
 import { useAuthStore } from '../../store/auth-store';
+import ProfileImage from '../profile-image/profile-image';
 
 function OptiTourNavbar() {
 
@@ -26,35 +27,50 @@ function OptiTourNavbar() {
                 <Link to="/profile/notifications" className="text-dark" title="Notificaciones">
                   <i className="bi bi-bell fs-5"></i>
                 </Link>
-                <Link
-                  to="/profile"
-                  className="btn ot-navbar__btn ot-navbar__btn--profile d-flex align-items-center gap-2"
-                >
-                  <img
-                    src="https://via.placeholder.com/24"
-                    alt="Foto de perfil"
-                    className="rounded-circle object-fit-cover"
-                    style={{ width: '24px', height: '24px' }}
-                  />
-                  <span>Perfil</span>
-                </Link>
-                {
-                  (loggedUser.roles || []).includes("ADMIN") &&
-                  <Link
-                    to="/admin/profile"
-                    className="btn ot-navbar__btn ot-navbar__btn--profile d-flex align-items-center gap-2 adminButton"
+
+                <Dropdown align="end">
+                  <Dropdown.Toggle 
+                    variant="link"
+                    id="dropdown-profile" 
+                    className="ot-navbar__btn ot-navbar__btn--profile d-flex align-items-center gap-2 text-decoration-none"
                   >
-                    <i className="bi bi-shield-lock fs-5"></i>
-                    <span>Panel de administración</span>
-                  </Link>
-                }
-                <button
-                  onClick={async () => await doLogout()}
-                  className="btn btn-outline-danger ot-navbar__btn ot-navbar__btn--outline d-flex align-items-center gap-2"
-                >
-                  <i className="bi bi-box-arrow-right"></i>
-                  <span>Cerrar Sesión</span>
-                </button>
+                    <span>Página personal</span>
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu className="shadow-sm border-0 mt-2">
+                    <Dropdown.Item as={Link} to="/profile">
+                      <i className="bi bi-person me-2"></i> Mi perfil
+                    </Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/profile/friends">
+                      <i className="bi bi-people me-2"></i> Lista de amigos
+                    </Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/profile/groups">
+                      <i className="bi bi-collection me-2"></i> Mis grupos
+                    </Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/profile/tours">
+                      <i className="bi bi-compass me-2"></i> Mis tours
+                    </Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/profile/payments">
+                      <i className="bi bi-credit-card me-2"></i> Mis pagos
+                    </Dropdown.Item>
+
+                    {
+                      (loggedUser.roles || []).includes("ADMIN") &&
+                      <>
+                        <Dropdown.Divider />
+                        <Dropdown.Item as={Link} to="/admin/profile" className="text-primary fw-bold">
+                          <i className="bi bi-shield-lock me-2"></i> Panel de administración
+                        </Dropdown.Item>
+                      </>
+                    }
+
+                    <Dropdown.Divider />
+                    <Dropdown.Item onClick={async () => await doLogout()} className="text-danger">
+                      <i className="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+                <ProfileImage className="ot-navbar__avatar" />
               </div>
             ) :
               <>

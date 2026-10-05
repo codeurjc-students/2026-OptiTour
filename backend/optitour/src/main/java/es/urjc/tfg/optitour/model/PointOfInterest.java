@@ -1,12 +1,15 @@
 package es.urjc.tfg.optitour.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class PointOfInterest { // Abbreviated "POI" in the rest of the project's variables and comments
@@ -25,10 +28,17 @@ public class PointOfInterest { // Abbreviated "POI" in the rest of the project's
         this.id = id;
     }
 
+    public List<Image> getImages() {
+        return images;
+    }
+
     private String description;
     private String city;
     private String address;
     private String coords;
+
+    @OneToMany(mappedBy = "poi", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Image> images = new ArrayList<>();
 
     @ManyToMany(mappedBy = "pois")
     private List<Tour> tours;

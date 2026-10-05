@@ -82,10 +82,15 @@ public class AuthClientE2ETest {
         passField.sendKeys("admin1234");
         submitButton.click();
 
-        // We wait to the index page to render
+        // We open the personal page menu after the index page renders.
+        WebElement profileMenuButton = wait.until(
+                elementToBeClickable(By.id("dropdown-profile")));
+        profileMenuButton.click();
+
         WebElement logoutButton = null;
         try {
-            logoutButton = wait.until(visibilityOfElementLocated(By.className("btn-outline-danger")));
+            logoutButton = wait.until(visibilityOfElementLocated(
+                    By.xpath("//a[contains(normalize-space(.), 'Cerrar Sesión')]")));
         } catch (org.openqa.selenium.TimeoutException e) {
             System.err.println("TIMEOUT in loginFormTest. Page source: " + driver.getPageSource());
             throw e;
@@ -93,7 +98,8 @@ public class AuthClientE2ETest {
 
         // We check if admin buttons appear. If this buttons exist, then logging was
         // succesful and user roles are working correctly.
-        WebElement adminButton = driver.findElement(By.className("adminButton"));
+        WebElement adminButton = wait.until(visibilityOfElementLocated(
+                By.xpath("//a[contains(normalize-space(.), 'Panel de administración')]")));
 
         String buttonText = logoutButton.getText();
         String adminButtonText = adminButton.getText();

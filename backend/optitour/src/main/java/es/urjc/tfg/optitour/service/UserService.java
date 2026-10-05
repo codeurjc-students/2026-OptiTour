@@ -29,4 +29,16 @@ public class UserService {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "No se encontró el usuario con el email " + email);
     }
+
+    public User getUserById(long id) {
+        Optional<User> op = userRepository.findById(id);
+
+        if (op.isPresent()) {
+            User user = op.get();
+            return user;
+        }
+
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "No se encontró el usuario con el id " + id);
+    }
 }

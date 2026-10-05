@@ -1,9 +1,9 @@
 import { Button } from 'react-bootstrap';
 import './my-profile.css';
 import { useAuthStore } from '../../store/auth-store';
+import ProfileImage from '../../components/profile-image/profile-image';
 
 function MyProfile() {
-
     const { loggedUser } = useAuthStore();
 
     if (!loggedUser) {
@@ -14,12 +14,7 @@ function MyProfile() {
         <div className="ot-my-profile">
             <h1 className="ot-panel-title text-center">Mi perfil</h1>
 
-            <div className="ot-my-profile__avatar">
-                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <circle cx="12" cy="9" r="3.5" />
-                    <path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6" />
-                </svg>
-            </div>
+            <ProfileImage />
 
             <h2 className="ot-my-profile__name">{loggedUser!.userName}</h2>
 

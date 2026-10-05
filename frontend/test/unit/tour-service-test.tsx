@@ -14,7 +14,10 @@ vi.mock('../../src/service/tour-service');
 test('Index displays tour list from request', async () => {
     // We create test data and set it to mocked service
     const testTourPage = {
-        content: [{ id: 1, name: 'Test Title', description: 'Test Description 1' }, { id: 2, name: 'Test Title', description: 'Test Description 2' }],
+        content: [
+            { id: 1, name: 'Test Title', description: 'Test Description 1', images: [{ id: 1 }], pois: [] },
+            { id: 2, name: 'Test Title', description: 'Test Description 2', images: [{ id: 2 }], pois: [] }
+        ],
         page: { number: 0, totalPages: 1 }
     };
     vi.mocked(service.getToursByPage).mockResolvedValue(testTourPage as any);
@@ -29,12 +32,14 @@ test('Index displays tour list from request', async () => {
 
     // Once the component is rendered, we check if the list has been created properly.
     // Using find method instead get method allowa us getting the element after the data is loaded from mocked request. 
-    const itemList = await screen.findAllByText('Test Title');
+    const itemList = await screen.findAllByTestId('tour-card');
     expect(itemList).toHaveLength(2);
 
     // Also, we can check if tour text is correct: 
-    const tourDesc = await screen.findByText('Test Description 1');
-    expect(tourDesc).toBeInTheDocument();
+    const tourDescs = await screen.findAllByText('Test Description 1');
+    tourDescs.forEach((tourDesc) => {
+        expect(tourDesc).toBeInTheDocument();
+    });
 });
 
 test('Tour detail displays rquested tour information properly', async () => {

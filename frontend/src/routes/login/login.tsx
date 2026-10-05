@@ -3,10 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/OptiTourLogo.png';
 import './login.css';
 import { useAuthStore } from '../../store/auth-store';
-import { useState, type SubmitEvent } from 'react';
+import { useEffect, useState, type SubmitEvent } from 'react';
 import Spinner from '../../components/spinner/spinner';
 import ErrorCard from '../../components/error-card/error-card';
 import { useSearchParams } from 'react-router-dom';
+
+const base_url = import.meta.env.VITE_API_BASE_URL ? `${import.meta.env.VITE_API_BASE_URL}` : "https://localhost:443/api/v1";
 
 function Login() {
 
@@ -16,6 +18,7 @@ function Login() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
+  const [randomId, setRandomId] = useState<number>();
 
   async function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
@@ -40,10 +43,18 @@ function Login() {
     }
   }
 
+  function handleRandom(max: number) {
+    setRandomId(Math.floor(Math.random() * max) + 1);
+  }
+
+  useEffect(() => { handleRandom(540) }, []);
+
   return (
     <div className="ot-login">
       <Row className="ot-login__row g-0">
-        <Col md={6} className="ot-login__visual">
+        <Col md={6} className="ot-login__visual" style={{
+          backgroundImage: `url("${base_url}/image/${randomId}")`
+        }}>
           <div className="ot-login__visual-content">
             <img src={logo} alt="OptiTour" className="ot-login__visual-logo" />
             <p className="ot-login__visual-tagline">
@@ -111,7 +122,7 @@ function Login() {
           </Container>
         </Col>
       </Row>
-    </div>
+    </div >
   );
 }
 

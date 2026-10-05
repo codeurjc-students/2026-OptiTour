@@ -11,6 +11,9 @@ import Spinner from '../../components/spinner/spinner';
 import ErrorPage from '../../components/error-page/error-page';
 import { ApiError } from '../../service/api-error';
 import { useAuthStore } from '../../store/auth-store';
+import type { ImageDTO } from '../../dto/image-dto';
+
+const base_url = import.meta.env.VITE_API_BASE_URL ? `${import.meta.env.VITE_API_BASE_URL}` : "https://localhost:443/api/v1";
 
 const publicGroups = ['Grupo 1', 'Grupo 2'];
 
@@ -21,6 +24,7 @@ function TourDetailPage() {
     const [error, setError] = useState<string | null>(null);
     const [errTitle, setErrTitle] = useState<string | null>(null);
     const [errCode, setErrCode] = useState<number | null>(null);
+    const [imageUrls, setImagesUrls] = useState<string[]>([]);
 
 
     const { loggedUser } = useAuthStore();
@@ -33,6 +37,8 @@ function TourDetailPage() {
             setLoading(true);
             const response = await getTourById(Number(id));
             setTour(response);
+
+            setImagesUrls((response.images ?? []).map((image: ImageDTO) => `${base_url}/image/${image.id}`));
         }
         catch (err) {
             if (err instanceof ApiError) {
@@ -73,7 +79,9 @@ function TourDetailPage() {
 
                 <Row className="g-4">
                     <Col lg={8}>
-                        <ImageCarousel slides={[{ title: 'Carrusel de imágenes del Tour', variant: 'primary' }]} />
+                        <ImageCarousel
+                            images={imageUrls}
+                        />
 
                         <dl className="ot-tour-detail__data">
                             <div className="ot-tour-detail__data-row">
@@ -98,7 +106,12 @@ function TourDetailPage() {
                                     desc={poi.description}
                                     to={`/point-of-interest/${poi.id}`}
                                     actionLabel="Ver más"
+                                    imageSrc={poi.images?.length
+                                        ? `${base_url}/image/${poi.images[0].id}`
+                                        : undefined}
                                 />
+
+
                             ))}
                         </div>
                     </Col>

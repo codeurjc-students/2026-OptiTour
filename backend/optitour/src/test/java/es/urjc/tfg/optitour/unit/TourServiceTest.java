@@ -92,8 +92,11 @@ public class TourServiceTest {
 		assertNotNull(resultList);
 		assertEquals(resultList.get(1).getName(), "Test POI 1");
 		assertEquals(resultList.get(1).getDescription(), "Test desc 1");
+	}
 
-		// When: we call the method with incorrect ID:
+	@Test
+	@DisplayName("getTourById should throw if is called with bad id")
+	void getTourByIdIncorrectId() {
 		ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> {
 			service.getTourById(5);
 		});

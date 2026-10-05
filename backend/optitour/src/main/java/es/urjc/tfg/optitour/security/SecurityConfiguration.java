@@ -59,6 +59,7 @@ public class SecurityConfiguration {
                         // PUBLIC ENDPOINTS
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/user/**").permitAll()
                         // PRIVATE ENDPOINTS
                         .requestMatchers(HttpMethod.GET, "/**").permitAll());
 
