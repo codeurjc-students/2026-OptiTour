@@ -55,7 +55,7 @@ jobs:
         run: mvn spring-boot:run &
 
       - name: Wait for backend startup
-        run: sleep 30
+        run: timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/v1/tour/1)" != "200" ]]; do sleep 5; done' || false
       
       - name: Run backend
         working-directory: ./backend/optitour
@@ -91,7 +91,7 @@ jobs:
         run: mvn spring-boot:run &
 
       - name: Wait for backend startup
-        run: sleep 30
+        run: timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/v1/tour/1)" != "200" ]]; do sleep 5; done' || false
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
