@@ -51,7 +51,7 @@ public class ImageControllerClientE2ETest {
         WebElement carousel = wait.until(visibilityOfElementLocated(By.className("ot-index__hero")));
         assertNotNull(carousel);
 
-        WebElement tourCarouselCardTitle = driver.findElement(By.className("ot-carousel__slide-title"));
+        WebElement tourCarouselCardTitle = wait.until(visibilityOfElementLocated(By.className("ot-carousel__slide-title")));
         WebElement tourCarouselCardDesc = driver.findElement(By.className("ot-login__visual-tagline"));
 
         assertEquals("Madrid, España", tourCarouselCardTitle.getText());
