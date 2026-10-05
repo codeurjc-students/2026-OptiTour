@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class PointOfInterestServiceE2ETest extends BaseIntegrationTest {
+public class PointOfInterestControllerE2ETest extends BaseIntegrationTest {
     @Autowired
     private PointOfInterestRepository repository;
 
@@ -73,8 +73,12 @@ public class PointOfInterestServiceE2ETest extends BaseIntegrationTest {
         assertEquals("Poi name 0", result.name());
         assertEquals("Poi desc 0", result.description());
         assertNotNull(result.tours());
+    }
 
-        long invalidId = firstId + 1000;
+    @Test
+    @DisplayName("Checks if getPointOfInterestById endopint responds with 404 code if id is not correct")
+    void getPointOfInterestByIdIncorrectIdE2ETest() {
+        long invalidId = 100000000;
         get("/api/v1/tour/" + invalidId)
                 .then()
                 .statusCode(404);

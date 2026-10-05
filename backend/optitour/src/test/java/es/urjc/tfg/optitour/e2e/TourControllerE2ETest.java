@@ -4,9 +4,14 @@ import static io.restassured.RestAssured.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.sql.SQLException;
 import java.util.List;
+
+import javax.sql.rowset.serial.SerialBlob;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +22,9 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import es.urjc.tfg.optitour.BaseIntegrationTest;
+import es.urjc.tfg.optitour.DTO.ImageDTO;
 import es.urjc.tfg.optitour.DTO.TourDTO;
+import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.Tour;
 import es.urjc.tfg.optitour.model.PointOfInterest;
 import es.urjc.tfg.optitour.repository.TourRepository;
@@ -25,7 +32,7 @@ import io.restassured.RestAssured;
 import java.util.ArrayList;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TourServiceE2ETest extends BaseIntegrationTest {
+public class TourControllerE2ETest extends BaseIntegrationTest {
         @Autowired
         private TourRepository repository;
 
@@ -40,7 +47,7 @@ public class TourServiceE2ETest extends BaseIntegrationTest {
         List<String> tourDescriptions;
 
         @BeforeEach
-        void setUp() {
+        void setUp() throws SQLException {
                 RestAssured.port = port;
                 RestAssured.baseURI = "https://localhost";
                 RestAssured.useRelaxedHTTPSValidation();
@@ -65,6 +72,12 @@ public class TourServiceE2ETest extends BaseIntegrationTest {
                                                 "TestAddress", "TestCoords"));
                         }
                         tour.setPois(pois);
+
+                        Image image = new Image();
+                        image.setImageFile(new SerialBlob(new byte[] { 1, 2, 3 }));
+                        image.setTour(tour);
+                        tour.getImages().add(image);
+
                         repository.save(tour);
                 }
         }
@@ -104,6 +117,14 @@ public class TourServiceE2ETest extends BaseIntegrationTest {
                         assertThat(result.get(i).name(), equalTo(tourNames.get(i)));
                         assertThat(result.get(i).description(), equalTo(tourDescriptions.get(i)));
                 }
+
+                for (TourDTO tour : result) {
+                        assertNotNull(tour.images());
+                        assertFalse(tour.images().isEmpty());
+
+                        for (ImageDTO image : tour.images())
+                                assertTrue(image.id() > 0);
+                }
         }
 
         @Test
@@ -126,8 +147,12 @@ public class TourServiceE2ETest extends BaseIntegrationTest {
                 assertNotNull(resultList);
                 assertEquals("Test POI 1", resultList.get(1).name());
                 assertEquals("Test desc 1", resultList.get(1).description());
+        }
 
-                long invalidId = firstId + 1000;
+        @Test
+        @DisplayName("getToursById called with bad id should ")
+        void getTourByIdIncorrectIdE2ETest() {
+                long invalidId = 10000000;
                 get("/api/v1/tour/" + invalidId) // With incorrect id
                                 .then()
                                 .statusCode(404);

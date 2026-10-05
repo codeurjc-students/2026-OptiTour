@@ -6,9 +6,12 @@ import java.sql.SQLException;
 
 import javax.sql.rowset.serial.SerialBlob;
 
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.repository.ImageRepository;
@@ -37,12 +40,18 @@ public class ImageService {
         return imageRepository.save(image);
     }
 
+    @Transactional(readOnly = true)
     public Resource getImageFile(long id) throws SQLException {
-        Image image = imageRepository.findById(id).orElseThrow();
+        Image image = imageRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "No existe ninguna imagen con el ID " + id));
 
-        // If image file is not null we return the image file byte stream
-        if (image.getImageFile() != null)
-            return new InputStreamResource(image.getImageFile().getBinaryStream());
+        // Materialize the Blob while the database transaction is still open.
+        if (image.getImageFile() != null) {
+            long length = image.getImageFile().length();
+            return new ByteArrayResource(image.getImageFile().getBytes(1, (int) length));
+        }
         throw new RuntimeException("Image file not found");
     }
 }

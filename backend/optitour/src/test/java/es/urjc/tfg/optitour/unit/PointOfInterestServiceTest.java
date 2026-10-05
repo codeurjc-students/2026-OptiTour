@@ -61,11 +61,17 @@ public class PointOfInterestServiceTest {
         assertEquals(correctResult.getDescription(), "Poi desc 1");
         assertNotNull(correctResult.getTours());
 
+    }
+
+    @Test
+    @DisplayName("getPoiById method should throw when is called with bad id")
+    void getPoiByIdIncorrectIdTest() {
         // When: we call service method with incorrect id:
         ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> {
             service.getPointOfInterestById(5);
         });
 
+        // Then: 404 error should be thrown
         assertEquals("404 NOT_FOUND \"No existe ningún punto de interés con el ID 5.\"", ex.getMessage());
     }
 }

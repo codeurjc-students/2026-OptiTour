@@ -16,7 +16,7 @@ function ImageCarousel({ images, tours }: ImageCarouselProps) {
             {images ? images?.map((image, index) => (
                 <Carousel.Item key={index}>
                     <div className="ot-carousel__slide ot-carousel__slide--image">
-                        <img src={image} alt="" />
+                        <img src={image} alt="Imagen del tour o punto de interés" />
                     </div>
                 </Carousel.Item>
             ))
@@ -40,7 +40,7 @@ function ImageCarousel({ images, tours }: ImageCarouselProps) {
                                     Ver más
                                 </Button>
                             </div>
-                            <img src={`${base_url}/image/${tour.images[0].id}`} alt="" />
+                            <img src={`${base_url}/image/${tour.images[0].id}`} alt={`imagen del tour ${tour.id}`} />
                         </div>
                     </Carousel.Item>
                 ))
