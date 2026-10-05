@@ -1,5 +1,5 @@
 import { Button, Container } from "react-bootstrap";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import ErrorCard from "../error-card/error-card";
 import './error-page.css';
 import { useAuthStore } from "../../store/auth-store";
