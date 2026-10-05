@@ -88,9 +88,6 @@ public class SampleDataService {
                 String poiTourFolder = tourFolder.equals("amsteradm") ? "amsterdam" : tourFolder;
                 for (int imageNumber = 1; imageNumber <= 3; imageNumber++) {
                         String filename = tourPrefix + "-" + imageNumber + ".jpg";
-                        if (tourFolder.equals("barcelona") && imageNumber == 3) {
-                                filename = "barcelona-3.ppg.jpg";
-                        }
                         addImageToTour(tour, "/sample-images/tour/" + tourFolder + "/" + filename);
                 }
 
@@ -889,9 +886,11 @@ public class SampleDataService {
                         addImagesToSampleTour(sampleTours, "Bilbao, España", "bilbao", "bilbao",
                                         "museo-guggenheim", "casco-viejo", "zubizuri", "teatro-arriaga", "artxanda");
                         addImagesToSampleTour(sampleTours, "Granada, España", "granada", "granada",
-                                        "alhambra", "generalife", "mirador-san-nicolas", "catedral", "barrio-sacromonte");
+                                        "alhambra", "generalife", "mirador-san-nicolas", "catedral",
+                                        "barrio-sacromonte");
                         addImagesToSampleTour(sampleTours, "Málaga, España", "malaga", "malaga",
-                                        "alcazaba", "castillo-gibralfaro", "museo-picasso", "catedral", "tratro-romano");
+                                        "alcazaba", "castillo-gibralfaro", "museo-picasso", "catedral",
+                                        "tratro-romano");
                         addImagesToSampleTour(sampleTours, "Toledo, España", "toledo", "toledo",
                                         "catedral", "alcazar", "sinagoga", "mon-san-juan", "mirador-valle");
                         addImagesToSampleTour(sampleTours, "Córdoba, España", "cordoba", "cordoba",
@@ -900,7 +899,8 @@ public class SampleDataService {
                         addImagesToSampleTour(sampleTours, "Santiago de Compostela, España", "santiago", "santiago",
                                         "catedral", "praza-obradoiro", "alameda", "mercado-abastos", "mon-san-martiño");
                         addImagesToSampleTour(sampleTours, "París, Francia", "paris", "paris",
-                                        "torre-eiffel", "museo-louvre", "notre-dame", "arco-triunfo", "sagrado-corazon");
+                                        "torre-eiffel", "museo-louvre", "notre-dame", "arco-triunfo",
+                                        "sagrado-corazon");
                         addImagesToSampleTour(sampleTours, "Roma, Italia", "roma", "roma",
                                         "coliseo", "fontana-trevi", "panteon-agripa", "bas-san-pedro", "foro-romano");
                         addImagesToSampleTour(sampleTours, "Londres, Reino Unido", "londres", "londres",
@@ -916,17 +916,20 @@ public class SampleDataService {
                         addImagesToSampleTour(sampleTours, "Viena, Austria", "viena", "viena",
                                         "schonbrunn", "hofburg", "catedral-san-est", "belvedere", "opera");
                         addImagesToSampleTour(sampleTours, "Budapest, Hungría", "budapest", "budapest",
-                                        "parlamento", "bastion-pescadores", "puente-cadenas", "szechenyi", "castillo-buda");
+                                        "parlamento", "bastion-pescadores", "puente-cadenas", "szechenyi",
+                                        "castillo-buda");
                         addImagesToSampleTour(sampleTours, "Atenas, Grecia", "atenas", "atenas",
                                         "partenon", "museo-acropolis", "agora", "plaka", "estadio-pantenaico");
                         addImagesToSampleTour(sampleTours, "Nueva York, EE. UU.", "nueva-york", "nueva-york",
-                                        "central-park", "times-square", "empire-state", "estatua-libertad", "puente-brooklyn");
+                                        "central-park", "times-square", "empire-state", "estatua-libertad",
+                                        "puente-brooklyn");
                         addImagesToSampleTour(sampleTours, "Tokio, Japón", "tokio", "tokio",
                                         "cruce-shibuya", "senso-ji", "skytree", "meiji", "akihabara");
                         addImagesToSampleTour(sampleTours, "Sídney, Australia", "sidney", "sidney",
                                         "opera", "puente-bahía", "bondi-beach", "jardin-botanico", "the-rocks");
                         addImagesToSampleTour(sampleTours, "Río de Janeiro, Brasil", "rio-janeiro", "rio-janeiro",
-                                        "cristo-redentor", "pan-azucar", "copacabana", "escalera-selaron", "estadio-maracana");
+                                        "cristo-redentor", "pan-azucar", "copacabana", "escalera-selaron",
+                                        "estadio-maracana");
                         addImagesToSampleTour(sampleTours, "Buenos Aires, Argentina", "buenos-aires", "buenos-aires",
                                         "obelisco", "plaza-mayo", "teatro-colon", "caminito", "cementerio-recoleta");
                         addImagesToSampleTour(sampleTours, "Ciudad del Cabo, Sudáfrica", "ciudad-cabo", "ciudad-cabo",
@@ -934,13 +937,15 @@ public class SampleDataService {
                         addImagesToSampleTour(sampleTours, "El Cairo, Egipto", "el-cairo", "el-cairo",
                                         "piramides-guzia", "museo-egipcio", "jan-el-jalili", "saladino", "tahir");
                         addImagesToSampleTour(sampleTours, "Estambul, Turquía", "estambul", "estambul",
-                                        "basilica-santa-sofia", "mezquita-azul", "topkapi", "gran-bazar", "cisterna-basilica");
+                                        "basilica-santa-sofia", "mezquita-azul", "topkapi", "gran-bazar",
+                                        "cisterna-basilica");
                         addImagesToSampleTour(sampleTours, "Bangkok, Tailandia", "bangkok", "bangkok",
                                         "gran-palacio", "wat-phra-kaew", "wat-pho", "wat-arun", "mercado-catuchak");
                         addImagesToSampleTour(sampleTours, "Dubái, EAU", "dubai", "dubai",
                                         "burj-khalifa", "dubai-mall", "burj-al-arab", "dubai-marina", "palma-jumeirah");
                         addImagesToSampleTour(sampleTours, "Kioto, Japón", "kioto", "kioto",
-                                        "fushimi-irami-taisha", "kinkaku-ji", "bosque-bambu", "kiyomizu-dera", "barrio-gion");
+                                        "fushimi-irami-taisha", "kinkaku-ji", "bosque-bambu", "kiyomizu-dera",
+                                        "barrio-gion");
                 }
         }
 }

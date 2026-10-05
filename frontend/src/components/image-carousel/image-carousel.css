@@ -4,6 +4,27 @@
     border: 1px solid var(--ot-border);
 }
 
+.ot-carousel .carousel-indicators {
+    z-index: 2;
+    margin-bottom: 0.75rem;
+}
+
+.ot-carousel .carousel-indicators [data-bs-target] {
+    width: 0.65rem;
+    height: 0.65rem;
+    margin-right: 0.3rem;
+    margin-left: 0.3rem;
+    border: 1px solid #fff;
+    border-radius: 50%;
+    background-color: transparent;
+    opacity: 0.85;
+}
+
+.ot-carousel .carousel-indicators .active {
+    background-color: #fff;
+    opacity: 1;
+}
+
 .ot-carousel__slide {
     min-height: 220px;
     display: flex;
@@ -26,21 +47,94 @@
 
 .ot-carousel__slide--image {
     position: relative;
-    height: clamp(220px, 35vw, 410px);
+    height: clamp(250px, 30vw, 360px);
     min-height: 0;
     padding: 0;
 }
 
-.ot-carousel__slide--image img {
+.ot-carousel__slide--image > img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
 }
 
+.ot-carousel .ot-login__visual-content {
+    position: absolute;
+    top: 50%;
+    left: clamp(5rem, 10vw, 8rem);
+    z-index: 1;
+    width: min(90%, 420px);
+    padding: 2rem 1.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: var(--ot-radius);
+    background-color: rgba(0, 0, 0, 0.28);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    text-align: left;
+    backdrop-filter: blur(2px);
+    transform: translateY(-50%);
+}
+
+.ot-carousel .ot-login__visual-logo {
+    display: block;
+    width: min(100%, 190px);
+    height: auto;
+    margin: 0 0 1rem;
+    filter: brightness(0) invert(1);
+}
+
+.ot-carousel .ot-carousel__slide-title {
+    color: #fff;
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1.15;
+    margin: 0 0 0.65rem;
+}
+
+.ot-carousel .ot-login__visual-tagline {
+    max-width: 320px;
+    margin: 0;
+    color: #fff;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.ot-carousel__slide-button {
+    margin-top: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: var(--ot-radius-pill);
+    background-color: transparent;
+    color: #fff;
+    font-weight: 700;
+    padding: 0.4rem 1.1rem;
+}
+
+.ot-carousel__slide-button:hover,
+.ot-carousel__slide-button:focus {
+    border-color: #fff;
+    background-color: #fff;
+    color: #000;
+}
+
+.ot-carousel__slide--image::after {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.08) 0%,
+        rgba(0, 0, 0, 0.3) 100%
+    );
+    content: '';
+    pointer-events: none;
+}
+
 .ot-carousel__slide-caption {
     position: absolute;
     inset: 0;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -64,6 +158,62 @@
 }
 
 @media (max-width: 575.98px) {
+    .ot-carousel__slide--image {
+        height: clamp(340px, 80vw, 430px);
+    }
+
+    .ot-carousel .ot-login__visual-content {
+        top: auto;
+        bottom: 2.5rem;
+        left: 3.5rem;
+        width: calc(100% - 5rem);
+        padding: 0.85rem 1rem;
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        grid-template-rows: auto auto;
+        align-items: center;
+        column-gap: 0.75rem;
+        row-gap: 0.15rem;
+        transform: none;
+    }
+
+    .ot-carousel .ot-login__visual-logo {
+        grid-column: 1;
+        grid-row: 1 / span 2;
+        width: 5.5rem;
+        margin: 0;
+    }
+
+    .ot-carousel .ot-carousel__slide-title {
+        grid-column: 2;
+        grid-row: 1;
+        font-size: 1.15rem;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .ot-carousel .ot-login__visual-tagline {
+        grid-column: 2;
+        grid-row: 2;
+        max-width: none;
+        font-size: 0.9rem;
+        line-height: 1.25;
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+
+    .ot-carousel__slide-button {
+        grid-column: 3;
+        grid-row: 1 / span 2;
+        margin-top: 0;
+        padding: 0.35rem 0.75rem;
+        white-space: nowrap;
+    }
+
     .ot-carousel__slide-title {
         font-size: 1.5rem;
     }

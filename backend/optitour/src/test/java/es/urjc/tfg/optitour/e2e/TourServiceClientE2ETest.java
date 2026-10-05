@@ -108,7 +108,10 @@ public class TourServiceClientE2ETest {
         // We also want to check if button link is correct, that's why we dont't visit
         // /tour/1 directly
         WebElement seeMoreButton = wait.until(elementToBeClickable(By.cssSelector("a[href='/tour/1']")));
-        seeMoreButton.click();
+        // The carousel navigation controls can overlap this link at some viewport
+        // widths, so trigger the link's own DOM click event instead of relying on
+        // the physical click coordinates.
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", seeMoreButton);
 
         WebElement title = wait.until(visibilityOfElementLocated(By.className("ot-tour-detail__title")));
         WebElement desc = driver

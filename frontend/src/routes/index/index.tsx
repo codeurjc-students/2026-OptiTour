@@ -19,11 +19,18 @@ function Index() {
   const [isLastPage, setIsLastPage] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [loadMoreUsed, setLoadMoreUsed] = useState<boolean>(false);
+  const [randomUrlImageList, setRandomUrlImageList] = useState<string[]>([]);
 
   async function handleGetTours(page: number, size: number, isUseEffect: boolean) {
     try {
-      if (isUseEffect)
+      if (isUseEffect) {
         setLoading(true);
+
+        for (let i = 0; i < 5; i++)
+          randomUrlImageList.push(`${base_url}/image/${Math.floor(Math.random() * 540) + 1}`);
+
+        setRandomUrlImageList(randomUrlImageList);
+      }
       else
         setLoadingMore(true);
 
@@ -61,71 +68,91 @@ function Index() {
   useEffect(() => { handleGetTours(0, 8, true) }, []);
 
   return (
-    <Container className="ot-index">
-      <Form className="ot-index__search">
-        <InputGroup>
-          <InputGroup.Text className="ot-index__search-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="7" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-          </InputGroup.Text>
-          <Form.Control placeholder="Escribe aquí para buscar" aria-label="Buscar tours" />
-        </InputGroup>
-      </Form>
-
-      <div className="ot-index__carousel">
+    <>
+      <section className="ot-index__hero">
         <ImageCarousel
-          images={[]}
+          tours={tours?.slice(0, 4)}
         />
-      </div>
+      </section>
 
-      <h2 className="text-center mt-5 mb-4 fw-bold" style={{ color: 'var(--ot-text)' }}>
-        Explora nuestros tours destacados
-      </h2>
+      <Container className="ot-index">
+        <h2 className="text-center mt-5 mb-4 fw-bold" style={{ color: 'var(--ot-text)' }}>
+          Explora nuestro catálogo de tours
+        </h2>
 
-      {loading && <Spinner />}
+        <Form className="ot-index__search">
+          <InputGroup>
+            <InputGroup.Text className="ot-index__search-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="7" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </InputGroup.Text>
+            <Form.Control placeholder="Escribe aquí para buscar" aria-label="Buscar tours" />
+          </InputGroup>
+        </Form>
 
-      {error ? <ErrorCard text={error} /> :
-        <>
-          <Row className="ot-index__grid justify-content-center" xs={1} sm={2} md={4}>
-            {tours?.map((tour, index) => (
-              <Col
-                key={tour.id}
-                className="ot-index__grid-item ot-index__grid-item-animate"
-                style={{ animationDelay: `${(index % 4) * 0.2}s` }}
-              >
-                <TourCard
-                  title={tour.name}
-                  desc={tour.description}
-                  to={`/tour/${tour.id}`}
-                  imageSrc={tour.images?.[0] ? `${base_url}/image/${tour.images[0].id}` : undefined}
-                />
-              </Col>
-            ))}
-          </Row>
-          {loadingMore && <Spinner />}
-          {loadMoreError && <ErrorCard text={loadMoreError} />}
-          {!loadingMore && tours && tours.length > 0 && !isLastPage && !loadMoreError && (
-            <div className="text-center mt-5 mb-4">
+        {loading && <Spinner />}
+
+        {error ? <ErrorCard text={error} /> :
+          <>
+            <Row className="ot-index__grid justify-content-center" xs={1} sm={2} md={4}>
+              {tours?.map((tour, index) => (
+                <Col
+                  key={tour.id}
+                  className="ot-index__grid-item ot-index__grid-item-animate"
+                  style={{ animationDelay: `${(index % 4) * 0.2}s` }}
+                >
+                  <TourCard
+                    title={tour.name}
+                    desc={tour.description}
+                    to={`/tour/${tour.id}`}
+                    imageSrc={tour.images?.[0] ? `${base_url}/image/${tour.images[0].id}` : undefined}
+                  />
+                </Col>
+              ))}
+            </Row>
+            {loadingMore && <Spinner />}
+            {loadMoreError && <ErrorCard text={loadMoreError} />}
+            {!loadingMore && tours && tours.length > 0 && !isLastPage && !loadMoreError && (
+              <div className="text-center mt-5 mb-4">
+                <Button
+                  variant="outline-success"
+                  className="ot-tour-card__btn d-inline-flex align-items-center justify-content-center load-more-button"
+                  style={{ gap: '0.5rem' }}
+                  onClick={handleLoadMoreButton}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                    <path fillRule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z" />
+                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466" />
+                  </svg>
+                  Cargar más
+                </Button>
+              </div>
+            )}
+
+            <section className="ot-index__create-tour text-center">
+              <h2 className="fw-bold" style={{ color: 'var(--ot-text)' }}>
+                ¿No te convence? Crea tu propio tour
+              </h2>
+              <p className="ot-index__create-tour-text">
+                Puedes crear un tour de manera colaborativa con tus amigos y familiares
+                para visitar vuestros destinos turísticos soñados en tiempo óptimo.
+              </p>
               <Button
+                as="a"
+                href="/tour-builder"
                 variant="outline-success"
-                className="ot-tour-card__btn d-inline-flex align-items-center justify-content-center load-more-button"
-                style={{ gap: '0.5rem' }}
-                onClick={handleLoadMoreButton}
+                className="ot-index__create-tour-button d-inline-flex align-items-center justify-content-center"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                  <path fillRule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z" />
-                  <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466" />
-                </svg>
-                Cargar más
+                Crear un tour privado
               </Button>
-            </div>
-          )}
-        </>
-      }
+            </section>
+          </>
+        }
 
-    </Container>
+      </Container>
+    </>
   );
 }
 export default Index;

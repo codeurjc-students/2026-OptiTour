@@ -29,7 +29,7 @@ export default [
         route("/admin/tours", "routes/admin/tour-management.tsx")
     ]),
     layout("layouts/protected-layout.tsx", [
-        route("/route-builder", "routes/route-builder/route-builder.tsx"),
+        route("/tour-builder", "routes/route-builder/route-builder.tsx"),
     ]),
     route("/login", "routes/login/login.tsx")
 ] satisfies RouteConfig;

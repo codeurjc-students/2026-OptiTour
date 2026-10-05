@@ -39,8 +39,8 @@ test('Checks if tour-service calls the API and receive data correctly', async ()
     ];
 
     for (let i = 0; i < 5; i++) {
-        tourTitles.push(await screen.findByText(expectedTitles[i]));
-        tourDescs.push(await screen.findByText(expectedDescs[i]));
+        tourTitles.push(...await screen.findAllByText(expectedTitles[i]));
+        tourDescs.push(...await screen.findAllByText(expectedDescs[i]));
     }
 
     // Then, we check all of this texts are in the document:
