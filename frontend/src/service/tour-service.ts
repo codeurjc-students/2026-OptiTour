@@ -1,12 +1,12 @@
 import type { TourDTO } from "../dto/tour-dto";
 import type { PageResponse } from "../routes/page-response";
 import { ApiError } from "./api-error";
+import { API_BASE_URL } from "./api-config";
 
-const base_url = import.meta.env.VITE_API_BASE_URL || "https://localhost:443/api/v1";
 const base_tour_url = 'tour';
 
 export async function getAllTours() {
-    const url = `${base_url}/${base_tour_url}/all`;
+    const url = `${API_BASE_URL}/${base_tour_url}/all`;
 
     const response = await fetch(url);
 
@@ -19,7 +19,7 @@ export async function getAllTours() {
 }
 
 export async function getToursByPage(page: number, size: number): Promise<PageResponse<TourDTO>> {
-    const url = `${base_url}/${base_tour_url}/?page=${page}&size=${size}`;
+    const url = `${API_BASE_URL}/${base_tour_url}/?page=${page}&size=${size}`;
 
     const response = await fetch(url);
 
@@ -32,7 +32,7 @@ export async function getToursByPage(page: number, size: number): Promise<PageRe
 }
 
 export async function getTourById(id: number) {
-    const url = `${base_url}/${base_tour_url}/${id}`;
+    const url = `${API_BASE_URL}/${base_tour_url}/${id}`;
 
     const response = await fetch(url);
 

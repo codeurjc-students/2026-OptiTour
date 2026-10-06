@@ -5,6 +5,14 @@ import { reactRouter } from '@react-router/dev/vite'
 export default defineConfig(() => {
   return {
     plugins: [!process.env.VITEST ? reactRouter() : null],
+    server: {
+      proxy: {
+        '/api': {
+          target: 'https://localhost:443',
+          secure: false
+        }
+      }
+    },
     test: {
       environment: 'jsdom',
       globals: true,

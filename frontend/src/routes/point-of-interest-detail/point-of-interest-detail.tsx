@@ -11,8 +11,9 @@ import { ApiError } from '../../service/api-error';
 import ErrorPage from '../../components/error-page/error-page';
 import InteractiveMap from '../../components/interactive-map/interactive-map';
 import type { ImageDTO } from '../../dto/image-dto';
+import { API_BASE_URL } from '../../service/api-config';
 
-const base_url = import.meta.env.VITE_API_BASE_URL ? `${import.meta.env.VITE_API_BASE_URL}` : "https://localhost:443/api/v1";
+const base_url = API_BASE_URL;
 
 export default function PointOfInterestDetail() {
 
