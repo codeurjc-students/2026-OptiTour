@@ -213,7 +213,7 @@ Este documento registra el uso que se le da a diferentes herramientas de intelig
 **Fase:** Fase 3
 * **Objetivo:** Resolución de problemas en GitHub Actions.
 * **Herramienta:** Google Antigravty (con acceso a los ficheros del proyecto)
-* **Modelo concreto:** GitHub Copilot
+* **Modelo concreto:** Google Gemini 3.1 Pro
 * **Cómo ha sido usada:** Se utiliza la IA como apoyo para la resolución de múltiples problemas producidos en el sistema de CI:
   * La IA detecta que ciertas imágenes de ejemplo comenzaban por mayúscula: Al usar runners de GitHub Actions con Ubuntu, el sistema era sensible a mayúsculas y el backend no era capaz de cargar en base de datos las imágenes de ejemplo, causando fallo en los jobs tanto de backend como en frontend.
   * Después, el job de frontend sigue dando fallo. La IA descubre una condición de carrera causada por el gran volumen de imágenes que ahora carga el backend al iniciarse. Aunque anteriormente había un sleep de 30 segundos para segurar que el backend se levantaba antes que el frontend, estos segundos se volvieron insuficientes. Por ello, la IA propuso implementar una espera inteligente, que consulta en bucle cada 5 segundos si el backend ha terminado ya de iniciarse, esperando de este modo sólo el tiempo necesario y asegurando que cuando el frontend se inicie el backend esté completamente operativo. Para ello la IA generó el siguiente código: (complete-workflow.yml, líneas 93-94)
