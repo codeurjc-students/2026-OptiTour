@@ -177,7 +177,7 @@ Este documento registra el uso que se le da a diferentes herramientas de intelig
 * **Objetivo:** Resolución de errores de contexto de React Router en pruebas unitarias de frontend con Vitest.
 * **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
 * **Modelo concreto:** Google Gemini 3.1 Pro
-* **Cómo ha sido usada:** Se utiliza la IA para solucionar un error en las pruebas unitarias que indicaba que el hook `useLocation()` solo puede usarse dentro de un componente `<Router>`, al formar parte de la librería React Router. La herramienta explicó el uso de `<MemoryRouter>` y cómo inyectar rutas ficticias usando la propiedad `initialEntries` para falsear el estado de la URL, proporcionando el siguiente patrón de envoltorio para los tests:
+* **Cómo ha sido usada:** Se utiliza la IA para solucionar un error en las pruebas unitarias que indicaba que el hook `useLocation()` solo puede usarse dentro de un componente.`<Router>`, al formar parte de la librería React Router. La herramienta explicó el uso de `<MemoryRouter>` y cómo inyectar rutas ficticias usando la propiedad `initialEntries` para falsear el estado de la URL, proporcionando el siguiente patrón de envoltorio para los tests:
   ```tsx
   render(
       <MemoryRouter initialEntries={["/tour/1"]}>
@@ -187,3 +187,39 @@ Este documento registra el uso que se le da a diferentes herramientas de intelig
       </MemoryRouter>
   );
   ```
+
+* **Fecha:** 01/10/2026
+* **Fase:** Fase 3
+* **Objetivo:** Remodelación del navbar de usuario autenticado.
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro
+* **Cómo ha sido usada:** Se utilizó la IA para pedirle renovar los aspectos estéticos y de accesibilidad del navbar cuando un usuario ha iniciado sesión. Al botón del perfil se le añade un desplegable que permite acceder a todas las páginas del área personal sin tener que pasar por el perfil, eliminando el botón de cerrar sesión para moverlo a este desplegable. El navbar pasa a ser el mismo para administradores, moviendo el botón de panel de admnisitrador al desplegable.
+
+* **Fecha:** 03/10/2026
+* **Fase:** Fase 3
+* **Objetivo:** Guardar imágenes de ejemplo en SampleDataService.
+* **Herramienta:** Chat de Visual Studio Code
+* **Modelo concreto:** GitHub Copilot
+* **Cómo ha sido usada:** Se le pidió a la IA que añadiese llamadas a los métodos addImageToTour y addImageToPoi en la clase SampleDataService para añadir 540 nuevas imágenes a los tour y puntos de interés.
+
+* **Fecha:** 05/10/2026
+**Fase:** Fase 3
+* **Objetivo:** Remodelación de la página principal.
+* **Herramienta:** Chat de Visual Studio Code
+* **Modelo concreto:** GitHub Copilot
+* **Cómo ha sido usada:** Se utiliza la IA para renovar estéticamente la página principal de la aplicación. Para ello, el carrusel de imágenes pasa a ocupar toda la parte superior de la página a modo de portada, mostrando imágenes e información de los 4 primeros tour que se cargan en la primera página de inicio mediante paginación. La lista de tours en cuadrícula junto a la barra de búqueda quedan ahora debajo del carrusel, y se añade sección para que el usuario acceda directamente a la página de creación de tour, pues hasta ahora solo era posible acceder a través de un botón en la página Mis Tours del usuario regsitrado, aún tratándose de la principal funcionalidad del proyecto.
+
+* **Fecha:** 05/10/2026
+**Fase:** Fase 3
+* **Objetivo:** Resolución de problemas en GitHub Actions.
+* **Herramienta:** Google Antigravty (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** GitHub Copilot
+* **Cómo ha sido usada:** Se utiliza la IA como apoyo para la resolución de múltiples problemas producidos en el sistema de CI:
+  * La IA detecta que ciertas imágenes de ejemplo comenzaban por mayúscula: Al usar runners de GitHub Actions con Ubuntu, el sistema era sensible a mayúsculas y el backend no era capaz de cargar en base de datos las imágenes de ejemplo, causando fallo en los jobs tanto de backend como en frontend.
+  * Después, el job de frontend sigue dando fallo. La IA descubre una condición de carrera causada por el gran volumen de imágenes que ahora carga el backend al iniciarse. Aunque anteriormente había un sleep de 30 segundos para segurar que el backend se levantaba antes que el frontend, estos segundos se volvieron insuficientes. Por ello, la IA propuso implementar una espera inteligente, que consulta en bucle cada 5 segundos si el backend ha terminado ya de iniciarse, esperando de este modo sólo el tiempo necesario y asegurando que cuando el frontend se inicie el backend esté completamente operativo. Para ello la IA generó el siguiente código: (complete-workflow.yml, líneas 93-94)
+  
+  ```yml
+  - name: Wait for backend startup
+        run: timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/v1/tour/1)" != "200" ]]; do sleep 5; done' || false
+  ```
+  

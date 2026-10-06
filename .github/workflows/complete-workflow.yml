@@ -34,7 +34,7 @@ jobs:
           distribution: 'temurin'
           java-version: '25'
       
-      # We'll also need to run backend, TourServiceE2ETest can call the api.
+      # We'll also need to run backend, so E2E tests can call the api.
       # To do that, it's necessary to run a mysql database:
 
       - name: Configure and run MySQL
