@@ -1,10 +1,10 @@
 import { ApiError } from "./api-error";
+import { API_BASE_URL } from "./api-config";
 
-const base_url = import.meta.env.VITE_API_BASE_URL || "https://localhost:443/api/v1";
 const base_poi_url = 'point-of-interest';
 
 export async function getPoiById(id: number) {
-    const url = `${base_url}/${base_poi_url}/${id}`;
+    const url = `${API_BASE_URL}/${base_poi_url}/${id}`;
 
     const response = await fetch(url);
 

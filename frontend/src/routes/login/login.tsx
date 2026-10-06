@@ -7,8 +7,9 @@ import { useEffect, useState, type SubmitEvent } from 'react';
 import Spinner from '../../components/spinner/spinner';
 import ErrorCard from '../../components/error-card/error-card';
 import { useSearchParams } from 'react-router-dom';
+import { API_BASE_URL } from '../../service/api-config';
 
-const base_url = import.meta.env.VITE_API_BASE_URL ? `${import.meta.env.VITE_API_BASE_URL}` : "https://localhost:443/api/v1";
+const base_url = API_BASE_URL;
 
 function Login() {
 

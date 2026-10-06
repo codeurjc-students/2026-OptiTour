@@ -5,10 +5,11 @@ import './index.css';
 import type { TourDTO } from '../../dto/tour-dto';
 import { useEffect, useState } from 'react';
 import { getToursByPage } from '../../service/tour-service';
+import { API_BASE_URL } from '../../service/api-config';
 import Spinner from '../../components/spinner/spinner';
 import ErrorCard from '../../components/error-card/error-card';
 
-const base_url = import.meta.env.VITE_API_BASE_URL ? `${import.meta.env.VITE_API_BASE_URL}` : "https://localhost:443/api/v1";
+const base_url = API_BASE_URL;
 
 function Index() {
   const [tours, setTours] = useState<TourDTO[]>();

@@ -2,8 +2,9 @@ import { Button, Carousel } from 'react-bootstrap';
 import logo from '../../assets/OptiTourLogo.png';
 import './image-carousel.css';
 import type { TourDTO } from '../../dto/tour-dto';
+import { API_BASE_URL } from '../../service/api-config';
 
-const base_url = import.meta.env.VITE_API_BASE_URL ? `${import.meta.env.VITE_API_BASE_URL}` : "https://localhost:443/api/v1";
+const base_url = API_BASE_URL;
 
 interface ImageCarouselProps {
     images?: string[];
