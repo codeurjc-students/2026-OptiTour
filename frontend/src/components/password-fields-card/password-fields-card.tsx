@@ -11,18 +11,18 @@ const eyeIcon = (
 function PasswordFieldsCard() {
     return (
         <Card className="ot-password-fields">
-            <Form.Group controlId="accountPassword" className="ot-password-fields__field">
+            <Form.Group controlId="password" className="ot-password-fields__field">
                 <Form.Label>Contraseña</Form.Label>
                 <div className="ot-password-fields__input-icon">
-                    <Form.Control type="password" />
+                    <Form.Control type="password" name="password" required />
                     {eyeIcon}
                 </div>
             </Form.Group>
 
-            <Form.Group controlId="accountPasswordRepeat" className="ot-password-fields__field">
+            <Form.Group controlId="passwordRepeat" className="ot-password-fields__field">
                 <Form.Label>Repetir contraseña</Form.Label>
                 <div className="ot-password-fields__input-icon">
-                    <Form.Control type="password" />
+                    <Form.Control type="password" name="passwordRepeat" required />
                     {eyeIcon}
                 </div>
             </Form.Group>

@@ -26,21 +26,21 @@ function AccountFieldsCard({ avatarSrc }: AccountFieldsCardProps) {
                 <Col md={8}>
                     <Row className="g-3">
                         <Col sm={6}>
-                            <Form.Group controlId="accountEmail">
+                            <Form.Group controlId="email">
                                 <Form.Label>Correo electrónico</Form.Label>
-                                <Form.Control type="email" />
+                                <Form.Control type="email" name="email" required />
                             </Form.Group>
                         </Col>
                         <Col sm={6}>
-                            <Form.Group controlId="accountPhone">
+                            <Form.Group controlId="phone">
                                 <Form.Label>Número de teléfono</Form.Label>
-                                <Form.Control type="tel" />
+                                <Form.Control type="tel" name="phone" required />
                             </Form.Group>
                         </Col>
                         <Col xs={12}>
-                            <Form.Group controlId="accountUsername">
+                            <Form.Group controlId="username">
                                 <Form.Label>Nombre de usuario</Form.Label>
-                                <Form.Control type="text" />
+                                <Form.Control type="text" name="userName" required />
                             </Form.Group>
                         </Col>
                     </Row>
