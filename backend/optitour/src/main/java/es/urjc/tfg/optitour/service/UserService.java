@@ -41,4 +41,8 @@ public class UserService {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "No se encontró el usuario con el id " + id);
     }
+
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
 }
