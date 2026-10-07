@@ -18,9 +18,10 @@ function AccountFieldsCard({ avatarSrc }: AccountFieldsCardProps) {
                         )}
                     </div>
                     <span className="ot-account-fields__avatar-label">Foto de perfil</span>
-                    <Button variant="outline-dark" className="ot-account-fields__upload-btn">
+                    <Button variant="outline-dark" className="ot-account-fields__upload-btn" as="label" htmlFor="upload-image">
                         Subir archivo
                     </Button>
+                    <input type="file" className="d-none" id="upload-image" name="image" accept=".png, .jpg, .webp" />
                 </Col>
 
                 <Col md={8}>

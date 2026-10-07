@@ -4,7 +4,7 @@ import AccountFieldsCard from '../../components/account-fields-card/account-fiel
 import PasswordFieldsCard from '../../components/password-fields-card/password-fields-card';
 import './signup.css';
 import { useActionState } from 'react';
-import { signup } from '../../service/user-service';
+import { signup, uploadUserImage } from '../../service/user-service';
 import { useNavigate } from 'react-router';
 import ErrorCard from '../../components/error-card/error-card';
 import { useAuthStore } from '../../store/auth-store';
@@ -12,7 +12,7 @@ import { useAuthStore } from '../../store/auth-store';
 function Signup() {
     const navigate = useNavigate();
 
-    const { doLogin } = useAuthStore();
+    const { doLogin, refreshProfileImage } = useAuthStore();
 
     const [{ error }, formAction, isLoading] = useActionState(
         handleSignup,
@@ -36,11 +36,17 @@ function Signup() {
                     userName: userName,
                     password: password
                 });
-                await doLogin({ email: email, password: password });
+                const newUser = await doLogin({ email: email, password: password });
+
+                const image: File = formData.get("image") as File;
+
+                if (image) {
+                    await uploadUserImage(image, newUser.id);
+                    refreshProfileImage();
+                }
             }
-            else {
+            else
                 errMessage = "Las contraseñas no coinciden";
-            }
         }
         catch (err) {
             errMessage = err instanceof Error

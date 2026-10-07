@@ -19,3 +19,17 @@ export async function signup(newUser: UserCreateDTO) {
 
     return await response.json();
 }
+
+export async function uploadUserImage(image: File, id: number) {
+    const formData = new FormData();
+    formData.append("file", image);
+
+    const url = `${base_url}/user/${id}/image`;
+    const response = await fetch(url, {
+        method: "POST",
+        credentials: "include",
+        body: formData
+    });
+
+    return response;
+}

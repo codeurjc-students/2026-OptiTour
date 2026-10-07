@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthStore } from "../../store/auth-store";
 import { API_BASE_URL } from "../../service/api-config";
 
@@ -11,12 +11,17 @@ interface ProfileImageProps {
 
 export default function ProfileImage({ className = "ot-my-profile__avatar" }: ProfileImageProps = {}) {
     const [imageError, setImageError] = useState(false);
-    const { loggedUser } = useAuthStore();
+    const { loggedUser, imageVersion } = useAuthStore();
+
+    useEffect(() => {
+        setImageError(false);
+    }, [loggedUser?.id, imageVersion]);
+
     return (
         <div className={className}>
             {loggedUser?.id && !imageError ? (
                 <img
-                    src={`${base_url}/user/${loggedUser.id}/image`}
+                    src={`${base_url}/user/${loggedUser.id}/image?v=${imageVersion}`}
                     alt="Avatar del perfil"
                     style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
                     onError={() => setImageError(true)}
