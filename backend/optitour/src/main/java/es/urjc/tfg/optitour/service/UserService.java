@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.User;
 import es.urjc.tfg.optitour.repository.UserRepository;
 
@@ -44,5 +45,25 @@ public class UserService {
 
     public void saveUser(User user) {
         userRepository.save(user);
+    }
+
+    public void addImageToUser(long id, Image image, String loggedEmail) {
+        Optional<User> op = userRepository.findById(id);
+
+        if (!op.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "No se encuentra ningún usuario con el id " + id + "al que añadir la imagen");
+        else {
+            User targetUser = op.get();
+
+            // If target user is not logged, image can't be modified
+            if (!targetUser.getEmail().equals(getUserByEmail(loggedEmail).getEmail()))
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                        "No tienes permiso para modificar la imagen de perfil de otros usuarios.");
+
+            targetUser.setProfileImage(image.getImageFile());
+            saveUser(targetUser);
+        }
+
     }
 }
