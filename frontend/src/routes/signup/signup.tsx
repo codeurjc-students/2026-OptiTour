@@ -66,7 +66,6 @@ function Signup() {
                 <Container className="ot-register__container">
                     <h1 className="ot-register__title">Registro de usuario</h1>
 
-
                     <div className="ot-register__main">
                         <AccountFieldsCard />
                     </div>
