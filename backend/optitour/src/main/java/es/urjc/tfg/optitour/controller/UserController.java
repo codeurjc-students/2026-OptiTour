@@ -6,10 +6,8 @@ import java.security.Principal;
 import java.sql.Blob;
 import java.sql.SQLException;
 
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.MediaTypeFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,30 +59,20 @@ public class UserController {
 
     @GetMapping("/{id}/image")
     public ResponseEntity<Object> downloadImage(@PathVariable long id) throws SQLException {
-        User user = userService.getUserById(id); // We get the user we want it's image
+        byte[] image = userService.getProfileImage(id);
 
-        if (user.getProfileImage() != null) {
-            // Now, if image is not null, we get image file and return it in a
-            // ResponseEntity
-            Blob image = user.getProfileImage();
-            InputStreamResource imageFile = new InputStreamResource(image.getBinaryStream());
-
-            // We obtain the filetype (image format or jpeg by default) to indicate it in
-            // ResponseEntity
-            MediaType mediaType = MediaTypeFactory.getMediaType(imageFile).orElse(MediaType.IMAGE_JPEG);
-
-            // We return the image
+        if (image != null) {
             return ResponseEntity
                     .ok()
-                    .contentType(mediaType) // We indicate the type of the file in body
-                    .body(imageFile); // We set the body of the response to an image
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(image);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping("/")
-    public ResponseEntity<UserDTO> postMethodName(@RequestBody UserCreateDTO newUserDTO) {
+    public ResponseEntity<UserDTO> signupUser(@RequestBody UserCreateDTO newUserDTO) {
         User newUser = new User(newUserDTO.email(), encoder.encode(newUserDTO.password()), newUserDTO.userName(),
                 newUserDTO.phoneNumber(), false,
                 (Blob) null, "USER");

@@ -4,7 +4,7 @@ import type { authDTO } from "../dto/auth-dto";
 import type { UserDTO } from "../dto/user-dto";
 import { getLoggedUser, login, logout } from "../service/auth-service";
 
-interface AuthStore {
+export interface AuthStore {
     loggedUser: UserDTO | null;
     imageVersion: number;
     setLoggedUser: (user: UserDTO | null) => void;

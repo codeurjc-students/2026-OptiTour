@@ -39,7 +39,6 @@ public class TourServiceClientE2ETest {
         options.addArguments("--window-size=1920,1080");
 
         driver = new ChromeDriver(options);
-
     }
 
     // After each test, we tear down the driver if it's active.

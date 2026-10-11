@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router';
 import ErrorCard from '../../components/error-card/error-card';
 import { useAuthStore } from '../../store/auth-store';
 
-function Signup() {
+export function Signup() {
     const navigate = useNavigate();
 
     const { doLogin, refreshProfileImage } = useAuthStore();
