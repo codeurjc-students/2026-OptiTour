@@ -222,4 +222,121 @@ Este documento registra el uso que se le da a diferentes herramientas de intelig
   - name: Wait for backend startup
         run: timeout 180 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api/v1/tour/1)" != "200" ]]; do sleep 5; done' || false
   ```
-  
+
+* **Fecha:** 08/10/2026
+* **Fase:** Fase 3
+* **Objetivo:** Implementación de la previsualización de la imagen de perfil en el formulario de registro.
+* **Herramienta:** Chat de Visual Studio Code
+* **Modelo concreto:** GitHub Copilot
+* **Cómo ha sido usada:** Se utilizó la IA como guía para implementar la previsualización de una imagen seleccionada antes de enviar el formulario. La IA explicó la diferencia entre el objeto `File`, que se envía al backend mediante `FormData`, y la URL temporal necesaria para mostrarlo en un elemento `img`. Para ello, se utilizó `URL.createObjectURL(file)` al seleccionar el archivo y `URL.revokeObjectURL` para liberar la URL temporal cuando deja de ser necesaria. También se orientó el renderizado condicional para mantener el texto de foto de perfil cuando no se ha seleccionado ninguna imagen.
+
+* **Fecha:** 11/10/2026
+* **Fase:** Fase 3
+* **Objetivo:** Resolución de errores en la prueba E2E de cliente para el registro y acceso al perfil de usuario.
+* **Herramienta:** Chat de Visual Studio Code
+* **Modelo concreto:** GitHub Copilot
+* **Cómo ha sido usada:** Se utilizó la IA para investigar un error de acceso denegado (403 Forbidden) que aparecía durante la prueba Selenium del registro de usuario. La IA identificó que las cookies de autenticación se devolvían con los atributos `Secure` y `SameSite=None`, lo que impedía conservar correctamente la sesión al acceder al frontend mediante el proxy HTTP de Vite en desarrollo. Como solución, se configuró el proxy de desarrollo para adaptar las cookies (`SameSite=Lax` y sin `Secure`) y se hizo que la prueba utilizase un correo electrónico único en cada ejecución. Además, se añadió una espera explícita de Selenium para esperar a la navegación posterior al registro. La IA añadió el siguiente bloque de código:(UserServiceClientE2ETest.java, líneas 62-70)
+
+``` java
+ wait.until(urlToBe("http://localhost:5173/"));
+
+ // ... 
+
+ WebElement userName = wait.until(
+                visibilityOfElementLocated(By.className("ot-my-profile__name")));
+        WebElement email = wait.until(visibilityOfElementLocated(By.xpath(
+                "//dt[normalize-space()='Correo electrónico']/following-sibling::dd")));
+        WebElement phone = wait.until(visibilityOfElementLocated(By.xpath(
+                "//dt[normalize-space()='Número de teléfono']/following-sibling::dd")));
+```
+
+* **Fecha:** 11/10/2026
+* **Fase:** Fase 3
+* **Objetivo:** Mockeo del hook de Zustand (`useAuthStore`) y resolución de errores de tipos en test unitarios de frontend.
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro
+* **Cómo ha sido usada:** Se utilizó la IA para resolver problemas con el uso del store en los test de frontend. En las pruebas de integraciónse implementa el mock del hook con `vi.mock("../../src/store/auth-store")`. En las pruebas unitarias (`signup-test.tsx`).
+La IA generó los siguientes bloques de código en los test unitarios (signup-integration-test.tsx, líneas 7-29):
+
+``` tsx
+const action = vi.hoisted(() => vi.fn());
+
+vi.mock("../../src/service/user-service");
+vi.mock("../../src/store/auth-store", () => {
+    const doLogin = vi.fn().mockResolvedValue({ id: 10 });
+    const refreshProfileImage = vi.fn();
+    const useAuthStore = Object.assign(
+        vi.fn(() => ({ doLogin, refreshProfileImage })),
+        { doLogin, refreshProfileImage }
+    );
+    return { useAuthStore };
+});
+
+const useAuthStore = useAuthStoreOriginal as typeof useAuthStoreOriginal & {
+    doLogin: ReturnType<typeof vi.fn>;
+    refreshProfileImage: ReturnType<typeof vi.fn>;
+};
+
+vi.mock("react-router", () => ({ useNavigate: () => vi.fn() }));
+vi.mock("react", async () => {
+    const actual = await vi.importActual<typeof import("react")>("react");
+    return {
+        ...actual,
+        useActionState: (
+            callback: (state: unknown, formData: FormData) => Promise<unknown>,
+            initialState: unknown
+        ) => {
+            const [state, setState] = actual.useState(initialState);
+            action.mockImplementation(async (formData: FormData) => {
+                const res = await callback(state, formData);
+                await actual.act(async () => {
+                    setState(res);
+                });
+            });
+            return [state, action, false];
+        }
+    };
+});
+```
+
+Y los siguientes bloques (signup-test, líneas 10-47): 
+``` tsx
+const action = vi.hoisted(() => vi.fn());
+
+vi.mock("../../src/service/user-service");
+vi.mock("../../src/store/auth-store", () => {
+    const doLogin = vi.fn().mockResolvedValue({ id: 10 });
+    const refreshProfileImage = vi.fn();
+    const useAuthStore = Object.assign(
+        vi.fn(() => ({ doLogin, refreshProfileImage })),
+        { doLogin, refreshProfileImage }
+    );
+    return { useAuthStore };
+});
+
+const useAuthStore = useAuthStoreOriginal as typeof useAuthStoreOriginal & {
+    doLogin: ReturnType<typeof vi.fn>;
+    refreshProfileImage: ReturnType<typeof vi.fn>;
+};
+
+vi.mock("react-router", () => ({ useNavigate: () => vi.fn() }));
+vi.mock("react", async () => {
+    const actual = await vi.importActual<typeof import("react")>("react");
+    return {
+        ...actual,
+        useActionState: (
+            callback: (state: unknown, formData: FormData) => Promise<unknown>,
+            initialState: unknown
+        ) => {
+            const [state, setState] = actual.useState(initialState);
+            action.mockImplementation(async (formData: FormData) => {
+                const res = await callback(state, formData);
+                await actual.act(async () => {
+                    setState(res);
+                });
+            });
+            return [state, action, false];
+        }
+    };
+});
+```

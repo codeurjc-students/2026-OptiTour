@@ -4,10 +4,12 @@ import type { authDTO } from "../dto/auth-dto";
 import type { UserDTO } from "../dto/user-dto";
 import { getLoggedUser, login, logout } from "../service/auth-service";
 
-interface AuthStore {
+export interface AuthStore {
     loggedUser: UserDTO | null;
+    imageVersion: number;
     setLoggedUser: (user: UserDTO | null) => void;
-    doLogin: (credentials: authDTO) => Promise<void>;
+    refreshProfileImage: () => void;
+    doLogin: (credentials: authDTO) => Promise<UserDTO>;
     getLogged: () => Promise<void>;
     doLogout: () => Promise<void>;
 }
@@ -16,11 +18,14 @@ export const useAuthStore = create<AuthStore>()(
     persist(
         (set) => ({
             loggedUser: null,
+            imageVersion: 0,
             setLoggedUser: (user) => set({ loggedUser: user }),
-            doLogin: async ({ email, password }: authDTO) => {
+            refreshProfileImage: () => set((state) => ({ imageVersion: state.imageVersion + 1 })),
+            doLogin: async ({ email, password }: authDTO): Promise<UserDTO> => {
                 await login({ email, password });
                 const user = await getLoggedUser();
                 set({ loggedUser: user });
+                return user;
             },
             getLogged: async () => {
                 try {

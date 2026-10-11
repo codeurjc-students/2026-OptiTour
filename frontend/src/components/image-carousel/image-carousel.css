@@ -64,7 +64,7 @@
 .ot-carousel .ot-login__visual-content {
     position: absolute;
     top: 50%;
-    left: clamp(5rem, 10vw, 8rem);
+    left: clamp(7rem, 15vw, 16rem);
     z-index: 1;
     width: min(90%, 420px);
     padding: 2rem 1.75rem;
@@ -129,6 +129,33 @@
     );
     content: '';
     pointer-events: none;
+}
+
+@media (min-width: 576px) and (max-width: 991.98px) {
+    .ot-carousel .ot-login__visual-content {
+        width: min(75%, 350px);
+        padding: 1.35rem 1.15rem;
+    }
+
+    .ot-carousel .ot-login__visual-logo {
+        width: min(100%, 150px);
+        margin-bottom: 0.75rem;
+    }
+
+    .ot-carousel .ot-carousel__slide-title {
+        font-size: 1.4rem;
+    }
+
+    .ot-carousel .ot-login__visual-tagline {
+        max-width: 270px;
+        font-size: 0.9rem;
+        line-height: 1.35;
+    }
+
+    .ot-carousel__slide-button {
+        margin-top: 0.75rem;
+        padding: 0.35rem 0.9rem;
+    }
 }
 
 .ot-carousel__slide-caption {

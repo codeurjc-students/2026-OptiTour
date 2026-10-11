@@ -26,7 +26,7 @@ test('Point of interest detail displays requierded poi information properly', as
         ]
     };
 
-    vi.mocked(service.getPoiById).mockResolvedValue(testPoi as PointOfInterestDTO);
+    vi.mocked(service.getPoiById).mockResolvedValue(testPoi as unknown as PointOfInterestDTO);
 
     render(
         <MemoryRouter initialEntries={["/tour/1"]}>

@@ -9,7 +9,20 @@ export default defineConfig(() => {
       proxy: {
         '/api': {
           target: 'https://localhost:443',
-          secure: false
+          secure: false,
+          configure: (proxy) => {
+            proxy.on('proxyRes', (proxyRes) => {
+              const setCookie = proxyRes.headers['set-cookie'];
+
+              if (setCookie) {
+                proxyRes.headers['set-cookie'] = setCookie.map((cookie) =>
+                  cookie
+                    .replace(/;\s*Secure/gi, '')
+                    .replace(/SameSite=None/gi, 'SameSite=Lax')
+                );
+              }
+            });
+          }
         }
       }
     },
