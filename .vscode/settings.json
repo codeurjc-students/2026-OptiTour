@@ -15,7 +15,5 @@
     },
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [],
-    "java.import.generatesMetadataFilesAtProjectRoot": false,
-    "java.format.settings.url": "${workspaceFolder}/.vscode/java-formatter.xml",
-    "java.format.settings.profile": "OptiTour"
+    "java.import.generatesMetadataFilesAtProjectRoot": false
 }

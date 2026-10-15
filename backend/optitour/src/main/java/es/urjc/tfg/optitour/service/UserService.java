@@ -89,4 +89,15 @@ public class UserService {
                             + "Introduce otro correo electrónico e inténtalo de nuevo.");
         }
     }
+
+    public void validateUniqueUserName(String userName) {
+        Optional<User> op = userRepository.findByUserName(userName);
+
+        if (op.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "El nombre de usuario escogido ya está siendo utilizado por otro usuario.\n"
+                            + "Introduce otro nombre de usuario e inténtalo de nuevo.");
+        }
+        ;
+    }
 }

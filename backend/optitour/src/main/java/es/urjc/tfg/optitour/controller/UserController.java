@@ -59,7 +59,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}/image")
-    public ResponseEntity<Object> downloadImage(@PathVariable long id) throws SQLException {
+    public ResponseEntity<Object> downloadImage(
+            @PathVariable
+            long id) throws SQLException {
         byte[] image = userService.getProfileImage(id);
 
         if (image != null) {
@@ -73,8 +75,12 @@ public class UserController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<UserDTO> signupUser(@Valid @RequestBody UserCreateDTO newUserDTO) {
+    public ResponseEntity<UserDTO> signupUser(
+            @Valid
+            @RequestBody
+            UserCreateDTO newUserDTO) {
         userService.validateUniqueEmail(newUserDTO.email());
+        userService.validateUniqueUserName(newUserDTO.userName());
         User newUser = new User(newUserDTO.email(), encoder.encode(newUserDTO.password()), newUserDTO.userName(),
                 newUserDTO.phoneNumber(), false,
                 (Blob) null, "USER");
@@ -87,7 +93,11 @@ public class UserController {
     }
 
     @PostMapping("/{id}/image")
-    public ResponseEntity<ImageDTO> uploadImage(@PathVariable long id, @RequestParam("file") MultipartFile imageFile,
+    public ResponseEntity<ImageDTO> uploadImage(
+            @PathVariable
+            long id,
+            @RequestParam("file")
+            MultipartFile imageFile,
             HttpServletRequest request) throws IOException {
         if (imageFile.isEmpty())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El archivo de la imagen no puede estar vacío");
