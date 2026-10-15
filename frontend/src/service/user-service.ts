@@ -13,8 +13,8 @@ export async function signup(newUser: UserCreateDTO) {
     });
 
     if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Registro ${response.status}: ${errorText}`);
+        const errorData = await response.json();
+        throw new Error(errorData.message);
     }
 
     return await response.json();

@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
+import jakarta.validation.Valid;
 import es.urjc.tfg.optitour.DTO.ImageDTO;
 import es.urjc.tfg.optitour.DTO.UserCreateDTO;
 import es.urjc.tfg.optitour.DTO.UserDTO;
@@ -72,7 +73,7 @@ public class UserController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<UserDTO> signupUser(@RequestBody UserCreateDTO newUserDTO) {
+    public ResponseEntity<UserDTO> signupUser(@Valid @RequestBody UserCreateDTO newUserDTO) {
         userService.validateUniqueEmail(newUserDTO.email());
         User newUser = new User(newUserDTO.email(), encoder.encode(newUserDTO.password()), newUserDTO.userName(),
                 newUserDTO.phoneNumber(), false,
