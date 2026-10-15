@@ -37,7 +37,9 @@ function Login() {
       navigate(redirectTo, { replace: true });
     }
     catch (error) {
-      setError("Credenciales incorrectas.");
+      error instanceof Error
+        ? setError(error.message)
+        : setError("Credenciales incorrectas.");
     }
     finally {
       setLoading(false);
