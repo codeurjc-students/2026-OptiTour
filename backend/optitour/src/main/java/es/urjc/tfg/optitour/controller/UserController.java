@@ -73,6 +73,7 @@ public class UserController {
 
     @PostMapping("/")
     public ResponseEntity<UserDTO> signupUser(@RequestBody UserCreateDTO newUserDTO) {
+        userService.validateUniqueEmail(newUserDTO.email());
         User newUser = new User(newUserDTO.email(), encoder.encode(newUserDTO.password()), newUserDTO.userName(),
                 newUserDTO.phoneNumber(), false,
                 (Blob) null, "USER");

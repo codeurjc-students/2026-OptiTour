@@ -79,4 +79,14 @@ public class UserService {
         }
 
     }
+
+    public void validateUniqueEmail(String email) {
+        Optional<User> op = userRepository.findByEmail(email);
+
+        if (!op.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "El correo electrónico escogido ya está siendo utilizado por otro usuario.\n"
+                            + "Introduce otro correo electrónico e inténtalo de nuevo.");
+        }
+    }
 }
