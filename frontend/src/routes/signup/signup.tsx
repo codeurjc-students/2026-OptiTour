@@ -13,6 +13,9 @@ import { signupSchema } from '../../schemas/signup-schema';
 import type z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+type SignupFormInput = z.input<typeof signupSchema>;
+type SignupFormData = z.output<typeof signupSchema>;
+
 export function Signup() {
     const navigate = useNavigate();
 
@@ -21,7 +24,7 @@ export function Signup() {
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setLoading] = useState<boolean>(false);
 
-    const methods = useForm<z.infer<typeof signupSchema>>({
+    const methods = useForm<SignupFormInput, undefined, SignupFormData>({
         resolver: zodResolver(signupSchema),
         mode: "onChange"
     });
@@ -30,7 +33,7 @@ export function Signup() {
         handleSubmit: handleFormSubmit,
     } = methods;
 
-    async function handleSubmit(data: z.infer<typeof signupSchema>) {
+    async function handleSubmit(data: SignupFormData) {
         try {
             setLoading(true);
             await signup({
