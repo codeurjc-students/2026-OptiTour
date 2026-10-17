@@ -11,7 +11,7 @@ public record UserCreateDTO(
         @Size(max = 30, message = "El correo electrónico no puede superar los 30 caracteres.")
         String email,
 
-        @Size(max = 9, message = "El teléfono no puede superar los 9 caracteres.")
+        @Size(max = 12, message = "El teléfono no puede superar los 12 caracteres.")
         @Pattern(regexp = "^\\+?[0-9 ]+$", message = "El teléfono solo puede contener números, espacios y opcionalmente el símbolo '+' al inicio.")
         String phoneNumber,
 

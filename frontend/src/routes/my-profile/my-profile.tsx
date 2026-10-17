@@ -24,8 +24,12 @@ function MyProfile() {
                     <dd>{loggedUser!.email}</dd>
                 </div>
                 <div>
-                    <dt>Número de teléfono</dt>
-                    <dd>{loggedUser!.phoneNumber}</dd>
+                    {loggedUser!.phoneNumber &&
+                        <>
+                            <dt>Número de teléfono</dt>
+                            <dd>{loggedUser!.phoneNumber}</dd>
+                        </>
+                    }
                 </div>
             </dl>
 

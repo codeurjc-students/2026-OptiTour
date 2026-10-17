@@ -1,10 +1,16 @@
 import { Card, Row, Col, Form, Button } from 'react-bootstrap';
 import './account-fields-card.css';
 import { useEffect, useState } from 'react';
+import { useController, useFormContext } from 'react-hook-form';
 
 function AccountFieldsCard() {
     const [_image, setImage] = useState<File | null>(null);
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+
+    const { control } = useFormContext();
+    const emailField = useController({ name: "email", control });
+    const phoneField = useController({ name: "phone", control });
+    const userNameField = useController({ name: "userName", control });
 
     function handlePreview(event: React.ChangeEvent<HTMLInputElement>) {
         const file = event.target.files?.[0];
@@ -48,19 +54,42 @@ function AccountFieldsCard() {
                         <Col sm={6}>
                             <Form.Group controlId="email">
                                 <Form.Label>Correo electrónico</Form.Label>
-                                <Form.Control type="email" name="email" />
+                                <Form.Control
+                                    {...emailField.field}
+                                    isInvalid={emailField.fieldState.invalid}
+                                    isValid={emailField.fieldState.isDirty && !emailField.fieldState.invalid}
+                                    type="email" />
+                                <Form.Control.Feedback type="invalid">
+                                    {emailField.fieldState.error?.message as string}
+                                </Form.Control.Feedback>
                             </Form.Group>
                         </Col>
                         <Col sm={6}>
                             <Form.Group controlId="phone">
                                 <Form.Label>Número de teléfono</Form.Label>
-                                <Form.Control type="tel" name="phone" />
+                                <Form.Control
+                                    type="tel"
+                                    {...phoneField.field}
+                                    isInvalid={phoneField.fieldState.invalid}
+                                    isValid={phoneField.fieldState.isDirty && !phoneField.fieldState.invalid}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {phoneField.fieldState.error?.message as string}
+                                </Form.Control.Feedback>
                             </Form.Group>
                         </Col>
                         <Col xs={12}>
                             <Form.Group controlId="username">
                                 <Form.Label>Nombre de usuario</Form.Label>
-                                <Form.Control type="text" name="userName" />
+                                <Form.Control
+                                    type="text"
+                                    {...userNameField.field}
+                                    isInvalid={userNameField.fieldState.invalid}
+                                    isValid={userNameField.fieldState.isDirty && !userNameField.fieldState.invalid}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {userNameField.fieldState.error?.message as string}
+                                </Form.Control.Feedback>
                             </Form.Group>
                         </Col>
                     </Row>

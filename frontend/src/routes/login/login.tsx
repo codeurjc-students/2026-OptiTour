@@ -100,13 +100,25 @@ function Login() {
 
               <Form.Group className="ot-login__field" controlId="loginPassword">
                 <Form.Label>Contraseña:</Form.Label>
-                <Form.Control type="password"
-                  {...register("password")}
-                  isInvalid={!!errors.password}
-                  placeholder="" />
-                <Form.Control.Feedback type="invalid">
-                  {errors.password?.message}
-                </Form.Control.Feedback>
+                <div className="ot-login__password-row">
+                  <div className="ot-login__password-wrapper">
+                    <Form.Control type="password"
+                      {...register("password")}
+                      isInvalid={!!errors.password}
+                      placeholder="" />
+                  </div>
+                  <button type="button" className="ot-login__eye-button" aria-label="Mostrar contraseña">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z" />
+                      <line x1="4" y1="20" x2="20" y2="4" />
+                    </svg>
+                  </button>
+                </div>
+                {errors.password && (
+                  <div className="invalid-feedback d-block">
+                    {errors.password.message}
+                  </div>
+                )}
               </Form.Group>
 
               {error &&
