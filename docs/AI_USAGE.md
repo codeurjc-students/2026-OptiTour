@@ -340,3 +340,25 @@ vi.mock("react", async () => {
     };
 });
 ```
+
+* **Fecha:** 15/10/2026
+* **Fase:** Fase 3
+* **Objetivo:** Validar en backend los campos de formularios.
+* **Herramienta:** Google Gemini
+* **Modelo concreto:** Google Gemini 3.1 Pro
+* **Cómo ha sido usada:** Se utilizó la IA para buscar alguna manera de evitar validar campos con grandes estructuras de bloques if-else y excpepciones. Propone el uso de Jakarta Validation, de modo que con escribir algunas anotaciones en los campos del DTO o clase a validar es suficiente para hacer cumplir ciertas reglas en los datos introducidos por el usuario. Además, la IA propone la creación de una clase para simplificar la respuesta generada y reducirla a un objeto JSON con un sólo campo de mensaje de error, que puede ser fácilmente mostrado en el lado del cliente. En concreto, la IA genera el código al completo de la clase GlobalExcetpionHanlder:
+
+``` java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> response = new HashMap<>(); 
+        FieldError firstError = ex.getBindingResult().getFieldErrors().get(0);
+        response.put("message", firstError.getDefaultMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+}
+```
