@@ -50,13 +50,13 @@ test("Correct register", async () => {
         target: { value: "123" }
     });
     fireEvent.change(screen.getByLabelText("Nombre de usuario"), {
-        target: { value: "test" }
+        target: { value: "tester" }
     });
     fireEvent.change(screen.getByLabelText("Contraseña"), {
-        target: { value: "demo1234" }
+        target: { value: "Demo1234" }
     });
     fireEvent.change(screen.getByLabelText("Repetir contraseña"), {
-        target: { value: "demo1234" }
+        target: { value: "Demo1234" }
     });
 
     await act(async () => {

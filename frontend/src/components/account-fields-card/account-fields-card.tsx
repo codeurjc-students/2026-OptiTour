@@ -4,13 +4,14 @@ import { useEffect, useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 
 function AccountFieldsCard() {
-    const [_image, setImage] = useState<File | null>(null);
+    const [, setImage] = useState<File | null>(null);
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
-    const { control } = useFormContext();
+    const { control, register } = useFormContext();
     const emailField = useController({ name: "email", control });
     const phoneField = useController({ name: "phone", control });
     const userNameField = useController({ name: "userName", control });
+    const imageField = register("image");
 
     function handlePreview(event: React.ChangeEvent<HTMLInputElement>) {
         const file = event.target.files?.[0];
@@ -46,7 +47,17 @@ function AccountFieldsCard() {
                     <Button variant="outline-dark" className="ot-account-fields__upload-btn" as="label" htmlFor="upload-image">
                         Subir archivo
                     </Button>
-                    <input type="file" className="d-none" id="upload-image" name="image" accept=".png, .jpg, .webp" onChange={handlePreview} />
+                    <input
+                        {...imageField}
+                        type="file"
+                        className="d-none"
+                        id="upload-image"
+                        accept=".png, .jpg, .webp"
+                        onChange={(event) => {
+                            imageField.onChange(event);
+                            handlePreview(event);
+                        }}
+                    />
                 </Col>
 
                 <Col md={8}>
