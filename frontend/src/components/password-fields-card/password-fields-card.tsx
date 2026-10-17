@@ -14,7 +14,7 @@ function PasswordFieldsCard() {
             <Form.Group controlId="password" className="ot-password-fields__field">
                 <Form.Label>Contraseña</Form.Label>
                 <div className="ot-password-fields__input-icon">
-                    <Form.Control type="password" name="password" required />
+                    <Form.Control type="password" name="password" />
                     {eyeIcon}
                 </div>
             </Form.Group>
@@ -22,7 +22,7 @@ function PasswordFieldsCard() {
             <Form.Group controlId="passwordRepeat" className="ot-password-fields__field">
                 <Form.Label>Repetir contraseña</Form.Label>
                 <div className="ot-password-fields__input-icon">
-                    <Form.Control type="password" name="passwordRepeat" required />
+                    <Form.Control type="password" name="passwordRepeat" />
                     {eyeIcon}
                 </div>
             </Form.Group>

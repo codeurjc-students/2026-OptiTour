@@ -61,7 +61,7 @@ export function Signup() {
     }
 
     return (
-        <Form action={formAction}>
+        <Form action={formAction} noValidate>
             <div className="ot-register">
                 <Container className="ot-register__container">
                     <h1 className="ot-register__title">Registro de usuario</h1>

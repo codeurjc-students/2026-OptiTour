@@ -48,19 +48,19 @@ function AccountFieldsCard() {
                         <Col sm={6}>
                             <Form.Group controlId="email">
                                 <Form.Label>Correo electrónico</Form.Label>
-                                <Form.Control type="email" name="email" required />
+                                <Form.Control type="email" name="email" />
                             </Form.Group>
                         </Col>
                         <Col sm={6}>
                             <Form.Group controlId="phone">
                                 <Form.Label>Número de teléfono</Form.Label>
-                                <Form.Control type="tel" name="phone" required />
+                                <Form.Control type="tel" name="phone" />
                             </Form.Group>
                         </Col>
                         <Col xs={12}>
                             <Form.Group controlId="username">
                                 <Form.Label>Nombre de usuario</Form.Label>
-                                <Form.Control type="text" name="userName" required />
+                                <Form.Control type="text" name="userName" />
                             </Form.Group>
                         </Col>
                     </Row>
