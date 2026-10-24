@@ -39,6 +39,8 @@ public class SampleDataService {
                 this.imageService = imageService;
         }
 
+        private String password = "Demo1234";
+
         private Blob loadProfilePicture(String filename) {
                 try {
                         // We search file in resources folder
@@ -123,34 +125,34 @@ public class SampleDataService {
         public void init() throws IOException {
 
                 if (userRepository.findByEmail("carmen@example.com").isEmpty()) {
-                        userRepository.save(new User("carmen@example.com", passwordEncoder.encode("demo1234"),
+                        userRepository.save(new User("carmen@example.com", passwordEncoder.encode(password),
                                         "Carmen García",
                                         "611 223 344", false, loadProfilePicture("carmen.jpg"), "USER"));
-                        userRepository.save(new User("laura@example.com", passwordEncoder.encode("demo1234"),
+                        userRepository.save(new User("laura@example.com", passwordEncoder.encode(password),
                                         "Laura Martínez",
                                         "655 443 322", false, loadProfilePicture("laura.jpg"), "USER"));
                         userRepository.save(
-                                        new User("maria@example.com", passwordEncoder.encode("demo1234"), "María López",
+                                        new User("maria@example.com", passwordEncoder.encode(password), "María López",
                                                         "677 889 900", false, loadProfilePicture("maria.jpg"), "USER"));
                         userRepository.save(
-                                        new User("ana@example.com", passwordEncoder.encode("demo1234"), "Ana Fernández",
+                                        new User("ana@example.com", passwordEncoder.encode(password), "Ana Fernández",
                                                         "622 112 233", false, loadProfilePicture("ana.jpg"), "USER"));
-                        userRepository.save(new User("lucia@example.com", passwordEncoder.encode("demo1234"),
+                        userRepository.save(new User("lucia@example.com", passwordEncoder.encode(password),
                                         "Lucía Sánchez",
                                         "633 445 566", false, loadProfilePicture("lucia.jpg"), "USER"));
-                        userRepository.save(new User("javier@example.com", passwordEncoder.encode("demo1234"),
+                        userRepository.save(new User("javier@example.com", passwordEncoder.encode(password),
                                         "Javier Pérez",
                                         "600 123 456", false, loadProfilePicture("javier.jpg"), "USER"));
-                        userRepository.save(new User("carlos@example.com", passwordEncoder.encode("demo1234"),
+                        userRepository.save(new User("carlos@example.com", passwordEncoder.encode(password),
                                         "Carlos Gómez",
                                         "688 776 655", false, loadProfilePicture("carlos.jpg"), "USER"));
-                        userRepository.save(new User("david@example.com", passwordEncoder.encode("demo1234"),
+                        userRepository.save(new User("david@example.com", passwordEncoder.encode(password),
                                         "David Rodríguez",
                                         "699 111 222", false, loadProfilePicture("david.jpg"), "USER"));
-                        userRepository.save(new User("alejandro@example.com", passwordEncoder.encode("demo1234"),
+                        userRepository.save(new User("alejandro@example.com", passwordEncoder.encode(password),
                                         "Alejandro Ruiz",
                                         "644 332 211", false, loadProfilePicture("alejandro.jpg"), "USER"));
-                        userRepository.save(new User("daniel@example.com", passwordEncoder.encode("demo1234"),
+                        userRepository.save(new User("daniel@example.com", passwordEncoder.encode(password),
                                         "Daniel Martín",
                                         "666 555 444", false, loadProfilePicture("daniel.jpg"), "USER"));
                 }
