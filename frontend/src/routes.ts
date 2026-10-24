@@ -5,8 +5,6 @@ export default [
         route("/", "routes/index/index.tsx"),
         route("/tour/:id", "routes/tour-detail/tour-detail.tsx"),
         route("/point-of-interest/:id", "routes/point-of-interest-detail/point-of-interest-detail.tsx"),
-        route("/unauthorized", "routes/error-routes/unauthorized.tsx"),
-        route("*", "routes/error-routes/not-found.tsx", { id: "catch-all" })
     ]),
     layout("layouts/profile-layout.tsx", [
         route("/profile", "routes/my-profile/my-profile.tsx"),
@@ -35,5 +33,7 @@ export default [
     ]),
     layout("layouts/anonymous-layout.tsx", [
         route("/login", "routes/login/login.tsx")
-    ])
+    ]),
+    route("/unauthorized", "routes/error-routes/unauthorized.tsx"),
+    route("*", "routes/error-routes/not-found.tsx", { id: "catch-all" })
 ] satisfies RouteConfig;

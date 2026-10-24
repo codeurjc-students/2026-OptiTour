@@ -10,8 +10,13 @@ export default function AnonymousPage({ children }: AnonymousPageProps) {
 
     if (loggedUser) {
         return (
-            <><ErrorPage errNum={401} errTitle="Ya estás autenticado" errText="Ya estás identificado en el sistema. Para acceder a esta página, cierra sesión." >
-            </ErrorPage></>)
+            <ErrorPage errNum={401}
+                errTitle="Ya estás autenticado"
+                errText="Ya estás identificado en el sistema. Para acceder a esta página, cierra sesión."
+                buttonText="Cerrar sesión y acceder"
+                logoutButton={true}
+            >
+            </ErrorPage>);
     }
 
     return <>{children}</>
