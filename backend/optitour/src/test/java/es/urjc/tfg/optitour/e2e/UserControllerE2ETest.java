@@ -5,6 +5,7 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.nio.charset.StandardCharsets;
 
@@ -29,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import es.urjc.tfg.optitour.BaseIntegrationTest;
 import es.urjc.tfg.optitour.DTO.UserDTO;
 import es.urjc.tfg.optitour.DTO.ImageDTO;
+import es.urjc.tfg.optitour.DTO.UserCreateDTO;
 import es.urjc.tfg.optitour.mapper.UserMapper;
 import es.urjc.tfg.optitour.model.User;
 import es.urjc.tfg.optitour.repository.UserRepository;
@@ -99,12 +101,15 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
     @Test
     @DisplayName("Posting at /user should create a new user")
     public void signUpE2ETest() throws SerialException, SQLException {
-        User newUser = new User("other@example.com", encoder.encode("demo1234"), "other", "111 111 111", false,
-                "USER");
+        UserCreateDTO newUser = new UserCreateDTO(
+                "other@example.com",
+                "111 111 111",
+                "other",
+                "Demo1234");
 
         UserDTO createdDTO = given()
                 .contentType(ContentType.JSON)
-                .body(mapper.toDTO(newUser))
+                .body(newUser)
                 .when()
                 .post("api/v1/user/")
                 .then()
@@ -199,5 +204,235 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                 .post("/api/v1/user/" + firstId + "/image")
                 .then()
                 .statusCode(400);
+    }
+
+    // FIELD VALIDATION TESTS
+
+    @Test
+    @DisplayName("signup user with blank email should return 400 status code")
+    public void blankEmailSingupE2ETest() {
+        UserCreateDTO dto = new UserCreateDTO(
+                "",
+                "111 111 111",
+                "example",
+                "Demo1234");
+        given()
+                .contentType(ContentType.JSON)
+                .body(dto)
+                .when()
+                .post("/api/v1/user/")
+                .then()
+                .statusCode(400)
+                .body("message", equalTo(
+                        "El correo electrónico es obligatorio."));
+    }
+
+    @Test
+    @DisplayName("signup user with invalid email should return 400 status code")
+    public void invalidEmailSingupE2ETest() {
+        UserCreateDTO dto = new UserCreateDTO(
+                "invalid",
+                "111 111 111",
+                "example",
+                "Demo1234");
+        given()
+                .contentType(ContentType.JSON)
+                .body(dto)
+                .when()
+                .post("/api/v1/user/")
+                .then()
+                .statusCode(400)
+                .body("message", equalTo(
+                        "El correo electrónico debe tener un formato válido con un carácter '@'."));
+    }
+
+    @Test
+    @DisplayName("signup user with 30+ character email should return 400 status code")
+    public void thirtyCharsEmailSingupE2ETest() {
+        UserCreateDTO dto = new UserCreateDTO(
+                "aaaaaasaaaaaaaa@aaaaaaaaaaa.com", // Email with 31 characters
+                "111 111 111",
+                "example",
+                "Demo1234");
+        given()
+                .contentType(ContentType.JSON)
+                .body(dto)
+                .when()
+                .post("/api/v1/user/")
+                .then()
+                .statusCode(400)
+                .body("message", equalTo(
+                        "El correo electrónico no puede superar los 30 caracteres."));
+    }
+
+    @Test
+    @DisplayName("signup user with 12+ character phone should return 400 status code")
+    public void twelveCharPhoneE2ETest() {
+        UserCreateDTO dto = new UserCreateDTO(
+                "example@example.com",
+                "111 111 111 111 111", // Phone with 15 characters
+                "example",
+                "Demo1234");
+        given()
+                .contentType(ContentType.JSON)
+                .body(dto)
+                .when()
+                .post("/api/v1/user/")
+                .then()
+                .statusCode(400)
+                .body("message", equalTo(
+                        "El teléfono no puede superar los 12 caracteres."));
+    }
+
+    @Test
+    @DisplayName("signup user with phone with non-number chars should return 400 status code")
+    public void notNumberPhoneE2ETest() {
+        UserCreateDTO dto = new UserCreateDTO(
+                "example@example.com",
+                "invalid", // Phone with 15 characters
+                "example",
+                "Demo1234");
+        given()
+                .contentType(ContentType.JSON)
+                .body(dto)
+                .when()
+                .post("/api/v1/user/")
+                .then()
+                .statusCode(400)
+                .body("message", equalTo(
+                        "El teléfono solo puede contener números, espacios y opcionalmente el símbolo '+' al inicio."));
+    }
+
+    @Test
+    @DisplayName("signup user with blank username should return 400 status code")
+    public void notBlankUserE2ETest() {
+        UserCreateDTO dto = new UserCreateDTO(
+                "example@example.com",
+                "111 111 111",
+                "",
+                "Demo1234");
+        given()
+                .contentType(ContentType.JSON)
+                .body(dto)
+                .when()
+                .post("/api/v1/user/")
+                .then()
+                .statusCode(400)
+                .body("message", equalTo(
+                        "El nombre de usuario es obligatiorio"));
+    }
+
+    @Test
+    @DisplayName("signup user with 5- char username should return 400 status code")
+    public void tooFewCharsUsernameE2ETest() {
+        UserCreateDTO dto = new UserCreateDTO(
+                "example@example.com",
+                "111 111 111",
+                "inv", // username with 3 characters
+                "Demo1234");
+        given()
+                .contentType(ContentType.JSON)
+                .body(dto)
+                .when()
+                .post("/api/v1/user/")
+                .then()
+                .statusCode(400)
+                .body("message", equalTo(
+                        "El nombre de usuario debe tener entre 5 y 20 caracteres."));
+    }
+
+    @Test
+    @DisplayName("signup user with 20+ char username should return 400 status code")
+    public void tooMuchCharsUsernameE2ETest() {
+        UserCreateDTO dto = new UserCreateDTO(
+                "example@example.com",
+                "111 111 111",
+                "invalidinvalidinvalid", // username with 21 characters
+                "Demo1234");
+        given()
+                .contentType(ContentType.JSON)
+                .body(dto)
+                .when()
+                .post("/api/v1/user/")
+                .then()
+                .statusCode(400)
+                .body("message", equalTo(
+                        "El nombre de usuario debe tener entre 5 y 20 caracteres."));
+    }
+
+    @Test
+    @DisplayName("signup user with blank password should return 400 status code")
+    public void blankPasswordE2ETest() {
+        UserCreateDTO dto = new UserCreateDTO(
+                "example@example.com",
+                "111 111 111",
+                "example",
+                "");
+        given()
+                .contentType(ContentType.JSON)
+                .body(dto)
+                .when()
+                .post("/api/v1/user/")
+                .then()
+                .statusCode(400)
+                .body("message", equalTo(
+                        "La contraseña es obligatoria"));
+    }
+
+    @Test
+    @DisplayName("signup user with 8- char password should return 400 status code")
+    public void tooFewCharPasswordE2ETest() {
+        UserCreateDTO dto = new UserCreateDTO(
+                "example@example.com",
+                "111 111 111",
+                "example",
+                "inv"); // 3 char password
+        given()
+                .contentType(ContentType.JSON)
+                .body(dto)
+                .when()
+                .post("/api/v1/user/")
+                .then()
+                .statusCode(400)
+                .body("message", equalTo(
+                        "La contraseña debe tener entre 8 y 20 caracteres"));
+    }
+
+    @Test
+    @DisplayName("signup user with 8- char password should return 400 status code")
+    public void tooMuchCharPasswordE2ETest() {
+        UserCreateDTO dto = new UserCreateDTO(
+                "example@example.com",
+                "111 111 111",
+                "example",
+                "invalidinvalidinvalI1"); // 21 characteres password
+        given()
+                .contentType(ContentType.JSON)
+                .body(dto)
+                .when()
+                .post("/api/v1/user/")
+                .then()
+                .statusCode(400)
+                .body("message", equalTo(
+                        "La contraseña debe tener entre 8 y 20 caracteres"));
+    }
+
+    @Test
+    @DisplayName("signup user with password with no capital letter and not numbers should return 400 status code")
+    public void noSecurePasswordE2ETest() {
+        UserCreateDTO dto = new UserCreateDTO(
+                "example@example.com",
+                "111 111 111",
+                "example",
+                "insecurepassword");
+        given()
+                .contentType(ContentType.JSON)
+                .body(dto)
+                .when()
+                .post("/api/v1/user/")
+                .then()
+                .statusCode(400)
+                .body("message", equalTo(
+                        "La contraseña debe contener al menos una letra mayúscula, una minúscula y un número."));
     }
 }

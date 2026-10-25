@@ -162,4 +162,31 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
         assertEquals("403 FORBIDDEN \"No tienes permiso para modificar la imagen de perfil de otros usuarios.\"",
                 e.getMessage());
     }
+
+    @Test
+    @DisplayName("verifyUniqueEmail with repeated email should throw exception")
+    public void UniqueEmailIntegrationTest() {
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
+            service.validateUniqueEmail("example@example.com");
+        });
+
+        assertEquals(
+                "400 BAD_REQUEST \"El correo electrónico escogido ya está siendo utilizado por otro usuario.\n"
+                        + "Introduce otro correo electrónico e inténtalo de nuevo.\"",
+                e.getMessage());
+    }
+
+    @Test
+    @DisplayName("verifyUniqueUser with repeated username should throw exception")
+    public void UniqueUserIntegrationTest() {
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
+            service.validateUniqueUserName("example");
+        });
+
+        assertEquals(
+                "400 BAD_REQUEST \"El nombre de usuario escogido ya está siendo utilizado por otro usuario.\n"
+                        + "Introduce otro nombre de usuario e inténtalo de nuevo.\"",
+                e.getMessage());
+    }
+
 }

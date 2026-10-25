@@ -158,7 +158,7 @@ public class SampleDataService {
                 }
 
                 if (userRepository.findByEmail("admin@optitour.com").isEmpty()) {
-                        userRepository.save(new User("admin@optitour.com", passwordEncoder.encode("admin1234"), "Admin",
+                        userRepository.save(new User("admin@optitour.com", passwordEncoder.encode("Admin1234"), "Admin",
                                         "111 111 111", false, loadProfilePicture("admin.png"), "USER", "ADMIN"));
 
                 }

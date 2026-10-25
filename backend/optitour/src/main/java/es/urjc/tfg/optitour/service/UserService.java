@@ -98,6 +98,5 @@ public class UserService {
                     "El nombre de usuario escogido ya está siendo utilizado por otro usuario.\n"
                             + "Introduce otro nombre de usuario e inténtalo de nuevo.");
         }
-        ;
     }
 }
