@@ -362,3 +362,23 @@ public class GlobalExceptionHandler {
     }
 }
 ```
+
+* **Fecha:** 17/10/2026
+* **Fase:** Fase 3
+* **Objetivo:** Validar en frontend los campos de formularios.
+* **Herramienta:** Google Gemini
+* **Modelo concreto:** Google Gemini 3.1 Pro
+* **Cómo ha sido usada:** De manera similar al anterior uso de IA, se le preguntó a la IA por librerías o sistemas predefinidos que
+ya hayan resuelto el problema de la validación de campos de formularios en el cliente. La IA responde recomendando el uso de dos librerías:
+
+- Zod: Una librería que, mediante la definición de esquemas y restricciones, puede procesar los datos enviados por los formularios para que cumplan las restricciones indicadas.
+
+- React Hook Form: Una librería que ofrece un hook que simplifica la implementación de formularios y permite el uso de zod en los mismos. Se sutituye useActionState por esta librería.
+
+
+* **Fecha:** 24/10/2026
+* **Fase:** Fase 3
+* **Objetivo:** Remodelar la página de error
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro
+* **Cómo ha sido usada:** Se le piden a la IA modificaciones estéticas para la pantalla de error, como la adición del logo de la web, el aumento de tamaño de toda la interfaz o el color rojo para el botón de cierre de sesión.
