@@ -3,9 +3,9 @@ import { type RouteConfig, layout, route } from "@react-router/dev/routes";
 export default [
     layout("routes/home.tsx", [
         route("/", "routes/index/index.tsx"),
-        route("/tour/:id", "routes/tour-detail/tour-detail.tsx"),
-        route("/point-of-interest/:id", "routes/point-of-interest-detail/point-of-interest-detail.tsx"),
     ]),
+    route("/tour/:id", "routes/tour-detail/tour-detail.tsx"),
+    route("/point-of-interest/:id", "routes/point-of-interest-detail/point-of-interest-detail.tsx"),
     layout("layouts/profile-layout.tsx", [
         route("/profile", "routes/my-profile/my-profile.tsx"),
         route("/profile/friends", "routes/my-profile/my-friends.tsx"),

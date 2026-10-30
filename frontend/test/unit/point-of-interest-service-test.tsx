@@ -3,7 +3,7 @@ import '@testing-library/jest-dom/vitest';
 import * as service from '../../src/service/point-of-interest-service'
 import { PointOfInterestDTO } from "../../src/dto/point-of-interest-dto";
 import { render, screen } from "@testing-library/react";
-import { MemoryRouter, Route, Routes } from "react-router";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import PointOfInterestDetail from '../../src/routes/point-of-interest-detail/point-of-interest-detail';
 
 

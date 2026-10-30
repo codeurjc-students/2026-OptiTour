@@ -13,6 +13,8 @@ import { ApiError } from '../../service/api-error';
 import { useAuthStore } from '../../store/auth-store';
 import type { ImageDTO } from '../../dto/image-dto';
 import { API_BASE_URL } from '../../service/api-config';
+import Navbar from '../../components/navbar/navbar';
+import Footer from '../../components/footer/footer';
 
 const base_url = API_BASE_URL;
 
@@ -75,6 +77,7 @@ function TourDetailPage() {
 
     return (
         <>
+            <Navbar />
             {loading ? <Spinner /> : <Container className="ot-tour-detail">
                 <h1 className="ot-tour-detail__title">{tour?.name}</h1>
 
@@ -152,7 +155,7 @@ function TourDetailPage() {
                         </Col>}
                 </Row>
             </Container>}
-
+            <Footer />
         </>
     );
 }
