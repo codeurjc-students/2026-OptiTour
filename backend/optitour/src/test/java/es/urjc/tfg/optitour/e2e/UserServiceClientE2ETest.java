@@ -32,7 +32,8 @@ public class UserServiceClientE2ETest {
 
     @BeforeEach
     public void setup() {
-        // Clean up any test users to guarantee idempotency and avoid NonUniqueResultException
+        // Clean up any test users to guarantee idempotency and avoid
+        // NonUniqueResultException
         repository.findAll().forEach(user -> {
             if ("example@example.com".equals(user.getEmail())
                     || "example2@example.com".equals(user.getEmail())
@@ -174,6 +175,31 @@ public class UserServiceClientE2ETest {
         WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
         assertEquals(
                 "El nombre de usuario escogido ya está siendo utilizado por otro usuario. Introduce otro nombre de usuario e inténtalo de nuevo.",
+                errorCard.getText());
+    }
+
+    @Test
+    @DisplayName("Accessing /signup as an authenticated user should show an error")
+    public void accessingSignupAsAuthClientE2ETest() {
+        driver.get("http://localhost:5173/login");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+        // We log as usually
+        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
+        WebElement passField = driver.findElement(By.id("loginPassword"));
+        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
+
+        emailField.sendKeys("carmen@example.com");
+        passField.sendKeys("Demo1234");
+        submitButton.click();
+
+        // We wait index to load and go to signup
+        wait.until(urlToBe("http://localhost:5173/"));
+        driver.get("http://localhost:5173/signup");
+
+        // Error page should appear
+        WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
+        assertEquals("Ya estás identificado en el sistema. Para acceder a esta página, cierra sesión.",
                 errorCard.getText());
     }
 }

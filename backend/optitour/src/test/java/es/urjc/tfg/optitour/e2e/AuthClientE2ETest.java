@@ -49,10 +49,6 @@ public class AuthClientE2ETest {
     @DisplayName("Check if login form works properly")
     public void loginFormTest() {
         driver.get("http://localhost:5173");
-        try {
-            Thread.sleep(1000);
-        } catch (Exception e) {
-        }
 
         // We define de wait object
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
@@ -63,14 +59,7 @@ public class AuthClientE2ETest {
 
         // Now, we wait to the page to render. We can simply wait for one of the form
         // fields.
-        WebElement emailField = null;
-        try {
-            emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
-        } catch (org.openqa.selenium.TimeoutException e) {
-            System.err.println(
-                    "TIMEOUT in badLoginFormTest waiting for emailField. Page source: " + driver.getPageSource());
-            throw e;
-        }
+        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
 
         // We get the rest of the form elements: fields and submmit button
         driver.findElement(By.id("loginEmail"));
