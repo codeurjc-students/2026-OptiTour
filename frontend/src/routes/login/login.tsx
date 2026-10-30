@@ -28,7 +28,7 @@ function Login() {
   const {
     register,
     handleSubmit: handleFormSubmit,
-    formState: { errors }
+    formState: { isValid, errors }
   } = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     mode: "onChange"
@@ -120,7 +120,7 @@ function Login() {
               <Button
                 type="submit"
                 className="ot-login__submit"
-                disabled={loading}
+                disabled={loading || !isValid}
                 aria-busy={loading}
               >
                 <span className="ot-login__spinner-slot" data-loading={loading}>

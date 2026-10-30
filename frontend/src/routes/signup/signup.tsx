@@ -30,6 +30,7 @@ export function Signup() {
     });
 
     const {
+        formState: { isValid },
         handleSubmit: handleFormSubmit,
     } = methods;
 
@@ -81,7 +82,7 @@ export function Signup() {
                             <Col md={6}>
                                 <Card className="ot-register__card ot-register__card--actions">
                                     {error && <ErrorCard text={error} />}
-                                    <Button type="submit" className="ot-register__submit" disabled={isLoading}>
+                                    <Button type="submit" className="ot-register__submit" disabled={isLoading || !isValid}>
                                         {isLoading ? "Creando cuenta..." : "Crear Cuenta"}
                                     </Button>
                                     <p className="ot-register__login-text">O inicia sesión si ya tienes cuenta:</p>

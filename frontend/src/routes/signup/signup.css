@@ -123,6 +123,20 @@
     border-color: var(--ot-primary-dark);
 }
 
+.ot-register__submit:disabled,
+.ot-register__submit[disabled] {
+    background-color: #4b5563;
+    border-color: #4b5563;
+    color: #ffffff;
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+.ot-register__submit:disabled:hover {
+    background-color: #4b5563;
+    border-color: #4b5563;
+}
+
 .ot-register__login-text {
     margin: 1.25rem 0 0.75rem;
     color: var(--ot-text-muted);
