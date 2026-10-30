@@ -79,7 +79,7 @@ public class AuthClientE2ETest {
 
         // We fill the form with correct admin credentials.
         emailField.sendKeys("admin@optitour.com");
-        passField.sendKeys("admin1234");
+        passField.sendKeys("Admin1234");
         submitButton.click();
 
         // We open the personal page menu after the index page renders.
@@ -131,13 +131,13 @@ public class AuthClientE2ETest {
         WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
 
         emailField.sendKeys("bademail@example.com");
-        passField.sendKeys("badpass");
+        passField.sendKeys("badpassword");
         submitButton.click();
 
         WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
         String errorCardText = errorCard.getText();
 
-        assertEquals(errorCardText, "Credenciales incorrectas.");
+        assertEquals(errorCardText, "Credenciales incorrectas");
 
     }
 
@@ -159,7 +159,7 @@ public class AuthClientE2ETest {
 
         // We fill the form with correct admin credentials.
         emailField.sendKeys("admin@optitour.com");
-        passField.sendKeys("admin1234");
+        passField.sendKeys("Admin1234");
         submitButton.click();
 
         WebElement userName = null;
@@ -193,7 +193,7 @@ public class AuthClientE2ETest {
 
         // We fill the form with an account with no admin role.
         emailField.sendKeys("carmen@example.com");
-        passField.sendKeys("demo1234");
+        passField.sendKeys("Demo1234");
         submitButton.click();
 
         // The error card has the same class, so we need to wait to the text to be
