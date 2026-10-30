@@ -3,12 +3,9 @@ import { type RouteConfig, layout, route } from "@react-router/dev/routes";
 export default [
     layout("routes/home.tsx", [
         route("/", "routes/index/index.tsx"),
-        route("/signup", "routes/signup/signup.tsx"),
-        route("/tour/:id", "routes/tour-detail/tour-detail.tsx"),
-        route("/point-of-interest/:id", "routes/point-of-interest-detail/point-of-interest-detail.tsx"),
-        route("/unauthorized", "routes/error-routes/unauthorized.tsx"),
-        route("*", "routes/error-routes/not-found.tsx", { id: "catch-all" })
     ]),
+    route("/tour/:id", "routes/tour-detail/tour-detail.tsx"),
+    route("/point-of-interest/:id", "routes/point-of-interest-detail/point-of-interest-detail.tsx"),
     layout("layouts/profile-layout.tsx", [
         route("/profile", "routes/my-profile/my-profile.tsx"),
         route("/profile/friends", "routes/my-profile/my-friends.tsx"),
@@ -31,5 +28,12 @@ export default [
     layout("layouts/protected-layout.tsx", [
         route("/tour-builder", "routes/route-builder/route-builder.tsx"),
     ]),
-    route("/login", "routes/login/login.tsx")
+    layout("layouts/anoymous-layout-nav.tsx", [
+        route("/signup", "routes/signup/signup.tsx"),
+    ]),
+    layout("layouts/anonymous-layout.tsx", [
+        route("/login", "routes/login/login.tsx")
+    ]),
+    route("/unauthorized", "routes/error-routes/unauthorized.tsx"),
+    route("*", "routes/error-routes/not-found.tsx", { id: "catch-all" })
 ] satisfies RouteConfig;

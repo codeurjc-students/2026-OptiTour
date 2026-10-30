@@ -12,6 +12,8 @@ import ErrorPage from '../../components/error-page/error-page';
 import InteractiveMap from '../../components/interactive-map/interactive-map';
 import type { ImageDTO } from '../../dto/image-dto';
 import { API_BASE_URL } from '../../service/api-config';
+import Navbar from '../../components/navbar/navbar';
+import Footer from '../../components/footer/footer';
 
 const base_url = API_BASE_URL;
 
@@ -61,6 +63,7 @@ export default function PointOfInterestDetail() {
 
     return (
         <>
+            <Navbar />
             {
                 loading ? <Spinner /> :
                     <Container className="ot-poi-detail">
@@ -114,6 +117,7 @@ export default function PointOfInterestDetail() {
                         </Row>
                     </Container>
             }
+            <Footer />
         </>
     );
 }

@@ -1,7 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import ProfileSidebar, { type SidebarItem } from '../components/profile-side-bar/profile-side-bar';
 import './profile-layout.css';
-import { useAuthStore } from '../store/auth-store';
 import ProtectedRoute from '../routes/protected-route';
 
 const friendsIcon = (
@@ -50,8 +49,6 @@ const userMenu: SidebarItem[] = [
 ];
 
 function ProfileLayout() {
-    const { loggedUser } = useAuthStore();
-
     return (
         <ProtectedRoute>
             <div className="ot-profile-layout">

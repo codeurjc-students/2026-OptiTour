@@ -3,6 +3,7 @@ import * as service from "../../src/service/user-service";
 import Signup from "../../src/routes/signup/signup";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import "@testing-library/jest-dom/vitest";
 
 vi.mock("../../src/service/user-service");
 const { navigate } = vi.hoisted(() => ({ navigate: vi.fn() }));
@@ -47,16 +48,20 @@ test("Correct register", async () => {
         target: { value: "example@example.com" }
     });
     fireEvent.change(screen.getByLabelText("Número de teléfono"), {
-        target: { value: "123" }
+        target: { value: "111 111 111" }
     });
     fireEvent.change(screen.getByLabelText("Nombre de usuario"), {
-        target: { value: "test" }
+        target: { value: "tester" }
     });
     fireEvent.change(screen.getByLabelText("Contraseña"), {
-        target: { value: "demo1234" }
+        target: { value: "Demo1234" }
     });
     fireEvent.change(screen.getByLabelText("Repetir contraseña"), {
-        target: { value: "demo1234" }
+        target: { value: "Demo1234" }
+    });
+
+    await vi.waitFor(() => {
+        expect(screen.getByRole("button", { name: "Crear Cuenta" })).toBeEnabled();
     });
 
     await act(async () => {

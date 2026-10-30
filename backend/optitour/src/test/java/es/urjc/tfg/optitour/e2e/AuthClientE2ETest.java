@@ -49,10 +49,6 @@ public class AuthClientE2ETest {
     @DisplayName("Check if login form works properly")
     public void loginFormTest() {
         driver.get("http://localhost:5173");
-        try {
-            Thread.sleep(1000);
-        } catch (Exception e) {
-        }
 
         // We define de wait object
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
@@ -63,14 +59,7 @@ public class AuthClientE2ETest {
 
         // Now, we wait to the page to render. We can simply wait for one of the form
         // fields.
-        WebElement emailField = null;
-        try {
-            emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
-        } catch (org.openqa.selenium.TimeoutException e) {
-            System.err.println(
-                    "TIMEOUT in badLoginFormTest waiting for emailField. Page source: " + driver.getPageSource());
-            throw e;
-        }
+        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
 
         // We get the rest of the form elements: fields and submmit button
         driver.findElement(By.id("loginEmail"));
@@ -79,7 +68,7 @@ public class AuthClientE2ETest {
 
         // We fill the form with correct admin credentials.
         emailField.sendKeys("admin@optitour.com");
-        passField.sendKeys("admin1234");
+        passField.sendKeys("Admin1234");
         submitButton.click();
 
         // We open the personal page menu after the index page renders.
@@ -131,13 +120,13 @@ public class AuthClientE2ETest {
         WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
 
         emailField.sendKeys("bademail@example.com");
-        passField.sendKeys("badpass");
+        passField.sendKeys("badpassword");
         submitButton.click();
 
         WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
         String errorCardText = errorCard.getText();
 
-        assertEquals(errorCardText, "Credenciales incorrectas.");
+        assertEquals(errorCardText, "Credenciales incorrectas");
 
     }
 
@@ -159,7 +148,7 @@ public class AuthClientE2ETest {
 
         // We fill the form with correct admin credentials.
         emailField.sendKeys("admin@optitour.com");
-        passField.sendKeys("admin1234");
+        passField.sendKeys("Admin1234");
         submitButton.click();
 
         WebElement userName = null;
@@ -193,7 +182,7 @@ public class AuthClientE2ETest {
 
         // We fill the form with an account with no admin role.
         emailField.sendKeys("carmen@example.com");
-        passField.sendKeys("demo1234");
+        passField.sendKeys("Demo1234");
         submitButton.click();
 
         // The error card has the same class, so we need to wait to the text to be

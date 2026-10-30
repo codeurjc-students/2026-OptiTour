@@ -155,4 +155,37 @@ public class UserServiceTest {
         assertEquals("403 FORBIDDEN \"No tienes permiso para modificar la imagen de perfil de otros usuarios.\"",
                 e.getMessage());
     }
+
+    @Test
+    @DisplayName("Test user creation with repeated email")
+    public void testUniqueEmail() {
+        // Given: we have one user saved (see before each method)
+        when(repositoryMock.findByEmail("example@example.com")).thenReturn(Optional.of(testUser));
+
+        // When: we verify this email exists. Then: exception shouls be thrown
+
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
+            testService.validateUniqueEmail("example@example.com");
+        });
+
+        assertEquals(
+                "400 BAD_REQUEST \"El correo electrónico escogido ya está siendo utilizado por otro usuario.\n"
+                        + "Introduce otro correo electrónico e inténtalo de nuevo.\"",
+                e.getMessage());
+    }
+
+    @Test
+    @DisplayName("Test user creation with repeated user")
+    public void testUniqueUsername() {
+        when(repositoryMock.findByUserName("example")).thenReturn(Optional.of(testUser));
+
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
+            testService.validateUniqueUserName("example");
+        });
+
+        assertEquals(
+                "400 BAD_REQUEST \"El nombre de usuario escogido ya está siendo utilizado por otro usuario.\n"
+                        + "Introduce otro nombre de usuario e inténtalo de nuevo.\"",
+                e.getMessage());
+    }
 }
