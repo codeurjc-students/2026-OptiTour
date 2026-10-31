@@ -5,6 +5,7 @@ import java.net.URI;
 import java.security.Principal;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.Collection;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -60,8 +61,7 @@ public class UserController {
 
     @GetMapping("/{id}/image")
     public ResponseEntity<Object> downloadImage(
-            @PathVariable
-            long id) throws SQLException {
+            @PathVariable long id) throws SQLException {
         byte[] image = userService.getProfileImage(id);
 
         if (image != null) {
@@ -76,9 +76,7 @@ public class UserController {
 
     @PostMapping("/")
     public ResponseEntity<UserDTO> signupUser(
-            @Valid
-            @RequestBody
-            UserCreateDTO newUserDTO) {
+            @Valid @RequestBody UserCreateDTO newUserDTO) {
         userService.validateUniqueEmail(newUserDTO.email());
         userService.validateUniqueUserName(newUserDTO.userName());
         User newUser = new User(newUserDTO.email(), encoder.encode(newUserDTO.password()), newUserDTO.userName(),
@@ -94,10 +92,8 @@ public class UserController {
 
     @PostMapping("/{id}/image")
     public ResponseEntity<ImageDTO> uploadImage(
-            @PathVariable
-            long id,
-            @RequestParam("file")
-            MultipartFile imageFile,
+            @PathVariable long id,
+            @RequestParam("file") MultipartFile imageFile,
             HttpServletRequest request) throws IOException {
         if (imageFile.isEmpty())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El archivo de la imagen no puede estar vacío");
@@ -117,4 +113,8 @@ public class UserController {
         return ResponseEntity.created(location).body(imageMapper.toDTO(image));
     }
 
+    @GetMapping("/all")
+    public Collection<UserDTO> getUsers() {
+        return mapper.toDTOs(userService.getAllUsers());
+    }
 }

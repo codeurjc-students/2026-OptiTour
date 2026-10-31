@@ -56,14 +56,18 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.POST, "/user/").anonymous()
+                        .requestMatchers(HttpMethod.POST, "/auth/login").anonymous()
+
                         // PUBLIC ENDPOINTS
-                        .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/user/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/user/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/user/").anonymous()
+                        .requestMatchers(HttpMethod.GET, "/**").permitAll()
+
                         // PRIVATE ENDPOINTS
-                        .requestMatchers(HttpMethod.GET, "/**").permitAll());
+                        .requestMatchers(HttpMethod.POST, "/user**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/user/all").hasRole("ADMIN"));
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         http.httpBasic(httpBasic -> httpBasic.disable());

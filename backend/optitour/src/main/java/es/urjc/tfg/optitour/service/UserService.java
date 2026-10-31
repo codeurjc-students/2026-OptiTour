@@ -1,6 +1,8 @@
 package es.urjc.tfg.optitour.service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -43,6 +45,18 @@ public class UserService {
 
         throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "No se encontró el usuario con el id " + id);
+    }
+
+    public List<User> getAllUsers() {
+        List<User> users = new ArrayList<>();
+        users = userRepository.findAll();
+
+        if (users.size() > 0) {
+            return users;
+        }
+
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "No hay ningún usuario registrado.");
     }
 
     @Transactional(readOnly = true)
