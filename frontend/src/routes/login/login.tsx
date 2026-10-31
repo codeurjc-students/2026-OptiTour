@@ -49,12 +49,9 @@ function Login() {
       navigate(redirectTo, { replace: true });
     }
     catch (err) {
-      if (err instanceof Error && err.message == "Forbidden")
-        setError("Credenciales incorrectas")
-      else
-        err instanceof Error
-          ? setError(err.message)
-          : setError("Se ha producido un error en la autenticación.");
+      err instanceof Error
+        ? setError(err.message)
+        : setError("Se ha producido un error en la autenticación.");
     }
     finally {
       setLoading(false);
