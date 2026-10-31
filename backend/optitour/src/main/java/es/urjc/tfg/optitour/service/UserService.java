@@ -116,6 +116,16 @@ public class UserService {
 
     public User changeIsUserBanned(long id) {
         User targetUser = getUserById(id);
+
+        // If there is only one admin account, if admin bans itself and logs out,
+        // it won't be possible anymore to log as an admin.
+        // So, we can't let admins to ban themselfs or another admins.
+
+        if (targetUser.getRoles().contains("ADMIN")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "No puedes bloquear la cuenta de un administrador.");
+        }
+
         targetUser.setBanned(!targetUser.getIsBanned());
         userRepository.save(targetUser);
         return targetUser;

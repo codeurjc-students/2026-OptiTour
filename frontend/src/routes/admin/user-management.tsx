@@ -52,9 +52,12 @@ export default function UserManagement() {
             setUsers(users.map(u => u.id === id ? response : u));
         }
         catch (err) {
-            banned
-                ? setBanError("Se ha producido un error al desbloquear el usuario")
-                : setBanError("Se ha producido un error al bloquear el usuario");
+            if (err instanceof Error)
+                setBanError(err.message);
+            else
+                banned
+                    ? setBanError("Se ha producido un error al desbloquear el usuario")
+                    : setBanError("Se ha producido un error al bloquear el usuario");
         }
         finally {
             setBanningUserId(null);
@@ -99,9 +102,14 @@ export default function UserManagement() {
                             actions={
                                 <>
                                     <Button
+                                        ref={(el: HTMLButtonElement | null) => {
+                                            if (el) {
+                                                el.onclick = () => handleBanButton(user.id, user.isBanned);
+                                            }
+                                        }}
                                         variant={user.isBanned ? 'outline-success' : 'outline-danger'}
-                                        onClick={() => handleBanButton(user.id, user.isBanned)}
-                                        disabled={banningUserId === user.id}
+                                        disabled={banningUserId === user.id || user.roles.includes("ADMIN")}
+                                        title={user.roles.includes("ADMIN") ? "No se puede bloquear la cuenta de un administrador" : undefined}
                                     >
                                         {banningUserId === user.id ? (
                                             <>

@@ -50,6 +50,23 @@
     font-weight: 700;
     font-size: 0.85rem;
     padding: 0.35rem 1rem;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.ot-user-item__actions .btn:disabled,
+.ot-user-item__actions .btn[disabled] {
+    background-color: #4b5563;
+    border-color: #4b5563;
+    color: #ffffff;
+    opacity: 1;
+    cursor: not-allowed;
+    pointer-events: auto;
+}
+
+.ot-user-item__actions .btn:disabled:hover {
+    background-color: #4b5563;
+    border-color: #4b5563;
+    color: #ffffff;
 }
 
 @media (max-width: 575.98px) {
