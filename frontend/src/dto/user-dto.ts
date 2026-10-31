@@ -3,5 +3,6 @@ export interface UserDTO {
     email: string,
     userName: string,
     phoneNumber: string,
+    isBanned: boolean
     roles: string[]
 }

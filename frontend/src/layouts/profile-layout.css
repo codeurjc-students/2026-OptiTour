@@ -1,6 +1,7 @@
 .ot-profile-layout {
     display: flex;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
     background-color: var(--ot-bg-soft);
 }
 
@@ -9,14 +10,21 @@
     min-width: 0;
     padding: 2rem;
     background-color: #fff;
+    height: 100%;
+    overflow-y: auto;
 }
 
 @media (max-width: 991.98px) {
     .ot-profile-layout {
         flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
     }
 
     .ot-profile-layout__content {
         padding: 1.5rem 1rem 2.5rem;
+        height: auto;
+        overflow-y: visible;
     }
 }

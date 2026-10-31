@@ -33,3 +33,16 @@ export async function uploadUserImage(image: File, id: number) {
 
     return response;
 }
+
+export async function getAllUsers() {
+    const url = `${base_url}/user/all`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+    }
+
+    return await response.json();
+}
