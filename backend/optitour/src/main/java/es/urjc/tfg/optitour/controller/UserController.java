@@ -34,6 +34,7 @@ import es.urjc.tfg.optitour.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
@@ -116,5 +117,10 @@ public class UserController {
     @GetMapping("/all")
     public Collection<UserDTO> getUsers() {
         return mapper.toDTOs(userService.getAllUsers());
+    }
+
+    @PutMapping("/{id}/ban")
+    public UserDTO banUser(@PathVariable long id) {
+        return mapper.toDTO(userService.changeIsUserBanned(id));
     }
 }

@@ -61,6 +61,7 @@ public class SecurityConfiguration {
 
                         // PRIVATE ENDPOINTS
                         .requestMatchers(HttpMethod.GET, "/user/all").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/user/*/ban").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/user/**").authenticated()
 
                         // PUBLIC ENDPOINTS

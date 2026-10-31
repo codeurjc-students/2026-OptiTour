@@ -113,4 +113,11 @@ public class UserService {
                             + "Introduce otro nombre de usuario e inténtalo de nuevo.");
         }
     }
+
+    public User changeIsUserBanned(long id) {
+        User targetUser = getUserById(id);
+        targetUser.setBanned(!targetUser.getIsBanned());
+        userRepository.save(targetUser);
+        return targetUser;
+    }
 }

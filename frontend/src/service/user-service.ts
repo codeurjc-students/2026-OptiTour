@@ -46,3 +46,18 @@ export async function getAllUsers() {
 
     return await response.json();
 }
+
+export async function changeIsUserBanned(id: number) {
+    const url = `${base_url}/user/${id}/ban`;
+
+    const response = await fetch(url, {
+        method: 'PUT'
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+    }
+
+    return response.json();
+}
