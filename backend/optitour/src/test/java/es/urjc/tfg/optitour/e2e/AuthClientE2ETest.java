@@ -17,14 +17,25 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import es.urjc.tfg.optitour.repository.UserRepository;
 
 @SpringBootTest
 public class AuthClientE2ETest {
     protected WebDriver driver;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @BeforeEach
     public void setUp() {
+        userRepository.findByEmail("carmen@example.com").ifPresent(carmen -> {
+            if (carmen.getIsBanned()) {
+                carmen.setBanned(false);
+                userRepository.save(carmen);
+            }
+        });
         ChromeOptions options = new ChromeOptions();
         options.setAcceptInsecureCerts(true);
         options.addArguments("--ignore-certificate-errors");
@@ -126,8 +137,7 @@ public class AuthClientE2ETest {
         WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
         String errorCardText = errorCard.getText();
 
-        assertEquals(errorCardText, "Credenciales incorrectas");
-
+        assertEquals("Credenciales incorrectas. Revisa tu correo o contraseña.", errorCardText);
     }
 
     @Test

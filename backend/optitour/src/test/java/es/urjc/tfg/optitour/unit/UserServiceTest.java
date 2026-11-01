@@ -25,12 +25,13 @@ import es.urjc.tfg.optitour.service.UserService;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserServiceTest {
 
     UserRepository repositoryMock;
     UserService testService;
-    User testUser;
+    User testUser, testAdmin;
 
     @BeforeEach
     void setUpMocks() throws SerialException, SQLException {
@@ -40,6 +41,8 @@ public class UserServiceTest {
 
         testUser = new User("example@example.com", "demo1234", "example", "111 111 111", false,
                 "USER");
+        testAdmin = new User("admin@optitour.com", "admin1234", "example", "111 111 111", false,
+                "USER", "ADMIN");
     }
 
     @Test
@@ -187,5 +190,27 @@ public class UserServiceTest {
                 "400 BAD_REQUEST \"El nombre de usuario escogido ya está siendo utilizado por otro usuario.\n"
                         + "Introduce otro nombre de usuario e inténtalo de nuevo.\"",
                 e.getMessage());
+    }
+
+    @Test
+    @DisplayName("changeIsUserBanner should negate current is banned state in a user")
+    public void changeIsUserBannerTest() {
+        when(repositoryMock.findById(1)).thenReturn(Optional.of(testUser));
+
+        User result = testService.changeIsUserBanned(1);
+
+        assertTrue(result.getIsBanned());
+    }
+
+    @Test
+    @DisplayName("changeIsUserBanner should throw exception if user is admin")
+    public void changeIsAdminBannedTest() {
+        when(repositoryMock.findById(2)).thenReturn(Optional.of(testAdmin));
+
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
+            testService.changeIsUserBanned(2);
+        });
+
+        assertEquals("403 FORBIDDEN \"No puedes bloquear la cuenta de un administrador.\"", e.getMessage());
     }
 }

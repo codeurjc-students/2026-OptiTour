@@ -91,7 +91,6 @@ public class UserService {
             targetUser.setProfileImage(image.getImageFile());
             saveUser(targetUser);
         }
-
     }
 
     public void validateUniqueEmail(String email) {
