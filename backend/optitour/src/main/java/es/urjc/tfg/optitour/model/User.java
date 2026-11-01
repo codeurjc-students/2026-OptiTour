@@ -1,8 +1,11 @@
 package es.urjc.tfg.optitour.model;
 
 import java.sql.Blob;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.persistence.PrePersist;
 
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -25,6 +28,15 @@ public class User {
     private String userName;
     private String phoneNumber;
     private boolean isBanned;
+
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+    }
 
     @Lob
     private Blob profileImage;
@@ -67,6 +79,14 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getPassword() {

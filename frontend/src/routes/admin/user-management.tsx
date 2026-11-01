@@ -1,7 +1,6 @@
 import { Button, Row, Col } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
 import StatCard from '../../components/stat-card/stat-card';
-import ChartPlaceholder from '../../components/chart-placeholder/chart-placeholder';
 import UserListItem from '../../components/user-list-item/user-list-item';
 import { useEffect, useState } from 'react';
 import type { UserDTO } from '../../dto/user-dto';
@@ -9,6 +8,8 @@ import { changeIsUserBanned, getAllUsers } from '../../service/user-service';
 import Spinner from '../../components/spinner/spinner';
 import ErrorCard from '../../components/error-card/error-card';
 import { API_BASE_URL } from '../../service/api-config';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, LineChart, CartesianGrid, XAxis, YAxis, Line } from 'recharts';
+import './user-management.css';
 
 const base_url = API_BASE_URL;
 
@@ -64,6 +65,37 @@ export default function UserManagement() {
         }
     }
 
+    const pieChartData = [
+        { name: "Activos", value: users.filter(u => !u.isBanned).length },
+        { name: "Bloqueados", value: users.filter(u => u.isBanned).length }
+    ];
+
+    const COLORS = ['#26D12A', '#dc3545'];
+
+    const evolutionData = users
+        .filter(u => u.createdAt)
+        // Order from old to recent
+        .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+        // Group by month
+        .reduce((acc, user) => {
+            const date = new Date(user.createdAt);
+            const month = date.toLocaleDateString('es-ES', { month: 'short', year: 'numeric' });
+            const period = month.charAt(0).toUpperCase() + month.slice(1);
+
+            const existing = acc.find(item => item.period === period);
+            if (existing)
+                existing.new += 1;
+            else
+                acc.push({ period, new: 1, total: 0 });
+
+            return acc;
+        }, [] as { period: string; new: number; total: number }[])
+        // Calculate total accumulate
+        .map((item, index, arr) => {
+            item.total = arr.slice(0, index + 1).reduce((sum, current) => sum + current.new, 0);
+            return item;
+        });
+
     return (
         <>
             {isLoading ? (
@@ -84,16 +116,53 @@ export default function UserManagement() {
                             <StatCard value={String(users.length)} label="Usuarios totales" />
                         </Col>
                         <Col md={8}>
-                            <ChartPlaceholder type="pie" label="Gráfico de tarta de usuarios activos" />
+                            <div className="ot-chart-card">
+                                <ResponsiveContainer width="100%" height={220}>
+                                    <PieChart>
+                                        <Pie
+                                            data={pieChartData}
+                                            dataKey="value"
+                                            nameKey="name"
+                                            cx="50%"
+                                            cy="50%"
+                                            outerRadius={75}
+                                            label
+                                        >
+                                            {pieChartData.map((_, index) => (
+                                                <Cell key={index} fill={COLORS[index]} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip />
+                                        <Legend />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </div>
                         </Col>
                     </Row>
 
-                    <div className="mb-4">
-                        <ChartPlaceholder type="bar" label="Gráfico lineal de evolución de usuarios" />
+                    <div className="ot-chart-card mb-4" style={{ height: '300px' }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={evolutionData}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E4E7E4" />
+                                <XAxis dataKey="period" stroke="#6B7280" />
+                                <YAxis allowDecimals={false} stroke="#6B7280" />
+                                <Tooltip />
+                                <Legend />
+                                <Line
+                                    type="monotone"
+                                    dataKey="total"
+                                    name="Usuarios acumulados"
+                                    stroke="#26D12A"
+                                    strokeWidth={3}
+                                    dot={{ r: 4 }}
+                                    activeDot={{ r: 6 }}
+                                />
+                            </LineChart>
+                        </ResponsiveContainer>
                     </div>
 
+                    <h2 className="ot-panel-title">Lista de usuarios registrados</h2>
                     {banError && <ErrorCard text={banError} />}
-
                     {users.map((user) => (
                         <UserListItem
                             key={user.id}

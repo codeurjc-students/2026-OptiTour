@@ -24,6 +24,19 @@ export default function Profile({ user }: profileProps) {
                         </>
                     )}
                 </div>
+                <div>
+                    <dt>Se unió el día</dt>
+                    <dd>{
+                        user?.createdAt
+                            ? new Date(user.createdAt).toLocaleDateString('es-ES', {
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric'
+                            })
+                            : 'Desconocido'
+                    }
+                    </dd>
+                </div>
             </dl>
         </>
     );
