@@ -2,10 +2,41 @@
     border: 1px solid var(--ot-border);
     border-radius: var(--ot-radius);
     background-color: #fff;
-    padding: 1rem 1.5rem;
+    padding: 1.25rem 1.5rem;
     height: 100%;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
     min-width: 0;
+}
+
+.ot-chart-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ot-text);
+    margin-bottom: 0.75rem;
+    text-align: left;
+}
+
+.ot-stat-card--users {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 2rem 1.5rem;
+    height: 100%;
+}
+
+.ot-stat-card--users .ot-stat-card__value {
+    font-size: 4rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--ot-text);
+}
+
+.ot-stat-card--users .ot-stat-card__label {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--ot-text);
+    line-height: 1.2;
 }

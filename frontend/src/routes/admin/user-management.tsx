@@ -106,17 +106,21 @@ export default function UserManagement() {
                 <div>
                     <div className="ot-panel-header">
                         <h1 className="ot-panel-title">Gestión de usuarios</h1>
+
                         <Button onClick={() => navigate('/admin/create')} className="ot-panel-action ot-panel-action--inline">
                             Crear nueva cuenta de administración
                         </Button>
                     </div>
 
+                    <h2 className="ot-panel-subtitle">Información general</h2>
+
                     <Row className="g-3 mb-3">
                         <Col md={4}>
-                            <StatCard value={String(users.length)} label="Usuarios totales" />
+                            <StatCard value={String(users.length)} label="Usuarios totales" className="ot-stat-card--users" />
                         </Col>
                         <Col md={8}>
                             <div className="ot-chart-card">
+                                <h3 className="ot-chart-title">Estado de los usuarios</h3>
                                 <ResponsiveContainer width="100%" height={220}>
                                     <PieChart>
                                         <Pie
@@ -140,8 +144,9 @@ export default function UserManagement() {
                         </Col>
                     </Row>
 
-                    <div className="ot-chart-card mb-4" style={{ height: '300px' }}>
-                        <ResponsiveContainer width="100%" height="100%">
+                    <div className="ot-chart-card mb-4">
+                        <h3 className="ot-chart-title">Evolución de usuarios registrados</h3>
+                        <ResponsiveContainer width="100%" height={260}>
                             <LineChart data={evolutionData}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E4E7E4" />
                                 <XAxis dataKey="period" stroke="#6B7280" />
@@ -161,7 +166,7 @@ export default function UserManagement() {
                         </ResponsiveContainer>
                     </div>
 
-                    <h2 className="ot-panel-title">Lista de usuarios registrados</h2>
+                    <h2 className="ot-panel-subtitle">Lista de usuarios registrados</h2>
                     {banError && <ErrorCard text={banError} />}
                     {users.map((user) => (
                         <UserListItem
