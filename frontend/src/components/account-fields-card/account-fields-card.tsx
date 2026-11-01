@@ -41,7 +41,10 @@ function AccountFieldsCard() {
                         {imagePreviewUrl ? (
                             <img src={imagePreviewUrl} alt="Foto de perfil" />
                         ) : (
-                            <span>Imagen<br />de perfil</span>
+                            <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                <circle cx="12" cy="9" r="3.5" />
+                                <path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6" />
+                            </svg>
                         )}
                     </div>
                     <Button variant="outline-dark" className="ot-account-fields__upload-btn" as="label" htmlFor="upload-image">

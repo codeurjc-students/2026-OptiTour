@@ -123,4 +123,9 @@ public class UserController {
     public UserDTO banUser(@PathVariable long id) {
         return mapper.toDTO(userService.changeIsUserBanned(id));
     }
+
+    @GetMapping("/{id}")
+    public UserDTO getUser(@PathVariable long id) {
+        return mapper.toDTO(userService.getUserById(id));
+    }
 }

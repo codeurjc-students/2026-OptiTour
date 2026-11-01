@@ -1,5 +1,5 @@
 import { Button, Row, Col } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import StatCard from '../../components/stat-card/stat-card';
 import ChartPlaceholder from '../../components/chart-placeholder/chart-placeholder';
 import UserListItem from '../../components/user-list-item/user-list-item';
@@ -124,7 +124,9 @@ export default function UserManagement() {
                                             user.isBanned ? 'Desbloquear' : 'Bloquear'
                                         )}
                                     </Button>
-                                    <Button variant="outline-dark">Ver perfil</Button>
+                                    <Link to={`/admin/users/${user.id}`} className="btn btn-outline-dark">
+                                        Ver perfil
+                                    </Link>
                                 </>
                             }
                         />

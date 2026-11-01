@@ -61,3 +61,16 @@ export async function changeIsUserBanned(id: number) {
 
     return response.json();
 }
+
+export async function getUserById(id: number) {
+    const url = `${base_url}/user/${id}`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+    }
+
+    return response.json();
+}
