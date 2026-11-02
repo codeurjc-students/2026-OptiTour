@@ -13,7 +13,8 @@ export default [
         route("/profile/groups", "routes/my-profile/my-groups.tsx"),
         route("/profile/notifications", "routes/my-profile/my-notifications.tsx"),
         route("/profile/payments", "routes/my-profile/my-payments.tsx"),
-        route("/profile/edit", "routes/my-profile/edit-profile.tsx")
+        route("/profile/edit", "routes/my-profile/edit-profile.tsx"),
+        route("/profile/delete", "routes/my-profile/delete-profile.tsx")
     ]),
     layout("layouts/admin-layout.tsx", [
         route("/admin/users", "routes/admin/user-management.tsx"),
@@ -21,6 +22,7 @@ export default [
         route("/admin/poi", "routes/admin/poi-management.tsx"),
         route("/admin/billing", "routes/admin/billing.tsx"),
         route("/admin/profile", "routes/admin/admin-profile.tsx"),
+        //route("/admin/delete/profile", "routes/my-profile/delete-profile.tsx"),
         route("/admin/notifications", "routes/admin/admin-notifications.tsx"),
         route("/admin/create", "routes/admin/create-admin-account.tsx"),
         route("/admin/addpoi", "routes/admin/create-poi.tsx"),

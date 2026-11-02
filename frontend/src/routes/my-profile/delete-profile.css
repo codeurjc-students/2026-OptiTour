@@ -1,0 +1,195 @@
+.ot-delete-profile {
+    max-width: 640px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.ot-delete-profile__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 1.75rem;
+}
+
+.ot-delete-profile__warning-badge {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background-color: #fee2e2;
+    color: #dc2626;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.15);
+}
+
+.ot-delete-profile__title {
+    font-weight: 800;
+    font-size: 1.75rem;
+    color: #dc2626;
+    margin-bottom: 0.25rem;
+}
+
+.ot-delete-profile__card {
+    border: 1px solid #fecaca;
+    border-radius: var(--ot-radius);
+    background-color: #ffffff;
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.07);
+    padding: 2rem;
+}
+
+.ot-delete-profile__alert-box {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-left: 4px solid #dc2626;
+    border-radius: 10px;
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1.75rem;
+}
+
+.ot-delete-profile__alert-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #b91c1c;
+    font-weight: 800;
+    font-size: 1.05rem;
+    margin-bottom: 0.4rem;
+}
+
+.ot-delete-profile__alert-text {
+    color: #dc2626;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+.ot-delete-profile__form-group {
+    margin-bottom: 1.5rem;
+}
+
+.ot-delete-profile__label {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    color: var(--ot-text);
+}
+
+.ot-delete-profile__checkbox-wrapper {
+    background-color: #fff8f8;
+    border: 1px solid #fde2e2;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 2rem;
+    transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.ot-delete-profile__checkbox-wrapper:hover {
+    border-color: #fca5a5;
+    background-color: #fef2f2;
+}
+
+.ot-delete-profile__checkbox {
+    margin: 0;
+}
+
+.ot-delete-profile__checkbox .form-check-input {
+    cursor: pointer;
+    border-color: #f87171;
+    width: 1.2em;
+    height: 1.2em;
+    margin-top: 0.15em;
+}
+
+.ot-delete-profile__checkbox .form-check-input:checked {
+    background-color: #dc2626;
+    border-color: #dc2626;
+}
+
+.ot-delete-profile__checkbox .form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(220, 38, 38, 0.25);
+    border-color: #dc2626;
+}
+
+.ot-delete-profile__checkbox .form-check-label {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: #991b1b;
+    padding-left: 0.35rem;
+    line-height: 1.45;
+}
+
+.ot-delete-profile__actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.ot-delete-profile__submit-btn {
+    background-color: #dc2626;
+    border-color: #dc2626;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: var(--ot-radius-pill);
+    padding: 0.65rem 1.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 160ms ease;
+}
+
+.ot-delete-profile__submit-btn:hover:not(:disabled) {
+    background-color: #b91c1c;
+    border-color: #b91c1c;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(220, 38, 38, 0.3);
+}
+
+.ot-delete-profile__submit-btn:disabled {
+    background-color: #9ca3af;
+    border-color: #9ca3af;
+    color: #f3f4f6;
+    cursor: not-allowed;
+    opacity: 0.75;
+}
+
+.ot-delete-profile__cancel-btn {
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: var(--ot-radius-pill);
+    padding: 0.65rem 1.5rem;
+    border-color: var(--ot-secondary);
+    color: var(--ot-secondary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 160ms ease;
+}
+
+.ot-delete-profile__cancel-btn:hover {
+    background-color: var(--ot-secondary);
+    border-color: var(--ot-secondary);
+    color: #ffffff;
+}
+
+@media (max-width: 575.98px) {
+    .ot-delete-profile__card {
+        padding: 1.25rem;
+    }
+
+    .ot-delete-profile__actions {
+        flex-direction: column-reverse;
+    }
+
+    .ot-delete-profile__actions .btn {
+        width: 100%;
+    }
+}
