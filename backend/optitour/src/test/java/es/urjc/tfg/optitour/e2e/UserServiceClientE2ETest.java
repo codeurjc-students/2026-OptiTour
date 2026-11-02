@@ -289,4 +289,27 @@ public class UserServiceClientE2ETest {
         WebElement userName = wait.until(visibilityOfElementLocated(By.className("ot-my-profile__name")));
         assertEquals("Carmen García", userName.getText());
     }
+
+    @Test
+    @DisplayName("Logging in with blocked account should show an error card")
+    public void logAsBlockedUserE2EClientTest() {
+        driver.get("http://localhost:5173/login");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+        String uniqueEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
+
+        repository.save(new User(uniqueEmail, "Demo1234", "example", "111 111 111", true, "USER"));
+
+        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
+        WebElement passField = driver.findElement(By.id("loginPassword"));
+        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
+
+        emailField.sendKeys(uniqueEmail);
+        passField.sendKeys("Demo1234");
+        submitButton.click();
+
+        WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
+        assertEquals("Tu cuenta ha sido bloqueada. Contacta con el administrador para más información.",
+                errorCard.getText());
+    }
 }

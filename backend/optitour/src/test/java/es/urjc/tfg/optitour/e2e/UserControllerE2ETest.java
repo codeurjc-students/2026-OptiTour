@@ -83,7 +83,7 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                                 false,
                                 "USER");
                 User otherUser = new User("example1@example.com", encoder.encode("demo1234"), "example1", "111 111 111",
-                                false,
+                                true,
                                 "USER");
                 User adminUser = new User("admin@optitour.com", encoder.encode("demo1234"), "admin", "111 111 111",
                                 false,
@@ -322,6 +322,22 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                                 .get("/api/v1/user/" + firstId)
                                 .then()
                                 .statusCode(403);
+        }
+
+        @Test
+        @DisplayName("logging as a blocked user should return an error message")
+        public void logAsBlockedUserE2Etest() {
+                LoginRequest loginCredentials = new LoginRequest("example1@example.com", "demo1234");
+
+                given()
+                                .contentType(ContentType.JSON)
+                                .body(loginCredentials)
+                                .when()
+                                .post("/api/v1/auth/login")
+                                .then()
+                                .statusCode(403)
+                                .body("message", equalTo(
+                                                "Tu cuenta ha sido bloqueada. \n Contacta con el administrador para más información."));
         }
 
         // ---------------- FIELD VALIDATION TESTS --------------------------------
