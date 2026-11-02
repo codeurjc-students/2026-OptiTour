@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -67,7 +69,8 @@ public class GlobalExceptionHandler {
         Map<String, String> response = new HashMap<>(); // Map to strucutre JSON response.
 
         // Exception contains a list of all fields that failed validation.
-        // We prioritize NotBlank/NotNull over Size/Pattern so the most relevant error is returned first.
+        // We prioritize NotBlank/NotNull over Size/Pattern so the most relevant error
+        // is returned first.
         FieldError chosenError = ex.getBindingResult().getFieldErrors().stream()
                 .min(Comparator.comparingInt(this::getPriority))
                 .orElse(ex.getBindingResult().getFieldErrors().get(0));
@@ -77,5 +80,20 @@ public class GlobalExceptionHandler {
         response.put("message", chosenError.getDefaultMessage());
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(LockedException.class)
+    public ResponseEntity<Map<String, String>> handleLockedExpcetion(LockedException e) {
+        return new ResponseEntity<>(
+                Map.of("message",
+                        "Tu cuenta ha sido bloqueada. \n Contacta con el administrador para más información."),
+                HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String, String>> handleBadCredentialsEsception(BadCredentialsException e) {
+        return new ResponseEntity<>(
+                Map.of("message", "Credenciales incorrectas. Revisa tu correo o contraseña."),
+                HttpStatus.FORBIDDEN);
     }
 }

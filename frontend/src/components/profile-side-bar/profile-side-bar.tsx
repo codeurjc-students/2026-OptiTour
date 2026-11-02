@@ -26,7 +26,7 @@ function ProfileSidebar({
     return (
         <aside className="ot-sidebar">
             <div className="ot-sidebar__user">
-                <ProfileImage className="ot-sidebar__avatar" />
+                <ProfileImage userId={loggedUser?.id} className="ot-sidebar__avatar" />
                 {roleLabel && <span className="ot-sidebar__role">{roleLabel}</span>}
                 <span className="ot-sidebar__username">{loggedUser?.userName}</span>
                 <Link to={profileTo} className="btn btn-outline-dark ot-sidebar__profile-btn">

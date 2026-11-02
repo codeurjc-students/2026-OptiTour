@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import './user-list-item.css';
 
 interface UserListItemProps {
@@ -8,13 +8,19 @@ interface UserListItemProps {
 }
 
 function UserListItem({ userName, avatarSrc, actions }: UserListItemProps) {
+    const [hasError, setHasError] = useState(false);
+
+    useEffect(() => {
+        setHasError(false);
+    }, [avatarSrc]);
+
     return (
         <div className="ot-user-item">
             <div className="ot-user-item__avatar">
-                {avatarSrc ? (
-                    <img src={avatarSrc} alt={userName} />
+                {avatarSrc && !hasError ? (
+                    <img src={avatarSrc} alt={userName} onError={() => setHasError(true)} />
                 ) : (
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                         <circle cx="12" cy="9" r="3.5" />
                         <path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6" />
                     </svg>

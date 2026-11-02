@@ -70,7 +70,7 @@ function OptiTourNavbar() {
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
-                <ProfileImage className="ot-navbar__avatar" />
+                <ProfileImage userId={loggedUser?.id} className="ot-navbar__avatar" />
               </div>
             ) :
               <>

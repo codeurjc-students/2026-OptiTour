@@ -1,6 +1,8 @@
 package es.urjc.tfg.optitour.service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -45,6 +47,18 @@ public class UserService {
                 "No se encontró el usuario con el id " + id);
     }
 
+    public List<User> getAllUsers() {
+        List<User> users = new ArrayList<>();
+        users = userRepository.findAll();
+
+        if (users.size() > 0) {
+            return users;
+        }
+
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "No hay ningún usuario registrado.");
+    }
+
     @Transactional(readOnly = true)
     public byte[] getProfileImage(long id) throws SQLException {
         User user = getUserById(id);
@@ -77,7 +91,6 @@ public class UserService {
             targetUser.setProfileImage(image.getImageFile());
             saveUser(targetUser);
         }
-
     }
 
     public void validateUniqueEmail(String email) {
@@ -98,5 +111,22 @@ public class UserService {
                     "El nombre de usuario escogido ya está siendo utilizado por otro usuario.\n"
                             + "Introduce otro nombre de usuario e inténtalo de nuevo.");
         }
+    }
+
+    public User changeIsUserBanned(long id) {
+        User targetUser = getUserById(id);
+
+        // If there is only one admin account, if admin bans itself and logs out,
+        // it won't be possible anymore to log as an admin.
+        // So, we can't let admins to ban themselfs or another admins.
+
+        if (targetUser.getRoles().contains("ADMIN")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "No puedes bloquear la cuenta de un administrador.");
+        }
+
+        targetUser.setBanned(!targetUser.getIsBanned());
+        userRepository.save(targetUser);
+        return targetUser;
     }
 }

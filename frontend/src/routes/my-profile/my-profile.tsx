@@ -1,7 +1,7 @@
 import { Button } from 'react-bootstrap';
 import './my-profile.css';
 import { useAuthStore } from '../../store/auth-store';
-import ProfileImage from '../../components/profile-image/profile-image';
+import Profile from '../../components/profile/profile';
 
 function MyProfile() {
     const { loggedUser } = useAuthStore();
@@ -14,24 +14,7 @@ function MyProfile() {
         <div className="ot-my-profile">
             <h1 className="ot-panel-title text-center">Mi perfil</h1>
 
-            <ProfileImage />
-
-            <h2 className="ot-my-profile__name">{loggedUser!.userName}</h2>
-
-            <dl className="ot-my-profile__data">
-                <div>
-                    <dt>Correo electrónico</dt>
-                    <dd>{loggedUser!.email}</dd>
-                </div>
-                <div>
-                    {loggedUser!.phoneNumber &&
-                        <>
-                            <dt>Número de teléfono</dt>
-                            <dd>{loggedUser!.phoneNumber}</dd>
-                        </>
-                    }
-                </div>
-            </dl>
+            <Profile user={loggedUser} />
 
             <div className="ot-my-profile__actions">
                 <Button variant="outline-dark" className="ot-my-profile__edit-btn">

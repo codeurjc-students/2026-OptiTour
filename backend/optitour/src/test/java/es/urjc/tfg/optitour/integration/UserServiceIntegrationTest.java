@@ -51,16 +51,19 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
     public void initSampleData() {
         repository.deleteAll();
 
-        repository.save(
-                new User("example@example.com", encoder.encode("demo1234"), "example", "111 111 111", false, "USER"));
+        for (int i = 0; i < 3; i++) {
+            repository.save(
+                    new User("example" + i + "@example.com", encoder.encode("demo1234"), "example" + i, "111 111 111",
+                            false, "USER"));
+        }
     }
 
     @Test
     @DisplayName("getUserByEmail method should return the corresponding user")
     void getUserByEmailTest() {
-        User result = service.getUserByEmail("example@example.com");
+        User result = service.getUserByEmail("example1@example.com");
 
-        assertEquals(result.getUserName(), "example");
+        assertEquals(result.getUserName(), "example1");
         assertEquals(result.getPhoneNumber(), "111 111 111");
         assertFalse(result.getIsBanned());
     }
@@ -85,8 +88,8 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
         User result = service.getUserById(firstId);
 
         assertNotNull(result);
-        assertEquals("example@example.com", result.getEmail());
-        assertEquals("example", result.getUserName());
+        assertEquals("example0@example.com", result.getEmail());
+        assertEquals("example0", result.getUserName());
     }
 
     @Test
@@ -124,9 +127,9 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
         Image image = new Image();
         image.setImageFile(imageFile);
 
-        service.addImageToUser(firstId, image, "example@example.com");
+        service.addImageToUser(firstId, image, "example0@example.com");
 
-        User testUser = service.getUserByEmail("example@example.com");
+        User testUser = service.getUserByEmail("example0@example.com");
 
         assertEquals("fake image", new String(
                 testUser.getProfileImage().getBytes(1, (int) testUser.getProfileImage().length()),
@@ -167,7 +170,7 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
     @DisplayName("verifyUniqueEmail with repeated email should throw exception")
     public void UniqueEmailIntegrationTest() {
         ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
-            service.validateUniqueEmail("example@example.com");
+            service.validateUniqueEmail("example1@example.com");
         });
 
         assertEquals(
@@ -180,7 +183,7 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
     @DisplayName("verifyUniqueUser with repeated username should throw exception")
     public void UniqueUserIntegrationTest() {
         ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
-            service.validateUniqueUserName("example");
+            service.validateUniqueUserName("example1");
         });
 
         assertEquals(
@@ -189,4 +192,28 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
                 e.getMessage());
     }
 
+    @Test
+    @DisplayName("getAllUsers method should return all users in database")
+    public void getAllUsersIntegrationTest() {
+        List<User> allUsers = new ArrayList<>();
+        allUsers = service.getAllUsers();
+
+        assertEquals(3, allUsers.size());
+
+        for (int i = 0; i < 3; i++) {
+            assertEquals("example" + i + "@example.com", allUsers.get(i).getEmail());
+        }
+    }
+
+    @Test
+    @DisplayName("getAllUsers method should throw if there is no users")
+    public void getAllUsersWithNoUsersIntegrationTest() {
+        repository.deleteAll();
+
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
+            service.getAllUsers();
+        });
+
+        assertEquals(e.getMessage(), "404 NOT_FOUND \"No hay ningún usuario registrado.\"");
+    }
 }

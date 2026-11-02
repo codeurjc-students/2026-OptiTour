@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.sql.Blob;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.hibernate.engine.jdbc.proxy.BlobProxy;
@@ -125,42 +126,64 @@ public class SampleDataService {
         public void init() throws IOException {
 
                 if (userRepository.findByEmail("carmen@example.com").isEmpty()) {
-                        userRepository.save(new User("carmen@example.com", passwordEncoder.encode(password),
-                                        "Carmen García",
-                                        "611 223 344", false, loadProfilePicture("carmen.jpg"), "USER"));
-                        userRepository.save(new User("laura@example.com", passwordEncoder.encode(password),
-                                        "Laura Martínez",
-                                        "655 443 322", false, loadProfilePicture("laura.jpg"), "USER"));
-                        userRepository.save(
-                                        new User("maria@example.com", passwordEncoder.encode(password), "María López",
-                                                        "677 889 900", false, loadProfilePicture("maria.jpg"), "USER"));
-                        userRepository.save(
-                                        new User("ana@example.com", passwordEncoder.encode(password), "Ana Fernández",
-                                                        "622 112 233", false, loadProfilePicture("ana.jpg"), "USER"));
-                        userRepository.save(new User("lucia@example.com", passwordEncoder.encode(password),
-                                        "Lucía Sánchez",
-                                        "633 445 566", false, loadProfilePicture("lucia.jpg"), "USER"));
-                        userRepository.save(new User("javier@example.com", passwordEncoder.encode(password),
-                                        "Javier Pérez",
-                                        "600 123 456", false, loadProfilePicture("javier.jpg"), "USER"));
-                        userRepository.save(new User("carlos@example.com", passwordEncoder.encode(password),
-                                        "Carlos Gómez",
-                                        "688 776 655", false, loadProfilePicture("carlos.jpg"), "USER"));
-                        userRepository.save(new User("david@example.com", passwordEncoder.encode(password),
-                                        "David Rodríguez",
-                                        "699 111 222", false, loadProfilePicture("david.jpg"), "USER"));
-                        userRepository.save(new User("alejandro@example.com", passwordEncoder.encode(password),
-                                        "Alejandro Ruiz",
-                                        "644 332 211", false, loadProfilePicture("alejandro.jpg"), "USER"));
-                        userRepository.save(new User("daniel@example.com", passwordEncoder.encode(password),
-                                        "Daniel Martín",
-                                        "666 555 444", false, loadProfilePicture("daniel.jpg"), "USER"));
+                        LocalDateTime now = LocalDateTime.now();
+
+                        User carmen = new User("carmen@example.com", passwordEncoder.encode(password),
+                                        "Carmen García", "611 223 344", false, loadProfilePicture("carmen.jpg"), "USER");
+                        carmen.setCreatedAt(now.minusMonths(5));
+                        userRepository.save(carmen);
+
+                        User laura = new User("laura@example.com", passwordEncoder.encode(password),
+                                        "Laura Martínez", "655 443 322", false, loadProfilePicture("laura.jpg"), "USER");
+                        laura.setCreatedAt(now.minusMonths(4));
+                        userRepository.save(laura);
+
+                        User maria = new User("maria@example.com", passwordEncoder.encode(password), "María López",
+                                        "677 889 900", false, loadProfilePicture("maria.jpg"), "USER");
+                        maria.setCreatedAt(now.minusMonths(4));
+                        userRepository.save(maria);
+
+                        User ana = new User("ana@example.com", passwordEncoder.encode(password), "Ana Fernández",
+                                        "622 112 233", false, loadProfilePicture("ana.jpg"), "USER");
+                        ana.setCreatedAt(now.minusMonths(3));
+                        userRepository.save(ana);
+
+                        User lucia = new User("lucia@example.com", passwordEncoder.encode(password),
+                                        "Lucía Sánchez", "633 445 566", false, loadProfilePicture("lucia.jpg"), "USER");
+                        lucia.setCreatedAt(now.minusMonths(2));
+                        userRepository.save(lucia);
+
+                        User javier = new User("javier@example.com", passwordEncoder.encode(password),
+                                        "Javier Pérez", "600 123 456", false, loadProfilePicture("javier.jpg"), "USER");
+                        javier.setCreatedAt(now.minusMonths(2));
+                        userRepository.save(javier);
+
+                        User carlos = new User("carlos@example.com", passwordEncoder.encode(password),
+                                        "Carlos Gómez", "688 776 655", false, loadProfilePicture("carlos.jpg"), "USER");
+                        carlos.setCreatedAt(now.minusMonths(1));
+                        userRepository.save(carlos);
+
+                        User david = new User("david@example.com", passwordEncoder.encode(password),
+                                        "David Rodríguez", "699 111 222", false, loadProfilePicture("david.jpg"), "USER");
+                        david.setCreatedAt(now.minusMonths(1));
+                        userRepository.save(david);
+
+                        User alejandro = new User("alejandro@example.com", passwordEncoder.encode(password),
+                                        "Alejandro Ruiz", "644 332 211", false, loadProfilePicture("alejandro.jpg"), "USER");
+                        alejandro.setCreatedAt(now);
+                        userRepository.save(alejandro);
+
+                        User daniel = new User("daniel@example.com", passwordEncoder.encode(password),
+                                        "Daniel Martín", "666 555 444", false, loadProfilePicture("daniel.jpg"), "USER");
+                        daniel.setCreatedAt(now);
+                        userRepository.save(daniel);
                 }
 
                 if (userRepository.findByEmail("admin@optitour.com").isEmpty()) {
-                        userRepository.save(new User("admin@optitour.com", passwordEncoder.encode("Admin1234"), "Admin",
-                                        "111 111 111", false, loadProfilePicture("admin.png"), "USER", "ADMIN"));
-
+                        User admin = new User("admin@optitour.com", passwordEncoder.encode("Admin1234"), "Admin",
+                                        "111 111 111", false, loadProfilePicture("admin.png"), "USER", "ADMIN");
+                        admin.setCreatedAt(LocalDateTime.now().minusMonths(6));
+                        userRepository.save(admin);
                 }
 
                 if (tourRepository.count() == 0)

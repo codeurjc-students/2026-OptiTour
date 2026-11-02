@@ -1,11 +1,11 @@
 import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AccountFieldsCard from '../../components/account-fields-card/account-fields-card';
 import PasswordFieldsCard from '../../components/password-fields-card/password-fields-card';
 import './signup.css';
 import { useState } from 'react';
 import { signup, uploadUserImage } from '../../service/user-service';
-import { useNavigate } from 'react-router';
+
 import ErrorCard from '../../components/error-card/error-card';
 import { useAuthStore } from '../../store/auth-store';
 import { FormProvider, useForm } from 'react-hook-form';

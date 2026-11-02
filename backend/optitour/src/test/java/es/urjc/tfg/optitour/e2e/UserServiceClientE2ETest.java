@@ -37,8 +37,16 @@ public class UserServiceClientE2ETest {
         repository.findAll().forEach(user -> {
             if ("example@example.com".equals(user.getEmail())
                     || "example2@example.com".equals(user.getEmail())
-                    || "example".equals(user.getUserName())) {
+                    || "example".equals(user.getUserName())
+                    || (user.getEmail() != null && user.getEmail().endsWith("@ex.com"))) {
                 repository.delete(user);
+            }
+        });
+
+        repository.findByEmail("carmen@example.com").ifPresent(carmen -> {
+            if (carmen.getIsBanned()) {
+                carmen.setBanned(false);
+                repository.save(carmen);
             }
         });
 
@@ -200,6 +208,108 @@ public class UserServiceClientE2ETest {
         // Error page should appear
         WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
         assertEquals("Ya estás identificado en el sistema. Para acceder a esta página, cierra sesión.",
+                errorCard.getText());
+    }
+
+    @Test
+    @DisplayName("Accesing as an admin to user panel should show ammount of users")
+    public void userPanelAmmmoutnE2EClient() {
+        driver.get("http://localhost:5173/admin/users");
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
+        WebElement passField = driver.findElement(By.id("loginPassword"));
+        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
+
+        emailField.sendKeys("admin@optitour.com");
+        passField.sendKeys("Admin1234");
+        submitButton.click();
+
+        wait.until(urlToBe("http://localhost:5173/admin/users"));
+
+        WebElement ammountValue = wait.until(visibilityOfElementLocated(By.className("ot-stat-card__value")));
+
+        assertEquals("11", ammountValue.getText());
+    }
+
+    @Test
+    @DisplayName("Accesing as an admin to user panel should show ammount of users")
+    public void userPanelListE2EClient() {
+        driver.get("http://localhost:5173/admin/users");
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
+        WebElement passField = driver.findElement(By.id("loginPassword"));
+        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
+
+        emailField.sendKeys("admin@optitour.com");
+        passField.sendKeys("Admin1234");
+        submitButton.click();
+
+        wait.until(urlToBe("http://localhost:5173/admin/users"));
+
+        // Now, we want to check if users appears correctly in user list.
+        // We need to extract the first user from list.
+        // We get the specfic card from list
+        WebElement userCard = wait.until(visibilityOfElementLocated(
+                By.xpath("//div[contains(@class, 'ot-user-item')][.//span[normalize-space()='Carmen García']]")));
+
+        // Now, we get the name element from extracted user card.
+        WebElement userNameElement = userCard.findElement(By.className("ot-user-item__name"));
+
+        assertEquals(userNameElement.getText(), "Carmen García");
+    }
+
+    @Test
+    @DisplayName("Clicking view profile button from user card should show correct user profile")
+    public void userProfileFromPanelE2EClientTest() {
+        driver.get("http://localhost:5173/admin/users");
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
+        WebElement passField = driver.findElement(By.id("loginPassword"));
+        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
+
+        emailField.sendKeys("admin@optitour.com");
+        passField.sendKeys("Admin1234");
+        submitButton.click();
+
+        WebElement userCard = wait.until(visibilityOfElementLocated(
+                By.xpath("//div[contains(@class, 'ot-user-item')][.//span[normalize-space()='Carmen García']]")));
+
+        // Also, we can get viewProfileButton
+        WebElement viewProfileBtn = userCard.findElement(By.xpath(".//a[normalize-space()='Ver perfil']"));
+        viewProfileBtn.click();
+
+        wait.until(urlToBe("http://localhost:5173/admin/users/1"));
+
+        WebElement userName = wait.until(visibilityOfElementLocated(By.className("ot-my-profile__name")));
+        assertEquals("Carmen García", userName.getText());
+    }
+
+    @Test
+    @DisplayName("Logging in with blocked account should show an error card")
+    public void logAsBlockedUserE2EClientTest() {
+        driver.get("http://localhost:5173/login");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+        String uniqueEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
+
+        repository.save(new User(uniqueEmail, "Demo1234", "example", "111 111 111", true, "USER"));
+
+        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
+        WebElement passField = driver.findElement(By.id("loginPassword"));
+        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
+
+        emailField.sendKeys(uniqueEmail);
+        passField.sendKeys("Demo1234");
+        submitButton.click();
+
+        WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
+        assertEquals("Tu cuenta ha sido bloqueada. Contacta con el administrador para más información.",
                 errorCard.getText());
     }
 }

@@ -56,13 +56,20 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.POST, "/user/").anonymous()
+                        .requestMatchers(HttpMethod.POST, "/auth/login").anonymous()
+
+                        // PRIVATE ENDPOINTS
+                        .requestMatchers(HttpMethod.GET, "/user/all").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/user/*").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/user/*/ban").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/user/**").authenticated()
+
                         // PUBLIC ENDPOINTS
-                        .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/user/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/user/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/user/").anonymous()
-                        // PRIVATE ENDPOINTS
                         .requestMatchers(HttpMethod.GET, "/**").permitAll());
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

@@ -17,6 +17,7 @@ export default [
     ]),
     layout("layouts/admin-layout.tsx", [
         route("/admin/users", "routes/admin/user-management.tsx"),
+        route("/admin/users/:id", "routes/admin/user-profile.tsx"),
         route("/admin/poi", "routes/admin/poi-management.tsx"),
         route("/admin/billing", "routes/admin/billing.tsx"),
         route("/admin/profile", "routes/admin/admin-profile.tsx"),
