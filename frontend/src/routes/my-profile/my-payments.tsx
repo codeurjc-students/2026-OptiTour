@@ -3,6 +3,12 @@ import StatCard from '../../components/stat-card/stat-card';
 import ChartPlaceholder from '../../components/chart-placeholder/chart-placeholder';
 import BillingRow from '../../components/billing-row/billing-row';
 
+export function meta() {
+    return [
+        { title: "Mis Pagos | OptiTour" },
+    ];
+}
+
 interface BillingRecord {
     id: string;
     userName: string;

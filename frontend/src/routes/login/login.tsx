@@ -13,6 +13,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import type z from 'zod';
 
+export function meta() {
+  return [
+    { title: "Iniciar Sesión | OptiTour" },
+  ];
+}
+
 const base_url = API_BASE_URL;
 
 function Login() {

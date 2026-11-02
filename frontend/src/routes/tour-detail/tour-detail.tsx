@@ -15,6 +15,13 @@ import type { ImageDTO } from '../../dto/image-dto';
 import { API_BASE_URL } from '../../service/api-config';
 import Navbar from '../../components/navbar/navbar';
 import Footer from '../../components/footer/footer';
+import useDocumentTitle from '../../hooks/use-document-title';
+
+export function meta() {
+    return [
+        { title: "Detalle del Tour | OptiTour" },
+    ];
+}
 
 const base_url = API_BASE_URL;
 
@@ -34,6 +41,14 @@ function TourDetailPage() {
 
     const { id } = useParams();
     const location = useLocation();
+
+    useDocumentTitle(
+        error
+            ? "Error | OptiTour"
+            : tour?.name
+                ? `${tour.name} | OptiTour`
+                : "Detalle del Tour | OptiTour"
+    );
 
     async function handleLoadTour() {
         try {

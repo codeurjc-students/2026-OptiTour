@@ -4,6 +4,12 @@ import StatCard from '../../components/stat-card/stat-card';
 import ChartPlaceholder from '../../components/chart-placeholder/chart-placeholder';
 import MediaListItem from '../../components/list-item/list-item';
 
+export function meta() {
+    return [
+        { title: "Gestión de Puntos de Interés | OptiTour" },
+    ];
+}
+
 interface AdminPoi {
     id: number;
     title: string;

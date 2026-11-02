@@ -9,6 +9,12 @@ import { API_BASE_URL } from '../../service/api-config';
 import Spinner from '../../components/spinner/spinner';
 import ErrorCard from '../../components/error-card/error-card';
 
+export function meta() {
+  return [
+    { title: "Inicio | OptiTour" },
+  ];
+}
+
 const base_url = API_BASE_URL;
 
 function Index() {

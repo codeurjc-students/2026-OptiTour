@@ -4,6 +4,12 @@ import ListItem from '../../components/list-item/list-item';
 import PanelSearch from '../../components/panel-search/panel-search';
 import './route-builder.css';
 
+export function meta() {
+    return [
+        { title: "Creador de Rutas | OptiTour" },
+    ];
+}
+
 interface PointOfInterest {
     id: number;
     title: string;

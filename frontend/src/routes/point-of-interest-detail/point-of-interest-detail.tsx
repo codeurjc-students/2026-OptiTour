@@ -14,6 +14,13 @@ import type { ImageDTO } from '../../dto/image-dto';
 import { API_BASE_URL } from '../../service/api-config';
 import Navbar from '../../components/navbar/navbar';
 import Footer from '../../components/footer/footer';
+import useDocumentTitle from '../../hooks/use-document-title';
+
+export function meta() {
+    return [
+        { title: "Punto de Interés | OptiTour" },
+    ];
+}
 
 const base_url = API_BASE_URL;
 
@@ -26,6 +33,14 @@ export default function PointOfInterestDetail() {
     const [errCode, setErrCode] = useState<number | null>(null);
     const [imageUrls, setImageUrls] = useState<string[]>([]);
     const { id } = useParams();
+
+    useDocumentTitle(
+        error
+            ? "Error | OptiTour"
+            : poi?.name
+                ? `${poi.name} | OptiTour`
+                : "Punto de Interés | OptiTour"
+    );
 
     async function handleGetPoi(id: number) {
         try {

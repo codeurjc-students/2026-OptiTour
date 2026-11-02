@@ -2,6 +2,12 @@ import { Card, Form, Row, Col, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import './create-poi.css';
 
+export function meta() {
+    return [
+        { title: "Añadir Punto de Interés | OptiTour" },
+    ];
+}
+
 function CreatePointOfInterest() {
     return (
         <div className="ot-create-poi">

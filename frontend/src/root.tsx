@@ -5,6 +5,22 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "./styles/variables.css";
 import { useAuthStore } from "./store/auth-store";
 
+export function meta() {
+    return [
+        { title: "OptiTour" },
+    ];
+}
+
+export function HydrateFallback() {
+    return (
+        <div className="d-flex justify-content-center align-items-center vh-100">
+            <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Cargando...</span>
+            </div>
+        </div>
+    );
+}
+
 export function Layout({ children }: { children: ReactNode }) {
     return (
         <html lang="es">

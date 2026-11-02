@@ -1,6 +1,12 @@
 import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import AccountFieldsCard from '../../components/account-fields-card/account-fields-card';
+
+export function meta() {
+    return [
+        { title: "Editar Información de Cuenta | OptiTour" },
+    ];
+}
 import './edit-profile.css';
 
 function EditProfile() {

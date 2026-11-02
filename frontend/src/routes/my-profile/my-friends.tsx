@@ -2,6 +2,12 @@ import { Button } from 'react-bootstrap';
 import PanelSearch from '../../components/panel-search/panel-search';
 import UserListItem from '../../components/user-list-item/user-list-item';
 
+export function meta() {
+    return [
+        { title: "Mis Amigos | OptiTour" },
+    ];
+}
+
 const friends = [
     '<<Nombre de usuario 1>>',
     '<<Nombre de usuario 2>>',

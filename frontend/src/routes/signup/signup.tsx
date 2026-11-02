@@ -3,6 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import AccountFieldsCard from '../../components/account-fields-card/account-fields-card';
 import PasswordFieldsCard from '../../components/password-fields-card/password-fields-card';
 import './signup.css';
+
+export function meta() {
+    return [
+        { title: "Registro | OptiTour" },
+    ];
+}
 import { useState } from 'react';
 import { signup, uploadUserImage } from '../../service/user-service';
 

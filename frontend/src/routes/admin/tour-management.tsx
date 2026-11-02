@@ -3,6 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import PanelSearch from '../../components/panel-search/panel-search';
 import ListItem from '../../components/list-item/list-item';
 
+export function meta() {
+    return [
+        { title: "Gestión de Tours | OptiTour" },
+    ];
+}
+
 interface AdminTour {
     id: number;
     title: string;

@@ -2,6 +2,12 @@ import { Button } from 'react-bootstrap';
 import PanelSearch from '../../components/panel-search/panel-search';
 import ListItem from '../../components/list-item/list-item';
 
+export function meta() {
+    return [
+        { title: "Mis Tours | OptiTour" },
+    ];
+}
+
 const tours = [
     { id: 1, title: '<<Nombre de tour 1>>' },
     { id: 2, title: '<<Nombre de tour 2>>' },
