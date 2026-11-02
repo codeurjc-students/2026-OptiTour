@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,9 +19,11 @@ import es.urjc.tfg.optitour.repository.UserRepository;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder encoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder encoder) {
         this.userRepository = userRepository;
+        this.encoder = encoder;
     }
 
     public User getUserByEmail(String email) throws ResponseStatusException {
@@ -127,6 +130,20 @@ public class UserService {
 
         targetUser.setBanned(!targetUser.getIsBanned());
         userRepository.save(targetUser);
+        return targetUser;
+    }
+
+    public boolean checkUserPassword(User user, String password) {
+        return encoder.matches(password, user.getPassword());
+    }
+
+    public User deleteUserById(String loggedEmail, String password) {
+        User targetUser = getUserByEmail(loggedEmail);
+
+        if (!checkUserPassword(targetUser, password))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "La contraseña no es correcta.");
+
+        userRepository.delete(targetUser);
         return targetUser;
     }
 }

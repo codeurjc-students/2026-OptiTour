@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,9 +24,11 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 
 import jakarta.validation.Valid;
 import es.urjc.tfg.optitour.DTO.ImageDTO;
+import es.urjc.tfg.optitour.DTO.PasswordDTO;
 import es.urjc.tfg.optitour.DTO.UserCreateDTO;
 import es.urjc.tfg.optitour.DTO.UserDTO;
 import es.urjc.tfg.optitour.mapper.ImageMapper;
+import es.urjc.tfg.optitour.mapper.PasswordMapper;
 import es.urjc.tfg.optitour.mapper.UserMapper;
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.User;
@@ -51,13 +54,16 @@ public class UserController {
 
     private final ImageMapper imageMapper;
 
+    private final PasswordMapper passwordMapper;
+
     public UserController(UserService userService, PasswordEncoder encoder, UserMapper mapper,
-            ImageService imageService, ImageMapper imageMapper) {
+            ImageService imageService, ImageMapper imageMapper, PasswordMapper passwordMapper) {
         this.userService = userService;
         this.encoder = encoder;
         this.mapper = mapper;
         this.imageService = imageService;
         this.imageMapper = imageMapper;
+        this.passwordMapper = passwordMapper;
     }
 
     @GetMapping("/{id}/image")
@@ -127,5 +133,11 @@ public class UserController {
     @GetMapping("/{id}")
     public UserDTO getUser(@PathVariable long id) {
         return mapper.toDTO(userService.getUserById(id));
+    }
+
+    @DeleteMapping("/")
+    public UserDTO deleteUser(@RequestBody PasswordDTO password, HttpServletRequest request) {
+        String loggedEmail = request.getUserPrincipal().getName();
+        return mapper.toDTO(userService.deleteUserById(loggedEmail, passwordMapper.toDomain(password)));
     }
 }
