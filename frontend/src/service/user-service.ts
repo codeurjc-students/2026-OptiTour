@@ -37,7 +37,9 @@ export async function uploadUserImage(image: File, id: number) {
 export async function getAllUsers() {
     const url = `${base_url}/user/all`;
 
-    const response = await fetch(url);
+    const response = await fetch(url, {
+        credentials: "include"
+    });
 
     if (!response.ok) {
         const errorData = await response.json();
@@ -51,7 +53,8 @@ export async function changeIsUserBanned(id: number) {
     const url = `${base_url}/user/${id}/ban`;
 
     const response = await fetch(url, {
-        method: 'PUT'
+        method: 'PUT',
+        credentials: "include"
     });
 
     if (!response.ok) {
@@ -65,7 +68,9 @@ export async function changeIsUserBanned(id: number) {
 export async function getUserById(id: number) {
     const url = `${base_url}/user/${id}`;
 
-    const response = await fetch(url);
+    const response = await fetch(url, {
+        credentials: "include"
+    });
 
     if (!response.ok) {
         const errorData = await response.json();
