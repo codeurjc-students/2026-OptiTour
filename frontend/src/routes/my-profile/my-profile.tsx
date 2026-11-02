@@ -3,6 +3,12 @@ import './my-profile.css';
 import { useAuthStore } from '../../store/auth-store';
 import Profile from '../../components/profile/profile';
 
+export function meta() {
+    return [
+        { title: "Mi Perfil | OptiTour" },
+    ];
+}
+
 function MyProfile() {
     const { loggedUser } = useAuthStore();
 

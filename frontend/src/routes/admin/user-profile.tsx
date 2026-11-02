@@ -5,12 +5,27 @@ import { getUserById } from "../../service/user-service";
 import type { UserDTO } from "../../dto/user-dto";
 import Spinner from "../../components/spinner/spinner";
 import ErrorCard from "../../components/error-card/error-card";
+import useDocumentTitle from "../../hooks/use-document-title";
+
+export function meta() {
+    return [
+        { title: "Perfil de Usuario | OptiTour" },
+    ];
+}
 
 export default function UserProfile() {
     const { id } = useParams();
     const [user, setUser] = useState<UserDTO>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+
+    useDocumentTitle(
+        error
+            ? "Error | OptiTour"
+            : user?.username
+                ? `${user.username} - Perfil de Usuario | OptiTour`
+                : "Perfil de Usuario | OptiTour"
+    );
 
     async function handleGetUser(userId: number) {
         try {

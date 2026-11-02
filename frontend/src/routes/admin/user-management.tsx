@@ -13,6 +13,12 @@ import './user-management.css';
 
 const base_url = API_BASE_URL;
 
+export function meta() {
+    return [
+        { title: "Gestión de Usuarios | OptiTour" },
+    ];
+}
+
 export default function UserManagement() {
     const navigate = useNavigate();
 

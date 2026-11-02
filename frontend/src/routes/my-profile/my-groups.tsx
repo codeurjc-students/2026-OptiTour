@@ -2,6 +2,12 @@ import { Button } from 'react-bootstrap';
 import PanelSearch from '../../components/panel-search/panel-search';
 import GroupListItem from '../../components/group-list-item/group-list-item';
 
+export function meta() {
+    return [
+        { title: "Mis Grupos | OptiTour" },
+    ];
+}
+
 const groups = [
     '<<Nombre de grupo 1>>',
     '<<Nombre de grupo 2>>',

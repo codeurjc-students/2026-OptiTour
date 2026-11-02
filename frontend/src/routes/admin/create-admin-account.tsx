@@ -4,6 +4,12 @@ import AccountFieldsCard from '../../components/account-fields-card/account-fiel
 import PasswordFieldsCard from '../../components/password-fields-card/password-fields-card';
 import './create-admin-account.css';
 
+export function meta() {
+    return [
+        { title: "Crear Administrador | OptiTour" },
+    ];
+}
+
 function CreateAdminAccount() {
     return (
         <div className="ot-create-admin">

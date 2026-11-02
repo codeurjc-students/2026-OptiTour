@@ -1,6 +1,12 @@
 import { Button } from 'react-bootstrap';
 import NotificationItem from '../../components/notification-item/notification-item';
 
+export function meta() {
+    return [
+        { title: "Notificaciones | OptiTour" },
+    ];
+}
+
 function NotificationsPage() {
     return (
         <div>

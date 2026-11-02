@@ -1,5 +1,11 @@
 import ErrorPage from "../../components/error-page/error-page";
 
+export function meta() {
+    return [
+        { title: "Acceso Denegado | OptiTour" },
+    ];
+}
+
 export default function Unauthorized() {
     return (
         <ErrorPage
@@ -9,5 +15,5 @@ export default function Unauthorized() {
             buttonText="Ir a mi perfil"
             buttonURL="/profile"
         />
-    )
+    );
 }
