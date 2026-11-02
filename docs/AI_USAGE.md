@@ -382,3 +382,63 @@ ya hayan resuelto el problema de la validación de campos de formularios en el c
 * **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
 * **Modelo concreto:** Google Gemini 3.1 Pro
 * **Cómo ha sido usada:** Se le piden a la IA modificaciones estéticas para la pantalla de error, como la adición del logo de la web, el aumento de tamaño de toda la interfaz o el color rojo para el botón de cierre de sesión.
+
+* **Fecha:** 28/10/2026
+* **Fase:** Fase 3
+* **Objetivo:** Consulta de librería para gráficos
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro
+* **Cómo ha sido usada:** Se le consulta a la IA qué librerías pueden usarse para implementar los gráficos del panel de usuarios.
+De varias opciones propuestas, se termina optando por recharts por su simplicidad. Además, se usa la IA como asistente para entender
+cómo funcionan los gráficos para implementarlos.
+
+* **Fecha:** 28/10/2026
+* **Fase:** Fase 3
+* **Objetivo:** Ayuda con las fechas de ejemplo
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro
+* **Cómo ha sido usada:** Al implementar el grafico de evolución de usuarios, surge el problema de almacenar las fechas de creación de los usuarios. Una vez resuelto, surge otro problema: si todos los usuarios de ejemplo se crean a la vez, el gráfico sólo muestra un punto. Es por ello que se le consulta a la IA cómo separar la creación de fechas de ejemplo de automatizar la fecha de inserción para usuarios reales. La IA implementa el siguiente código en User.java (lineas 34-40), que permite guardar la fecha de inserción en base de datos sólo si el usuario no la tiene ya (si se ha pasado por constructor):
+
+``` java
+@PrePersist
+    protected void onCreate() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+    }
+```
+
+También genera código para añadir fechas de ejemplo a los usuarios en SampleDataService.
+
+* **Fecha:** 28/10/2026
+* **Fase:** Fase 3
+* **Objetivo:** Problemas de arrastre de base de datos en Selenium
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro
+* **Cómo ha sido usada:** Al implementar test de Selenium para la rama del panel de usuario, surge el problema de que los usuarios
+creados por un test se arrastran al siguiente. La IA genera el siguiente código: (UserServiceClientE2ETest.java, lineas 34-51)
+
+```java
+ @BeforeEach
+    public void setup() {
+        // Clean up any test users to guarantee idempotency and avoid
+        // NonUniqueResultException
+        repository.findAll().forEach(user -> {
+            if ("example@example.com".equals(user.getEmail())
+                    || "example2@example.com".equals(user.getEmail())
+                    || "example".equals(user.getUserName())
+                    || (user.getEmail() != null && user.getEmail().endsWith("@ex.com"))) {
+                repository.delete(user);
+            }
+        });
+
+        repository.findByEmail("carmen@example.com").ifPresent(carmen -> {
+            if (carmen.getIsBanned()) {
+                carmen.setBanned(false);
+                repository.save(carmen);
+            }
+        });
+    }
+```
+
+De modo que se reinicia el estado de los usuarios que se utilizan en los test
