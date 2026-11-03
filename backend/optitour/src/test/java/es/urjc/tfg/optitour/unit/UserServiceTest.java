@@ -15,6 +15,7 @@ import javax.sql.rowset.serial.SerialException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
 
 import es.urjc.tfg.optitour.model.Image;
@@ -32,12 +33,13 @@ public class UserServiceTest {
     UserRepository repositoryMock;
     UserService testService;
     User testUser, testAdmin;
+    PasswordEncoder encoder;
 
     @BeforeEach
     void setUpMocks() throws SerialException, SQLException {
         // Given: Set up mocks and sample data
         repositoryMock = mock(UserRepository.class);
-        testService = new UserService(repositoryMock);
+        testService = new UserService(repositoryMock, encoder);
 
         testUser = new User("example@example.com", "demo1234", "example", "111 111 111", false,
                 "USER");

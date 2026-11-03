@@ -143,6 +143,10 @@ public class UserService {
         if (!checkUserPassword(targetUser, password))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "La contraseña no es correcta.");
 
+        if (targetUser.getRoles().contains("ADMIN") && userRepository.countByRoles("ADMIN") == 1)
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "No puedes eliminar esta cuenta de administrador porque es la única disponible");
+
         userRepository.delete(targetUser);
         return targetUser;
     }
