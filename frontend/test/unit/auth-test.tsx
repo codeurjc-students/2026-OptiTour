@@ -24,6 +24,8 @@ test('Profile displays logged user data', async () => {
         userName: "Carmen García",
         phoneNumber: "611 223 344",
         roles: ["USER"],
+        isBanned: false,
+        createdAt: ""
     }
 
     // We set the store state to assume that user is logged, because MyProfile component draws loggedUser data stored in auth-store
@@ -54,6 +56,8 @@ test('Check if store does logout correctly', async () => {
         userName: "Carmen García",
         phoneNumber: "611 223 344",
         roles: ["USER"],
+        isBanned: false,
+        createdAt: ""
     }
 
     useAuthStore.setState({ loggedUser: testUser });

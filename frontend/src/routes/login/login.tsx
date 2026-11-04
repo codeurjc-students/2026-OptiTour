@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/OptiTourLogo.png';
 import './login.css';
 import { useAuthStore } from '../../store/auth-store';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ErrorCard from '../../components/error-card/error-card';
 import PasswordInput from '../../components/password-input/password-input';
 import { useSearchParams } from 'react-router-dom';
@@ -29,7 +29,7 @@ function Login() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
-  const [randomId, setRandomId] = useState<number>();
+  const [randomId] = useState<number>(() => Math.floor(Math.random() * 540) + 1);
 
   const {
     register,
@@ -63,12 +63,6 @@ function Login() {
       setLoading(false);
     }
   }
-
-  function handleRandom(max: number) {
-    setRandomId(Math.floor(Math.random() * max) + 1);
-  }
-
-  useEffect(() => { handleRandom(540) }, []);
 
   return (
     <div className="ot-login">
