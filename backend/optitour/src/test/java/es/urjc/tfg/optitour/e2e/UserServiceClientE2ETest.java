@@ -19,6 +19,8 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import es.urjc.tfg.optitour.model.User;
 import es.urjc.tfg.optitour.repository.UserRepository;
@@ -29,6 +31,8 @@ public class UserServiceClientE2ETest {
 
     @Autowired
     UserRepository repository;
+
+    private PasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @BeforeEach
     public void setup() {
@@ -312,4 +316,95 @@ public class UserServiceClientE2ETest {
         assertEquals("Tu cuenta ha sido bloqueada. Contacta con el administrador para más información.",
                 errorCard.getText());
     }
+
+    @Test
+    @DisplayName("Checks if delete user form deletes user")
+    public void deleteUserE2EClientTest() {
+        driver.get("http://localhost:5173/profile/delete");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+        String uniqueEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
+        repository.save(new User(uniqueEmail, encoder.encode("Demo1234"), "example", "111 111 111", false, "USER"));
+
+        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
+        WebElement passField = driver.findElement(By.id("loginPassword"));
+        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
+
+        emailField.sendKeys(uniqueEmail);
+        passField.sendKeys("Demo1234");
+        submitButton.click();
+
+        wait.until(urlToBe("http://localhost:5173/profile/delete"));
+
+        WebElement deletePassField = wait.until(visibilityOfElementLocated(By.id("delete-account-password")));
+        WebElement checkBox = driver.findElement(By.className("form-check-label"));
+        WebElement deleteButton = driver.findElement(By.className("ot-delete-profile__actions"));
+
+        deletePassField.sendKeys("Demo1234");
+        checkBox.click();
+        deleteButton.click();
+
+        wait.until(urlToBe("http://localhost:5173/"));
+    }
+
+    @Test
+    @DisplayName("Checks if delete user form shows error on incorrect password")
+    public void deleteUserIncorrectPassowrdE2EClientTest() {
+        driver.get("http://localhost:5173/profile/delete");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+        String uniqueEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
+        repository.save(new User(uniqueEmail, encoder.encode("Demo1234"), "example", "111 111 111", false, "USER"));
+
+        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
+        WebElement passField = driver.findElement(By.id("loginPassword"));
+        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
+
+        emailField.sendKeys(uniqueEmail);
+        passField.sendKeys("Demo1234");
+        submitButton.click();
+
+        wait.until(urlToBe("http://localhost:5173/profile/delete"));
+
+        WebElement deletePassField = wait.until(visibilityOfElementLocated(By.id("delete-account-password")));
+        WebElement checkBox = driver.findElement(By.className("form-check-label"));
+        WebElement deleteButton = driver.findElement(By.className("ot-delete-profile__actions"));
+
+        deletePassField.sendKeys("incorrect");
+        checkBox.click();
+        deleteButton.click();
+
+        WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
+        assertEquals("La contraseña no es correcta.", errorCard.getText());
+    }
+
+    @Test
+    @DisplayName("Checks if delete user form shows error on deleting unique admin")
+    public void deleteUniqueAdminE2EClientTest() {
+        driver.get("http://localhost:5173/profile/delete");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
+        WebElement passField = driver.findElement(By.id("loginPassword"));
+        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
+
+        emailField.sendKeys("admin@optitour.com");
+        passField.sendKeys("Admin1234");
+        submitButton.click();
+
+        wait.until(urlToBe("http://localhost:5173/profile/delete"));
+
+        WebElement deletePassField = wait.until(visibilityOfElementLocated(By.id("delete-account-password")));
+        WebElement checkBox = driver.findElement(By.className("form-check-label"));
+        WebElement deleteButton = driver.findElement(By.className("ot-delete-profile__actions"));
+
+        deletePassField.sendKeys("Admin1234");
+        checkBox.click();
+        deleteButton.click();
+
+        WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
+        assertEquals("No puedes eliminar esta cuenta de administrador porque es la única disponible",
+                errorCard.getText());
+    }
+
 }

@@ -31,6 +31,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import es.urjc.tfg.optitour.BaseIntegrationTest;
 import es.urjc.tfg.optitour.DTO.UserDTO;
 import es.urjc.tfg.optitour.DTO.ImageDTO;
+import es.urjc.tfg.optitour.DTO.PasswordDTO;
 import es.urjc.tfg.optitour.DTO.UserCreateDTO;
 import es.urjc.tfg.optitour.mapper.UserMapper;
 import es.urjc.tfg.optitour.model.User;
@@ -43,6 +44,19 @@ import io.restassured.http.ContentType;
 public class UserControllerE2ETest extends BaseIntegrationTest {
         private String getAdminAuthToken() {
                 LoginRequest credentials = new LoginRequest("admin@optitour.com", "demo1234");
+
+                return given()
+                                .contentType(ContentType.JSON)
+                                .body(credentials)
+                                .when()
+                                .post("/api/v1/auth/login")
+                                .then()
+                                .statusCode(200)
+                                .extract().cookie("AuthToken");
+        }
+
+        private String getUserAuthToken() {
+                LoginRequest credentials = new LoginRequest("example@example.com", "demo1234");
 
                 return given()
                                 .contentType(ContentType.JSON)
@@ -338,6 +352,56 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                                 .statusCode(403)
                                 .body("message", equalTo(
                                                 "Tu cuenta ha sido bloqueada. \n Contacta con el administrador para más información."));
+        }
+
+        @Test
+        @DisplayName("deleteUser endpoint should delete and return the logged user")
+        public void deleteUserE2ETest() {
+                String userToken = getUserAuthToken();
+
+                UserDTO deletedUser = given()
+                                .cookie("AuthToken", userToken)
+                                .contentType(ContentType.JSON)
+                                .body(new PasswordDTO("demo1234"))
+                                .when()
+                                .delete("/api/v1/user/")
+                                .then()
+                                .statusCode(200)
+                                .extract().as(UserDTO.class);
+
+                assertEquals("example@example.com", deletedUser.email());
+                assertTrue(repository.findByEmail("example@example.com").isEmpty());
+        }
+
+        @Test
+        @DisplayName("deleteUser endpoint called with incorrect pass should return 403 status code")
+        public void deleteUserIncorrectPassE2ETest() {
+                String userToken = getUserAuthToken();
+
+                given()
+                                .cookie("AuthToken", userToken)
+                                .contentType(ContentType.JSON)
+                                .body(new PasswordDTO("incorrect"))
+                                .when()
+                                .delete("/api/v1/user/")
+                                .then()
+                                .statusCode(403);
+        }
+
+        @Test
+        @DisplayName("deleteUser endpoint called to delete a unique admin should return 403 status code")
+        public void deleteUserUniqueAmdinE2ETest() {
+                String adminToken = getAdminAuthToken();
+
+                given()
+                                .cookie("AuthToken", adminToken)
+                                .contentType(ContentType.JSON)
+                                .body(new PasswordDTO("Admin1234"))
+                                .when()
+                                .delete("/api/v1/user/")
+                                .then()
+                                .statusCode(403);
+
         }
 
         // ---------------- FIELD VALIDATION TESTS --------------------------------

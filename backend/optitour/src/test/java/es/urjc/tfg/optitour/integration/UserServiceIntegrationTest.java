@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -215,5 +216,29 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
         });
 
         assertEquals(e.getMessage(), "404 NOT_FOUND \"No hay ningún usuario registrado.\"");
+    }
+
+    @Test
+    @DisplayName("deleteById method should delete user with correct pass")
+    public void deleteUserByIdIntegrationTest() {
+        List<User> all = new ArrayList<>();
+        all = repository.findAll();
+        long firstId = all.get(0).getId();
+
+        User targetUser = service.getUserById(firstId);
+        service.deleteUserById(targetUser.getEmail(), "demo1234");
+
+        List<User> remainingUsers = new ArrayList<>();
+        remainingUsers = service.getAllUsers();
+
+        assertEquals(2, remainingUsers.size());
+
+        int i = 1;
+        for (User u : remainingUsers) {
+            assertEquals("example" + i + "@example.com", u.getEmail());
+            i++;
+        }
+
+        assertTrue(repository.findById(firstId).isEmpty());
     }
 }

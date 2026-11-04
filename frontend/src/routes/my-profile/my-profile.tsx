@@ -1,4 +1,5 @@
 import { Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import './my-profile.css';
 import { useAuthStore } from '../../store/auth-store';
 import Profile from '../../components/profile/profile';
@@ -23,13 +24,13 @@ function MyProfile() {
             <Profile user={loggedUser} />
 
             <div className="ot-my-profile__actions">
-                <Button variant="outline-dark" className="ot-my-profile__edit-btn">
+                <Button variant="outline-dark" className="ot-my-profile__edit-btn" as={Link as any} to="/profile/edit">
                     Editar información de mi cuenta
                 </Button>
                 <Button variant="outline-dark" className="ot-my-profile__password-btn">
                     Cambiar mi contraseña
                 </Button>
-                <Button variant="outline-danger" className="ot-my-profile__delete-btn">
+                <Button variant="outline-danger" className="ot-my-profile__delete-btn" as={Link as any} to="/profile/delete">
                     Eliminar mi cuenta
                 </Button>
             </div>
