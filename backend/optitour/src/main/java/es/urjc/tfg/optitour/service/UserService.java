@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import es.urjc.tfg.optitour.DTO.UserCreateDTO;
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.User;
 import es.urjc.tfg.optitour.repository.UserRepository;
@@ -111,8 +112,8 @@ public class UserService {
 
         if (op.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "El nombre de usuario escogido ya está siendo utilizado por otro usuario.\n"
-                            + "Introduce otro nombre de usuario e inténtalo de nuevo.");
+                    "El nombre de usuario escogido ya está siendo utilizado por otro usuario.\n" +
+                            "Introduce otro nombre de usuario e inténtalo de nuevo.");
         }
     }
 
@@ -148,6 +149,25 @@ public class UserService {
                     "No puedes eliminar esta cuenta de administrador porque es la única disponible");
 
         userRepository.delete(targetUser);
+        return targetUser;
+    }
+
+    public User editLoggedUser(String loggedEmail, UserCreateDTO editedUser) {
+        if (!editedUser.email().equals(loggedEmail))
+            validateUniqueEmail(editedUser.email());
+
+        User targetUser = getUserByEmail(loggedEmail);
+
+        if (!editedUser.userName().equals(targetUser.getUserName()))
+            validateUniqueUserName(editedUser.userName());
+
+        User updatedUser = new User(editedUser.email(), targetUser.getPassword(), editedUser.userName(),
+                editedUser.phoneNumber(), targetUser.getIsBanned(), targetUser.getCreatedAt(),
+                targetUser.getProfileImage(), targetUser.getRoles());
+
+        updatedUser.setId(targetUser.getId());
+
+        userRepository.save(updatedUser);
         return targetUser;
     }
 }

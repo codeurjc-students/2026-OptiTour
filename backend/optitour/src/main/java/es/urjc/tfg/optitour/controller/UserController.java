@@ -140,4 +140,10 @@ public class UserController {
         String loggedEmail = request.getUserPrincipal().getName();
         return mapper.toDTO(userService.deleteUserById(loggedEmail, passwordMapper.toDomain(password)));
     }
+
+    @PutMapping("/")
+    public UserDTO editUser(@RequestBody UserCreateDTO editedUser, HttpServletRequest request) {
+        String loggedEmail = request.getUserPrincipal().getName();
+        return mapper.toDTO(userService.editLoggedUser(loggedEmail, editedUser));
+    }
 }
