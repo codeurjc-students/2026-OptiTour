@@ -442,3 +442,32 @@ creados por un test se arrastran al siguiente. La IA genera el siguiente código
 ```
 
 De modo que se reinicia el estado de los usuarios que se utilizan en los test
+
+* **Fecha:** 2/11/2026
+* **Fase:** Fase 3
+* **Objetivo:** Implementar estética del formulario de borrado de usuarios
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro
+* **Cómo ha sido usada:** Se le pide a la IA que implemente el código css y tsx necesario para que sea atractivo visualmente. Se le pide a partir de una plantilla con los elementos del formulario crudos, para que no tome decisiones en cuanto a la estructura del mismo.
+
+* **Fecha:** 4/11/2026
+* **Fase:** Fase 3
+* **Objetivo:** Mockear store de autenticación y el hook useNavigate en test de frontend
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro
+* **Cómo ha sido usada:** Se le pide a la IA ayuda en los test unitarios de borrado de usuario, al surgir dudas acerca de cómo gestionar el store de autenticación (para extraer la función dologout), así como para el hook useNavigate. La IA responde que la mejor opción es mockearlos, e implementa el siguiente fragmento de código en user-deletion-test.tsx (líneas 11-22):
+
+``` typeScript
+const { mockDoLogout, mockNavigate } = vi.hoisted(() => ({
+    mockDoLogout: vi.fn().mockResolvedValue(undefined),
+    mockNavigate: vi.fn(),
+}));
+
+vi.mock("react-router-dom", async () => {
+    const actual = await vi.importActual("react-router-dom");
+    return {
+        ...actual,
+        useNavigate: () => mockNavigate,
+    };
+});
+```
