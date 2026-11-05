@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { editProfileSchema } from '../../schemas/edit-schema';
 import type z from 'zod';
 import { useEffect, useState } from 'react';
-import { editLoggedUser } from '../../service/user-service';
+import { editLoggedUser, uploadUserImage } from '../../service/user-service';
 import ErrorCard from '../../components/error-card/error-card';
 
 export function meta() {
@@ -21,7 +21,7 @@ type EditProfileFormInput = z.input<typeof editProfileSchema>;
 type EditProfileFormData = z.output<typeof editProfileSchema>;
 
 function EditProfile() {
-    const { loggedUser, setLoggedUser } = useAuthStore();
+    const { loggedUser, setLoggedUser, refreshProfileImage } = useAuthStore();
     const navigate = useNavigate();
 
     const methods = useForm<EditProfileFormInput, undefined, EditProfileFormData>({
@@ -63,6 +63,12 @@ function EditProfile() {
                 phoneNumber: data.phone,
                 userName: data.userName
             });
+
+            if (data.image && data.image.length > 0) {
+                const file = data.image[0];
+                await uploadUserImage(file, updatedUser.id);
+                refreshProfileImage();
+            }
 
             setLoggedUser(updatedUser);
             navigate("/profile");
