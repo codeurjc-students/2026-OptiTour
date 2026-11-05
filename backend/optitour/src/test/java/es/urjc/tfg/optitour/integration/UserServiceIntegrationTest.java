@@ -28,6 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import es.urjc.tfg.optitour.BaseIntegrationTest;
+import es.urjc.tfg.optitour.DTO.UserEditDTO;
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.User;
 import es.urjc.tfg.optitour.repository.UserRepository;
@@ -240,5 +241,21 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
         }
 
         assertTrue(repository.findById(firstId).isEmpty());
+    }
+
+    @Test
+    @DisplayName("editLoggedUser method should update user in database")
+    public void editLoggedUserIntegrationTest() {
+        List<User> all = new ArrayList<>();
+        all = repository.findAll();
+        long firstId = all.get(0).getId();
+
+        UserEditDTO editedUser = new UserEditDTO("updated@example.com", "111 111 111", "updated");
+        service.editLoggedUser("example0@example.com", editedUser);
+
+        User updatedUser = service.getUserById(firstId);
+        assertEquals(editedUser.email(), updatedUser.getEmail());
+        assertEquals(editedUser.phoneNumber(), updatedUser.getPhoneNumber());
+        assertEquals(editedUser.userName(), updatedUser.getUserName());
     }
 }

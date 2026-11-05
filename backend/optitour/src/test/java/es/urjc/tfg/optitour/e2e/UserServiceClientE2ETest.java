@@ -2,6 +2,7 @@ package es.urjc.tfg.optitour.e2e;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Duration;
@@ -38,14 +39,7 @@ public class UserServiceClientE2ETest {
     public void setup() {
         // Clean up any test users to guarantee idempotency and avoid
         // NonUniqueResultException
-        repository.findAll().forEach(user -> {
-            if ("example@example.com".equals(user.getEmail())
-                    || "example2@example.com".equals(user.getEmail())
-                    || "example".equals(user.getUserName())
-                    || (user.getEmail() != null && user.getEmail().endsWith("@ex.com"))) {
-                repository.delete(user);
-            }
-        });
+        deleteTestUsers();
 
         repository.findByEmail("carmen@example.com").ifPresent(carmen -> {
             if (carmen.getIsBanned()) {
@@ -70,6 +64,18 @@ public class UserServiceClientE2ETest {
         if (driver != null) {
             driver.quit();
         }
+        deleteTestUsers();
+    }
+
+    private void deleteTestUsers() {
+        repository.findAll().forEach(user -> {
+            if ("example@example.com".equals(user.getEmail())
+                    || "example2@example.com".equals(user.getEmail())
+                    || "example".equals(user.getUserName())
+                    || (user.getEmail() != null && user.getEmail().endsWith("@ex.com"))) {
+                repository.delete(user);
+            }
+        });
     }
 
     @Test
@@ -404,6 +410,121 @@ public class UserServiceClientE2ETest {
 
         WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
         assertEquals("No puedes eliminar esta cuenta de administrador porque es la única disponible",
+                errorCard.getText());
+    }
+
+    @Test
+    @DisplayName("Checks if edit user form works properly")
+    public void editUserClientE2ETest() {
+        driver.get("http://localhost:5173/profile/edit");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+        String uniqueEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
+        String updatedEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
+        String updatedUsername = "updated" + UUID.randomUUID().toString().substring(0, 6);
+        repository.save(new User(uniqueEmail, encoder.encode("Demo1234"), "example", "111 111 111", false, "USER"));
+
+        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
+        WebElement passField = driver.findElement(By.id("loginPassword"));
+        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
+
+        emailField.sendKeys(uniqueEmail);
+        passField.sendKeys("Demo1234");
+        submitButton.click();
+
+        WebElement editEmailField = wait.until(visibilityOfElementLocated(By.id("email")));
+        WebElement editPhoneField = driver.findElement(By.id("phone"));
+        WebElement editUsernameField = driver.findElement(By.id("username"));
+
+        editEmailField.clear();
+        editEmailField.sendKeys(updatedEmail);
+        editPhoneField.clear();
+        editPhoneField.sendKeys("222 222 222");
+        editUsernameField.clear();
+        editUsernameField.sendKeys(updatedUsername);
+
+        wait.until(elementToBeClickable(By.className("ot-edit-profile__save-btn"))).click();
+
+        // Now, profile should show updated data
+
+        wait.until(urlToBe("http://localhost:5173/profile"));
+
+        WebElement profileEmail = wait.until(visibilityOfElementLocated(
+                By.xpath("//dt[normalize-space()='Correo electrónico']/following-sibling::dd")));
+        assertEquals(updatedEmail, profileEmail.getText());
+    }
+
+    @Test
+    @DisplayName("Checks if edit user shows error card if repeated email is sent")
+    public void editUserRepeatedEmailClientE2ETest() {
+        driver.get("http://localhost:5173/profile/edit");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+        String uniqueEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
+        String updatedUsername = "updated" + UUID.randomUUID().toString().substring(0, 6);
+        repository.save(new User(uniqueEmail, encoder.encode("Demo1234"), "example", "111 111 111", false, "USER"));
+
+        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
+        WebElement passField = driver.findElement(By.id("loginPassword"));
+        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
+
+        emailField.sendKeys(uniqueEmail);
+        passField.sendKeys("Demo1234");
+        submitButton.click();
+
+        WebElement editEmailField = wait.until(visibilityOfElementLocated(By.id("email")));
+        WebElement editPhoneField = driver.findElement(By.id("phone"));
+        WebElement editUsernameField = driver.findElement(By.id("username"));
+
+        editEmailField.clear();
+        editEmailField.sendKeys("carmen@example.com");
+        editPhoneField.clear();
+        editPhoneField.sendKeys("222 222 222");
+        editUsernameField.clear();
+        editUsernameField.sendKeys(updatedUsername);
+
+        wait.until(elementToBeClickable(By.className("ot-edit-profile__save-btn"))).click();
+
+        WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
+        assertEquals(
+                "El correo electrónico escogido ya está siendo utilizado por otro usuario. Introduce otro correo electrónico e inténtalo de nuevo.",
+                errorCard.getText());
+    }
+
+    @Test
+    @DisplayName("Checks if edit user shows error card if repeated email is sent")
+    public void editUserRepeatedUserNameClientE2ETest() {
+        driver.get("http://localhost:5173/profile/edit");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+        String uniqueEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
+        String updatedEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
+        repository.save(new User(uniqueEmail, encoder.encode("Demo1234"), "example", "111 111 111", false, "USER"));
+
+        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
+        WebElement passField = driver.findElement(By.id("loginPassword"));
+        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
+
+        emailField.sendKeys(uniqueEmail);
+        passField.sendKeys("Demo1234");
+        submitButton.click();
+
+        WebElement editEmailField = wait.until(visibilityOfElementLocated(By.id("email")));
+        WebElement editPhoneField = driver.findElement(By.id("phone"));
+        WebElement editUsernameField = driver.findElement(By.id("username"));
+
+        editEmailField.clear();
+        editEmailField.sendKeys(updatedEmail);
+        editPhoneField.clear();
+        editPhoneField.sendKeys("222 222 222");
+        editUsernameField.clear();
+        editUsernameField.sendKeys("Carmen García");
+
+        wait.until(elementToBeClickable(By.className("ot-edit-profile__save-btn"))).click();
+
+        WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
+        assertEquals(
+                "El nombre de usuario escogido ya está siendo utilizado por otro usuario. Introduce otro nombre de usuario e inténtalo de nuevo.",
                 errorCard.getText());
     }
 

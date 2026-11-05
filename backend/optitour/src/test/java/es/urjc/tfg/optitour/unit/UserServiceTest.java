@@ -20,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
 
+import es.urjc.tfg.optitour.DTO.UserEditDTO;
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.User;
 import es.urjc.tfg.optitour.repository.UserRepository;
@@ -46,7 +47,7 @@ public class UserServiceTest {
 
         testUser = new User("example@example.com", encoder.encode("demo1234"), "example", "111 111 111", false,
                 "USER");
-        testAdmin = new User("admin@optitour.com", encoder.encode("admin1234"), "example", "111 111 111", false,
+        testAdmin = new User("admin@optitour.com", encoder.encode("admin1234"), "admin", "111 111 111", false,
                 "USER", "ADMIN");
     }
 
@@ -265,5 +266,57 @@ public class UserServiceTest {
         testService.deleteUserById("admin@optitour.com", "admin1234");
 
         verify(repositoryMock).delete(any(User.class));
+    }
+
+    @Test
+    @DisplayName("editLoggeduser should throw exception if new email is already in database")
+    public void editLoggedUserRepeatedEmailTest() {
+        when(repositoryMock.findByEmail("admin@optitour.com")).thenReturn(Optional.of(testAdmin));
+        when(repositoryMock.findByEmail("example@example.com")).thenReturn(Optional.of(testUser));
+
+        UserEditDTO editedUser = new UserEditDTO("admin@optitour.com", "", "example");
+
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
+            testService.editLoggedUser("example@example.com", editedUser);
+        });
+
+        assertEquals(
+                "400 BAD_REQUEST \"El correo electrónico escogido ya está siendo utilizado por otro usuario.\n"
+                        + "Introduce otro correo electrónico e inténtalo de nuevo.\"",
+                e.getMessage());
+    }
+
+    @Test
+    @DisplayName("editLoggeduser should throw exception if new email is already in database")
+    public void editLoggedUserRepeatedUsernameTest() {
+        when(repositoryMock.findByUserName("admin")).thenReturn(Optional.of(testAdmin));
+        when(repositoryMock.findByUserName("example")).thenReturn(Optional.of(testUser));
+        when(repositoryMock.findByEmail("example@example.com")).thenReturn(Optional.of(testUser));
+
+        UserEditDTO editedUser = new UserEditDTO("example@example.com", "", "admin");
+
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
+            testService.editLoggedUser("example@example.com", editedUser);
+        });
+
+        assertEquals(
+                "400 BAD_REQUEST \"El nombre de usuario escogido ya está siendo utilizado por otro usuario.\n"
+                        + "Introduce otro nombre de usuario e inténtalo de nuevo.\"",
+                e.getMessage());
+    }
+
+    @Test
+    @DisplayName("editLoggedUser should call svae method in repository with correct data an return updated user")
+    public void editLoggedUserTest() {
+        when(repositoryMock.findByEmail("example@example.com")).thenReturn(Optional.of(testUser));
+
+        UserEditDTO editedUser = new UserEditDTO("updated@example.com", "111 111 111", "updated");
+        User updatedUser = testService.editLoggedUser("example@example.com", editedUser);
+
+        verify(repositoryMock).save(any(User.class));
+
+        assertEquals(editedUser.email(), updatedUser.getEmail());
+        assertEquals(editedUser.phoneNumber(), updatedUser.getPhoneNumber());
+        assertEquals(editedUser.userName(), updatedUser.getUserName());
     }
 }

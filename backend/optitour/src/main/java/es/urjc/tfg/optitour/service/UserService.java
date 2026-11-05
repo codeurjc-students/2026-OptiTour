@@ -168,6 +168,6 @@ public class UserService {
         updatedUser.setId(targetUser.getId());
 
         userRepository.save(updatedUser);
-        return targetUser;
+        return updatedUser;
     }
 }
