@@ -2,8 +2,16 @@ import { Card, Row, Col, Form, Button } from 'react-bootstrap';
 import './account-fields-card.css';
 import { useEffect, useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
+import type { UserDTO } from '../../dto/user-dto';
+import { API_BASE_URL } from '../../service/api-config';
 
-function AccountFieldsCard() {
+export interface AccountFieldsCard {
+    loggedUser?: UserDTO;
+}
+
+const base_url = API_BASE_URL;
+
+function AccountFieldsCard({ loggedUser }: AccountFieldsCard) {
     const [, setImage] = useState<File | null>(null);
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
@@ -33,13 +41,15 @@ function AccountFieldsCard() {
         }
     }, [imagePreviewUrl]);
 
+    const imageUrl = imagePreviewUrl ?? (loggedUser ? `${base_url}/user/${loggedUser.id}/image` : null);
+
     return (
         <Card className="ot-account-fields">
             <Row className="g-4">
                 <Col md={4} className="ot-account-fields__avatar-col">
                     <div className="ot-account-fields__avatar">
-                        {imagePreviewUrl ? (
-                            <img src={imagePreviewUrl} alt="Foto de perfil" />
+                        {imageUrl ? (
+                            <img src={imageUrl} alt="Foto de perfil" />
                         ) : (
                             <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                                 <circle cx="12" cy="9" r="3.5" />

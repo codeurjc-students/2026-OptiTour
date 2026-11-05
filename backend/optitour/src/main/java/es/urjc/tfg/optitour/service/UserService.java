@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import es.urjc.tfg.optitour.DTO.UserCreateDTO;
+import es.urjc.tfg.optitour.DTO.UserEditDTO;
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.User;
 import es.urjc.tfg.optitour.repository.UserRepository;
@@ -152,7 +152,7 @@ public class UserService {
         return targetUser;
     }
 
-    public User editLoggedUser(String loggedEmail, UserCreateDTO editedUser) {
+    public User editLoggedUser(String loggedEmail, UserEditDTO editedUser) {
         if (!editedUser.email().equals(loggedEmail))
             validateUniqueEmail(editedUser.email());
 

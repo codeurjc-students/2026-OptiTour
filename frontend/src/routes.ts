@@ -22,6 +22,7 @@ export default [
         route("/admin/poi", "routes/admin/poi-management.tsx"),
         route("/admin/billing", "routes/admin/billing.tsx"),
         route("/admin/profile", "routes/admin/admin-profile.tsx"),
+        route("/admin/profile/edit", "routes/my-profile/edit-profile.tsx", { id: "admin-edit-profile" }),
         route("/admin/profile/delete", "routes/my-profile/delete-profile.tsx", { id: "admin-delete-profile" }),
         route("/admin/notifications", "routes/admin/admin-notifications.tsx"),
         route("/admin/create", "routes/admin/create-admin-account.tsx"),

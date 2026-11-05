@@ -14,6 +14,10 @@ function MyProfile() {
     const { loggedUser } = useAuthStore();
     const location = useLocation();
 
+    const editPath = location.pathname.startsWith('/admin')
+        ? '/admin/profile/edit'
+        : '/profile/edit';
+
     const deletePath = location.pathname.startsWith('/admin')
         ? '/admin/profile/delete'
         : '/profile/delete';
@@ -29,7 +33,7 @@ function MyProfile() {
             <Profile user={loggedUser} />
 
             <div className="ot-my-profile__actions">
-                <Button variant="outline-dark" className="ot-my-profile__edit-btn" as={Link as any} to="/profile/edit">
+                <Button variant="outline-dark" className="ot-my-profile__edit-btn" as={Link as any} to={editPath}>
                     Editar información de mi cuenta
                 </Button>
                 <Button variant="outline-dark" className="ot-my-profile__password-btn">
