@@ -153,8 +153,8 @@
 }
 
 .ot-delete-profile__submit-btn:disabled {
-    background-color: #9ca3af;
-    border-color: #9ca3af;
+    background-color: var(--ot-disabled);
+    border-color: var(--ot-disabled);
     color: #f3f4f6;
     cursor: not-allowed;
     opacity: 0.75;
