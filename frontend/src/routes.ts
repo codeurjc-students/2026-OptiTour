@@ -14,6 +14,7 @@ export default [
         route("/profile/notifications", "routes/my-profile/my-notifications.tsx"),
         route("/profile/payments", "routes/my-profile/my-payments.tsx"),
         route("/profile/edit", "routes/my-profile/edit-profile.tsx"),
+        route("/profile/edit/password", "routes/my-profile/edit-password.tsx"),
         route("/profile/delete", "routes/my-profile/delete-profile.tsx")
     ]),
     layout("layouts/admin-layout.tsx", [
@@ -23,6 +24,7 @@ export default [
         route("/admin/billing", "routes/admin/billing.tsx"),
         route("/admin/profile", "routes/admin/admin-profile.tsx"),
         route("/admin/profile/edit", "routes/my-profile/edit-profile.tsx", { id: "admin-edit-profile" }),
+        route("/admin/profile/edit/password", "routes/my-profile/edit-password.tsx", { id: "admin-edit-password" }),
         route("/admin/profile/delete", "routes/my-profile/delete-profile.tsx", { id: "admin-delete-profile" }),
         route("/admin/notifications", "routes/admin/admin-notifications.tsx"),
         route("/admin/create", "routes/admin/create-admin-account.tsx"),
