@@ -25,6 +25,7 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 import jakarta.validation.Valid;
 import es.urjc.tfg.optitour.DTO.ImageDTO;
 import es.urjc.tfg.optitour.DTO.PasswordDTO;
+import es.urjc.tfg.optitour.DTO.PasswordEditDTO;
 import es.urjc.tfg.optitour.DTO.UserCreateDTO;
 import es.urjc.tfg.optitour.DTO.UserDTO;
 import es.urjc.tfg.optitour.DTO.UserEditDTO;
@@ -146,5 +147,11 @@ public class UserController {
     public UserDTO editUser(@RequestBody UserEditDTO editedUser, HttpServletRequest request) {
         String loggedEmail = request.getUserPrincipal().getName();
         return mapper.toDTO(userService.editLoggedUser(loggedEmail, editedUser));
+    }
+
+    @PutMapping("/password")
+    public PasswordDTO editPassword(@Valid @RequestBody PasswordEditDTO body, HttpServletRequest request) {
+        String loggedEmail = request.getUserPrincipal().getName();
+        return passwordMapper.toDTO(userService.editLoggedPassword(loggedEmail, body));
     }
 }

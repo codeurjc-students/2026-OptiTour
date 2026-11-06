@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import es.urjc.tfg.optitour.DTO.PasswordEditDTO;
 import es.urjc.tfg.optitour.DTO.UserEditDTO;
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.User;
@@ -169,5 +170,16 @@ public class UserService {
 
         userRepository.save(updatedUser);
         return updatedUser;
+    }
+
+    public String editLoggedPassword(String loggedEmail, PasswordEditDTO body) {
+        User targetUser = getUserByEmail(loggedEmail);
+
+        if (!checkUserPassword(targetUser, body.oldPassword()))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "La contraseña no es correcta.");
+
+        targetUser.setPassword(encoder.encode(body.newPassword()));
+        userRepository.save(targetUser);
+        return body.newPassword();
     }
 }
