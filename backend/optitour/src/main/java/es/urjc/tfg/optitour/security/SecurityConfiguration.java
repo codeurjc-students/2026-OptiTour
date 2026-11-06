@@ -64,6 +64,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/user/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/user/*").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/user/*/ban").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/user/").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/user/**").authenticated()
 
                         // PUBLIC ENDPOINTS

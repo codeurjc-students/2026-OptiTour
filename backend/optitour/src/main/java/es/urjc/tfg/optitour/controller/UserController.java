@@ -27,6 +27,7 @@ import es.urjc.tfg.optitour.DTO.ImageDTO;
 import es.urjc.tfg.optitour.DTO.PasswordDTO;
 import es.urjc.tfg.optitour.DTO.UserCreateDTO;
 import es.urjc.tfg.optitour.DTO.UserDTO;
+import es.urjc.tfg.optitour.DTO.UserEditDTO;
 import es.urjc.tfg.optitour.mapper.ImageMapper;
 import es.urjc.tfg.optitour.mapper.PasswordMapper;
 import es.urjc.tfg.optitour.mapper.UserMapper;
@@ -139,5 +140,11 @@ public class UserController {
     public UserDTO deleteUser(@RequestBody PasswordDTO password, HttpServletRequest request) {
         String loggedEmail = request.getUserPrincipal().getName();
         return mapper.toDTO(userService.deleteUserById(loggedEmail, passwordMapper.toDomain(password)));
+    }
+
+    @PutMapping("/")
+    public UserDTO editUser(@RequestBody UserEditDTO editedUser, HttpServletRequest request) {
+        String loggedEmail = request.getUserPrincipal().getName();
+        return mapper.toDTO(userService.editLoggedUser(loggedEmail, editedUser));
     }
 }

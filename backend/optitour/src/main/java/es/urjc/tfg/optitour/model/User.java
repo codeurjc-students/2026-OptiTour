@@ -58,6 +58,19 @@ public class User {
         this.roles = List.of(roles);
     }
 
+    public User(String email, String password, String userName, String phoneNumber, boolean isBanned,
+            LocalDateTime createdAt, Blob profileImage,
+            List<String> roles) {
+        this.email = email;
+        this.password = password;
+        this.userName = userName;
+        this.phoneNumber = phoneNumber;
+        this.isBanned = isBanned;
+        this.createdAt = createdAt;
+        this.profileImage = profileImage;
+        this.roles = roles;
+    }
+
     public User(String email, String password, String userName, String phoneNumber, boolean isBanned, Blob profileImage,
             String... roles) {
         this.email = email;

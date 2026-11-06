@@ -30,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import es.urjc.tfg.optitour.BaseIntegrationTest;
 import es.urjc.tfg.optitour.DTO.UserDTO;
+import es.urjc.tfg.optitour.DTO.UserEditDTO;
 import es.urjc.tfg.optitour.DTO.ImageDTO;
 import es.urjc.tfg.optitour.DTO.PasswordDTO;
 import es.urjc.tfg.optitour.DTO.UserCreateDTO;
@@ -402,6 +403,62 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                                 .then()
                                 .statusCode(403);
 
+        }
+
+        @Test
+        @DisplayName("editUser controller should modify logged user")
+        public void editUserE2ETest() {
+                String userToken = getUserAuthToken();
+
+                UserEditDTO editedUser = new UserEditDTO("updated@example.com", "123 456 789", "updated");
+
+                UserDTO updatedUser = given()
+                                .cookie("AuthToken", userToken)
+                                .contentType(ContentType.JSON)
+                                .body(editedUser)
+                                .when()
+                                .put("/api/v1/user/")
+                                .then()
+                                .statusCode(200)
+                                .extract().as(UserDTO.class);
+
+                assertEquals(editedUser.email(), updatedUser.email());
+                assertEquals(editedUser.phoneNumber(), updatedUser.phoneNumber());
+                assertEquals(editedUser.userName(), updatedUser.userName());
+        }
+
+        @Test
+        @DisplayName("editUser with repeated email should return 400 status code")
+        public void editUserRepeatedEmailE2ETest() {
+                String userToken = getUserAuthToken();
+
+                UserEditDTO editedUser = new UserEditDTO("example1@example.com", "123 456 789", "updated");
+
+                given()
+                                .cookie("AuthToken", userToken)
+                                .contentType(ContentType.JSON)
+                                .body(editedUser)
+                                .when()
+                                .put("/api/v1/user/")
+                                .then()
+                                .statusCode(400);
+        }
+
+        @Test
+        @DisplayName("editUser with repeated username should return 400 status code")
+        public void editUserRepeatedUserNameE2ETest() {
+                String userToken = getUserAuthToken();
+
+                UserEditDTO editedUser = new UserEditDTO("example@example.com", "123 456 789", "example1");
+
+                given()
+                                .cookie("AuthToken", userToken)
+                                .contentType(ContentType.JSON)
+                                .body(editedUser)
+                                .when()
+                                .put("/api/v1/user/")
+                                .then()
+                                .statusCode(400);
         }
 
         // ---------------- FIELD VALIDATION TESTS --------------------------------
