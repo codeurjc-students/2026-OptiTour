@@ -29,6 +29,7 @@ import es.urjc.tfg.optitour.repository.UserRepository;
 @SpringBootTest
 public class UserServiceClientE2ETest {
     protected WebDriver driver;
+    private WebDriverWait wait;
 
     @Autowired
     UserRepository repository;
@@ -57,6 +58,7 @@ public class UserServiceClientE2ETest {
         options.addArguments("--disable-gpu");
         options.addArguments("--window-size=1920,1080");
         driver = new ChromeDriver(options);
+        wait = new WebDriverWait(driver, Duration.ofSeconds(5));
     }
 
     @AfterEach
@@ -78,12 +80,21 @@ public class UserServiceClientE2ETest {
         });
     }
 
+    private void login(String email, String password) {
+        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
+        WebElement passField = driver.findElement(By.id("loginPassword"));
+        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
+
+        emailField.sendKeys(email);
+        passField.sendKeys(password);
+        submitButton.click();
+    }
+
     @Test
     @DisplayName("Checks if signup form in frontend works properly")
     public void signupClientE2ETest() throws InterruptedException {
         driver.get("http://localhost:5173/signup");
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         // Email must not exceed 30 chars due to validation rules:
         String signupEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
         String signupUser = "user" + UUID.randomUUID().toString().substring(0, 8);
@@ -133,8 +144,6 @@ public class UserServiceClientE2ETest {
 
         driver.get("http://localhost:5173/signup");
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-
         WebElement emailField = wait.until(visibilityOfElementLocated(By.id("email")));
         WebElement phoneField = driver.findElement(By.id("phone"));
         WebElement userNameField = driver.findElement(By.id("username"));
@@ -171,8 +180,6 @@ public class UserServiceClientE2ETest {
 
         driver.get("http://localhost:5173/signup");
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-
         WebElement emailField = wait.until(visibilityOfElementLocated(By.id("email")));
         WebElement phoneField = driver.findElement(By.id("phone"));
         WebElement userNameField = driver.findElement(By.id("username"));
@@ -200,16 +207,7 @@ public class UserServiceClientE2ETest {
     @DisplayName("Accessing /signup as an authenticated user should show an error")
     public void accessingSignupAsAuthClientE2ETest() {
         driver.get("http://localhost:5173/login");
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-
-        // We log as usually
-        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
-        WebElement passField = driver.findElement(By.id("loginPassword"));
-        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
-
-        emailField.sendKeys("carmen@example.com");
-        passField.sendKeys("Demo1234");
-        submitButton.click();
+        login("carmen@example.com", "Demo1234");
 
         // We wait index to load and go to signup
         wait.until(urlToBe("http://localhost:5173/"));
@@ -225,16 +223,7 @@ public class UserServiceClientE2ETest {
     @DisplayName("Accesing as an admin to user panel should show ammount of users")
     public void userPanelAmmmoutnE2EClient() {
         driver.get("http://localhost:5173/admin/users");
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-
-        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
-        WebElement passField = driver.findElement(By.id("loginPassword"));
-        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
-
-        emailField.sendKeys("admin@optitour.com");
-        passField.sendKeys("Admin1234");
-        submitButton.click();
+        login("admin@optitour.com", "Admin1234");
 
         wait.until(urlToBe("http://localhost:5173/admin/users"));
 
@@ -247,16 +236,7 @@ public class UserServiceClientE2ETest {
     @DisplayName("Accesing as an admin to user panel should show ammount of users")
     public void userPanelListE2EClient() {
         driver.get("http://localhost:5173/admin/users");
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-
-        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
-        WebElement passField = driver.findElement(By.id("loginPassword"));
-        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
-
-        emailField.sendKeys("admin@optitour.com");
-        passField.sendKeys("Admin1234");
-        submitButton.click();
+        login("admin@optitour.com", "Admin1234");
 
         wait.until(urlToBe("http://localhost:5173/admin/users"));
 
@@ -276,16 +256,7 @@ public class UserServiceClientE2ETest {
     @DisplayName("Clicking view profile button from user card should show correct user profile")
     public void userProfileFromPanelE2EClientTest() {
         driver.get("http://localhost:5173/admin/users");
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-
-        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
-        WebElement passField = driver.findElement(By.id("loginPassword"));
-        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
-
-        emailField.sendKeys("admin@optitour.com");
-        passField.sendKeys("Admin1234");
-        submitButton.click();
+        login("admin@optitour.com", "Admin1234");
 
         WebElement userCard = wait.until(visibilityOfElementLocated(
                 By.xpath("//div[contains(@class, 'ot-user-item')][.//span[normalize-space()='Carmen García']]")));
@@ -304,19 +275,12 @@ public class UserServiceClientE2ETest {
     @DisplayName("Logging in with blocked account should show an error card")
     public void logAsBlockedUserE2EClientTest() {
         driver.get("http://localhost:5173/login");
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         String uniqueEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
 
         repository.save(new User(uniqueEmail, "Demo1234", "example", "111 111 111", true, "USER"));
 
-        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
-        WebElement passField = driver.findElement(By.id("loginPassword"));
-        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
-
-        emailField.sendKeys(uniqueEmail);
-        passField.sendKeys("Demo1234");
-        submitButton.click();
+        login(uniqueEmail, "Demo1234");
 
         WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
         assertEquals("Tu cuenta ha sido bloqueada. Contacta con el administrador para más información.",
@@ -327,18 +291,11 @@ public class UserServiceClientE2ETest {
     @DisplayName("Checks if delete user form deletes user")
     public void deleteUserE2EClientTest() {
         driver.get("http://localhost:5173/profile/delete");
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         String uniqueEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
         repository.save(new User(uniqueEmail, encoder.encode("Demo1234"), "example", "111 111 111", false, "USER"));
 
-        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
-        WebElement passField = driver.findElement(By.id("loginPassword"));
-        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
-
-        emailField.sendKeys(uniqueEmail);
-        passField.sendKeys("Demo1234");
-        submitButton.click();
+        login(uniqueEmail, "Demo1234");
 
         wait.until(urlToBe("http://localhost:5173/profile/delete"));
 
@@ -357,18 +314,11 @@ public class UserServiceClientE2ETest {
     @DisplayName("Checks if delete user form shows error on incorrect password")
     public void deleteUserIncorrectPassowrdE2EClientTest() {
         driver.get("http://localhost:5173/profile/delete");
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         String uniqueEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
         repository.save(new User(uniqueEmail, encoder.encode("Demo1234"), "example", "111 111 111", false, "USER"));
 
-        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
-        WebElement passField = driver.findElement(By.id("loginPassword"));
-        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
-
-        emailField.sendKeys(uniqueEmail);
-        passField.sendKeys("Demo1234");
-        submitButton.click();
+        login(uniqueEmail, "Demo1234");
 
         wait.until(urlToBe("http://localhost:5173/profile/delete"));
 
@@ -388,15 +338,7 @@ public class UserServiceClientE2ETest {
     @DisplayName("Checks if delete user form shows error on deleting unique admin")
     public void deleteUniqueAdminE2EClientTest() {
         driver.get("http://localhost:5173/profile/delete");
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-
-        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
-        WebElement passField = driver.findElement(By.id("loginPassword"));
-        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
-
-        emailField.sendKeys("admin@optitour.com");
-        passField.sendKeys("Admin1234");
-        submitButton.click();
+        login("admin@optitour.com", "Admin1234");
 
         wait.until(urlToBe("http://localhost:5173/profile/delete"));
 
@@ -417,20 +359,13 @@ public class UserServiceClientE2ETest {
     @DisplayName("Checks if edit user form works properly")
     public void editUserClientE2ETest() {
         driver.get("http://localhost:5173/profile/edit");
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         String uniqueEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
         String updatedEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
         String updatedUsername = "updated" + UUID.randomUUID().toString().substring(0, 6);
         repository.save(new User(uniqueEmail, encoder.encode("Demo1234"), "example", "111 111 111", false, "USER"));
 
-        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
-        WebElement passField = driver.findElement(By.id("loginPassword"));
-        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
-
-        emailField.sendKeys(uniqueEmail);
-        passField.sendKeys("Demo1234");
-        submitButton.click();
+        login(uniqueEmail, "Demo1234");
 
         WebElement editEmailField = wait.until(visibilityOfElementLocated(By.id("email")));
         WebElement editPhoneField = driver.findElement(By.id("phone"));
@@ -458,19 +393,12 @@ public class UserServiceClientE2ETest {
     @DisplayName("Checks if edit user shows error card if repeated email is sent")
     public void editUserRepeatedEmailClientE2ETest() {
         driver.get("http://localhost:5173/profile/edit");
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         String uniqueEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
         String updatedUsername = "updated" + UUID.randomUUID().toString().substring(0, 6);
         repository.save(new User(uniqueEmail, encoder.encode("Demo1234"), "example", "111 111 111", false, "USER"));
 
-        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
-        WebElement passField = driver.findElement(By.id("loginPassword"));
-        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
-
-        emailField.sendKeys(uniqueEmail);
-        passField.sendKeys("Demo1234");
-        submitButton.click();
+        login(uniqueEmail, "Demo1234");
 
         WebElement editEmailField = wait.until(visibilityOfElementLocated(By.id("email")));
         WebElement editPhoneField = driver.findElement(By.id("phone"));
@@ -495,19 +423,12 @@ public class UserServiceClientE2ETest {
     @DisplayName("Checks if edit user shows error card if repeated email is sent")
     public void editUserRepeatedUserNameClientE2ETest() {
         driver.get("http://localhost:5173/profile/edit");
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         String uniqueEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
         String updatedEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
         repository.save(new User(uniqueEmail, encoder.encode("Demo1234"), "example", "111 111 111", false, "USER"));
 
-        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
-        WebElement passField = driver.findElement(By.id("loginPassword"));
-        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
-
-        emailField.sendKeys(uniqueEmail);
-        passField.sendKeys("Demo1234");
-        submitButton.click();
+        login(uniqueEmail, "Demo1234");
 
         WebElement editEmailField = wait.until(visibilityOfElementLocated(By.id("email")));
         WebElement editPhoneField = driver.findElement(By.id("phone"));
@@ -528,4 +449,54 @@ public class UserServiceClientE2ETest {
                 errorCard.getText());
     }
 
+    @Test
+    @DisplayName("Checks if change password form workflow works properly")
+    public void editPasswordClientE2ETest() {
+        driver.get("http://localhost:5173/profile/edit/password");
+
+        String uniqueEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
+        repository.save(new User(uniqueEmail, encoder.encode("Demo1234"), "example", "111 111 111", false, "USER"));
+
+        login(uniqueEmail, "Demo1234");
+
+        wait.until(urlToBe("http://localhost:5173/profile/edit/password"));
+
+        WebElement oldPasswordField = wait.until(visibilityOfElementLocated(By.id("oldPassword")));
+        WebElement newPasswordField = driver.findElement(By.id("password"));
+        WebElement repeatPasswordField = driver.findElement(By.id("passwordRepeat"));
+        WebElement editPassworButton = driver.findElement(By.className("ot-edit-password__actions"));
+
+        oldPasswordField.sendKeys("Demo1234");
+        newPasswordField.sendKeys("Edited1234");
+        repeatPasswordField.sendKeys("Edited1234");
+        editPassworButton.click();
+
+        wait.until(urlToBe("http://localhost:5173/profile"));
+    }
+
+    @Test
+    @DisplayName("Checks if change password form workflow works properly")
+    public void editPasswordIncorrectPasswordClientE2ETest() {
+        driver.get("http://localhost:5173/profile/edit/password");
+
+        String uniqueEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
+        repository.save(new User(uniqueEmail, encoder.encode("Demo1234"), "example", "111 111 111", false, "USER"));
+
+        login(uniqueEmail, "Demo1234");
+
+        wait.until(urlToBe("http://localhost:5173/profile/edit/password"));
+
+        WebElement oldPasswordField = wait.until(visibilityOfElementLocated(By.id("oldPassword")));
+        WebElement newPasswordField = driver.findElement(By.id("password"));
+        WebElement repeatPasswordField = driver.findElement(By.id("passwordRepeat"));
+        WebElement editPassworButton = driver.findElement(By.className("ot-edit-password__actions"));
+
+        oldPasswordField.sendKeys("incorrect");
+        newPasswordField.sendKeys("Edited1234");
+        repeatPasswordField.sendKeys("Edited1234");
+        editPassworButton.click();
+
+        WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-edit-password__error")));
+        assertEquals("La contraseña no es correcta.", errorCard.getText());
+    }
 }

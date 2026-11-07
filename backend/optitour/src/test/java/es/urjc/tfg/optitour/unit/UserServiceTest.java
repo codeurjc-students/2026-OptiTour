@@ -20,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
 
+import es.urjc.tfg.optitour.DTO.PasswordEditDTO;
 import es.urjc.tfg.optitour.DTO.UserEditDTO;
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.User;
@@ -318,5 +319,33 @@ public class UserServiceTest {
         assertEquals(editedUser.email(), updatedUser.getEmail());
         assertEquals(editedUser.phoneNumber(), updatedUser.getPhoneNumber());
         assertEquals(editedUser.userName(), updatedUser.getUserName());
+    }
+
+    @Test
+    @DisplayName("editLoggedPassword should throw exception if called with incorrect old password")
+    public void editLoggedPasswordIncorrectPasswordTest() {
+        when(repositoryMock.findByEmail("example@example.com")).thenReturn(Optional.of(testUser));
+
+        PasswordEditDTO body = new PasswordEditDTO("incorrect", "Edit124");
+
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
+            testService.editLoggedPassword("example@example.com", body);
+        });
+
+        assertEquals(
+                "403 FORBIDDEN \"La contraseña no es correcta.\"",
+                e.getMessage());
+    }
+
+    @Test
+    @DisplayName("editLoggedPassword with correct body should call repository save metod and return new password")
+    public void editLoggedPasswordTest() {
+        when(repositoryMock.findByEmail("example@example.com")).thenReturn(Optional.of(testUser));
+
+        PasswordEditDTO body = new PasswordEditDTO("demo1234", "Edit1234");
+        String result = testService.editLoggedPassword("example@example.com", body);
+
+        verify(repositoryMock).save(any(User.class));
+        assertEquals("Edit1234", result);
     }
 }

@@ -19,6 +19,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class ImageControllerClientE2ETest {
     protected WebDriver driver;
+    private WebDriverWait wait;
 
     @BeforeEach
     public void setUp() {
@@ -32,6 +33,7 @@ public class ImageControllerClientE2ETest {
         options.addArguments("--window-size=1920,1080");
 
         driver = new ChromeDriver(options);
+        wait = new WebDriverWait(driver, Duration.ofSeconds(5));
     }
 
     @AfterEach
@@ -45,8 +47,6 @@ public class ImageControllerClientE2ETest {
     @DisplayName("Checks if images load correctly in index")
     void indexImagesTest() {
         driver.get("http://localhost:5173");
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         WebElement carousel = wait.until(visibilityOfElementLocated(By.className("ot-index__hero")));
         assertNotNull(carousel);

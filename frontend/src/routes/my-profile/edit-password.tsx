@@ -110,7 +110,11 @@ export default function EditPassword() {
                         Cancelar
                     </Link>
                 </div>
-                {error && <ErrorCard text={error!} />}
+                {error && (
+                    <div className="ot-edit-password__error">
+                        <ErrorCard text={error!} />
+                    </div>
+                )}
             </form>
         </FormProvider>
     );

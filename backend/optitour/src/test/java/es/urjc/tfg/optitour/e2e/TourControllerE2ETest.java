@@ -82,6 +82,10 @@ public class TourControllerE2ETest extends BaseIntegrationTest {
                 }
         }
 
+        private long getFirstId() {
+                return repository.findAll().get(0).getId();
+        }
+
         @Test
         @DisplayName("Calling api at /tour/all should return the SampleDataService example tours")
         public void tourServiceE2Etest() {
@@ -130,8 +134,7 @@ public class TourControllerE2ETest extends BaseIntegrationTest {
         @Test
         @DisplayName("getToursById should return the correct tour and its points")
         void getTourByIdE2ETest() {
-                List<Tour> allList = repository.findAll();
-                long firstId = allList.get(0).getId();
+                long firstId = getFirstId();
 
                 TourDTO result = get("/api/v1/tour/" + firstId)
                                 .then()

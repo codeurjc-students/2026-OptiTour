@@ -1,8 +1,6 @@
 package es.urjc.tfg.optitour.e2e;
 
 import java.sql.SQLException;
-import java.util.List;
-
 import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialException;
 
@@ -51,11 +49,14 @@ public class ImageControllerE2ETest extends BaseIntegrationTest {
         repository.save(image);
     }
 
+    private long getFirstId() {
+        return repository.findAll().get(0).getId();
+    }
+
     @Test
     @DisplayName("Check if getImageFile endpoint works properly. If id is correct, 200 ok and binary data should be returned")
     void getImageFileE2ETest() {
-        List<Image> allList = repository.findAll();
-        long firstId = allList.get(0).getId();
+        long firstId = getFirstId();
         byte[] result = get("/api/v1/image/" + firstId)
                 .then()
                 .statusCode(200)
