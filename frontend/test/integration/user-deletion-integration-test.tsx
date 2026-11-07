@@ -1,15 +1,11 @@
-import { beforeAll, afterAll, beforeEach, expect, test, vi } from "vitest";
+import { expect, test, vi } from "vitest";
 import * as service from '../../src/service/user-service';
-import { login } from "../../src/service/auth-service";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import "@testing-library/jest-dom/vitest";
 import DeleteProfile from "../../src/routes/my-profile/delete-profile";
+import { loginAs } from "./integration-test-setup";
 
-// @ts-ignore
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
-// Mock the persist middleware in zustand store so it won't fail on missing localStorage in Node/Vitest
 vi.mock('zustand/middleware', () => ({
     persist: (config: any) => config
 }));
@@ -27,44 +23,6 @@ if (typeof window !== "undefined") {
     Object.defineProperty(window, "localStorage", { value: mockStorage, writable: true });
 }
 
-let cookieJar: string[] = [];
-const originalFetch = globalThis.fetch;
-
-beforeAll(() => {
-    globalThis.fetch = async (input, init = {}) => {
-        const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
-        const isAnonymousOnly = url.includes("/auth/login") || (url.includes("/user/") && init.method === "POST");
-
-        const headers = new Headers(init.headers || {});
-        if (cookieJar.length > 0 && !headers.has("Cookie") && !isAnonymousOnly) {
-            headers.set("Cookie", cookieJar.join("; "));
-        }
-        const res = await originalFetch(input, { ...init, headers });
-
-        const setCookies = typeof res.headers.getSetCookie === "function"
-            ? res.headers.getSetCookie()
-            : [res.headers.get("set-cookie")].filter(Boolean) as string[];
-
-        for (const cookieStr of setCookies) {
-            const pair = cookieStr.split(";")[0];
-            const name = pair.split("=")[0];
-            cookieJar = cookieJar.filter(c => !c.startsWith(`${name}=`));
-            cookieJar.push(pair);
-        }
-
-        return res;
-    };
-});
-
-afterAll(() => {
-    globalThis.fetch = originalFetch;
-    cookieJar = [];
-});
-
-beforeEach(() => {
-    cookieJar = [];
-});
-
 test("Filling form with correct data should delete logged user", async () => {
     // We create a unique user from current date
     const unique = Date.now().toString().slice(-6);
@@ -76,7 +34,7 @@ test("Filling form with correct data should delete logged user", async () => {
     };
 
     await service.signup(tempUser);
-    await login({ email: tempUser.email, password: tempUser.password });
+    await loginAs(tempUser.email, tempUser.password);
 
     render(
         <MemoryRouter initialEntries={["/profile/delete"]}>
@@ -116,7 +74,7 @@ test("Filling form with incorrect pass should delete logged user", async () => {
     };
 
     await service.signup(tempUser);
-    await login({ email: tempUser.email, password: tempUser.password });
+    await loginAs(tempUser.email, tempUser.password);
 
     render(
         <MemoryRouter initialEntries={["/profile/delete"]}>
