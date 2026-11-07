@@ -1,53 +1,13 @@
-import { beforeAll, afterAll, expect, test } from "vitest";
+import { expect, test } from "vitest";
 import { fireEvent, render, screen, waitForElementToBeRemoved, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import "@testing-library/jest-dom/vitest";
 import UserManagement from "../../src/routes/admin/user-management";
-import { login } from "../../src/service/auth-service";
-
-// @ts-ignore
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
-// In Node.js / Vitest, fetch does not store or forward cookies automatically like a browser does.
-// We intercept fetch to keep an in-memory cookie jar for authenticated integration tests.
-let cookieJar: string[] = [];
-const originalFetch = globalThis.fetch;
-
-beforeAll(() => {
-    globalThis.fetch = async (input, init = {}) => {
-        const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
-        // Endpoints configured as .anonymous() in Spring Security (like /auth/login or POST /user/)
-        // must NOT receive an existing AuthToken cookie, or Spring Security will return 403 Forbidden.
-        const isAnonymousOnly = url.includes("/auth/login") || (url.includes("/user/") && init.method === "POST");
-
-        const headers = new Headers(init.headers || {});
-        if (cookieJar.length > 0 && !headers.has("Cookie") && !isAnonymousOnly) {
-            headers.set("Cookie", cookieJar.join("; "));
-        }
-        const res = await originalFetch(input, { ...init, headers });
-
-        const setCookies = typeof res.headers.getSetCookie === "function"
-            ? res.headers.getSetCookie()
-            : [res.headers.get("set-cookie")].filter(Boolean) as string[];
-
-        for (const cookieStr of setCookies) {
-            const pair = cookieStr.split(";")[0];
-            const name = pair.split("=")[0];
-            cookieJar = cookieJar.filter(c => !c.startsWith(`${name}=`));
-            cookieJar.push(pair);
-        }
-
-        return res;
-    };
-});
-
-afterAll(() => {
-    globalThis.fetch = originalFetch;
-});
+import { loginAs } from "./integration-test-setup";
 
 test('Shows spinner while fetching from API. Then, renders user panel', async () => {
     // First of all, it's necessary to be logged as admin
-    await login({ email: "admin@optitour.com", password: "Admin1234" });
+    await loginAs("admin@optitour.com", "Admin1234");
 
     render(
         <MemoryRouter>
@@ -72,7 +32,7 @@ test('Shows spinner while fetching from API. Then, renders user panel', async ()
 });
 
 test('Checks if block button works properly', async () => {
-    await login({ email: "admin@optitour.com", password: "Admin1234" });
+    await loginAs("admin@optitour.com", "Admin1234");
 
     render(
         <MemoryRouter>
@@ -100,7 +60,7 @@ test('Checks if block button works properly', async () => {
 });
 
 test('Checks if front forbids admins to block themselves', async () => {
-    await login({ email: "admin@optitour.com", password: "Admin1234" });
+    await loginAs("admin@optitour.com", "Admin1234");
 
     render(
         <MemoryRouter>
@@ -116,7 +76,7 @@ test('Checks if front forbids admins to block themselves', async () => {
 });
 
 test('Checks if view profile button url is correct', async () => {
-    await login({ email: "admin@optitour.com", password: "Admin1234" });
+    await loginAs("admin@optitour.com", "Admin1234");
 
     render(
         <MemoryRouter>

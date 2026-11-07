@@ -15,7 +15,6 @@ import javax.sql.rowset.serial.SerialException;
 
 import java.sql.Blob;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +32,7 @@ import es.urjc.tfg.optitour.DTO.UserDTO;
 import es.urjc.tfg.optitour.DTO.UserEditDTO;
 import es.urjc.tfg.optitour.DTO.ImageDTO;
 import es.urjc.tfg.optitour.DTO.PasswordDTO;
+import es.urjc.tfg.optitour.DTO.PasswordEditDTO;
 import es.urjc.tfg.optitour.DTO.UserCreateDTO;
 import es.urjc.tfg.optitour.mapper.UserMapper;
 import es.urjc.tfg.optitour.model.User;
@@ -54,6 +54,10 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                                 .then()
                                 .statusCode(200)
                                 .extract().cookie("AuthToken");
+        }
+
+        private long getFirstId() {
+                return repository.findAll().get(0).getId();
         }
 
         private String getUserAuthToken() {
@@ -115,9 +119,7 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
         @Test
         @DisplayName("Calling api at /user/{id}/image should return correct user id")
         public void downloadImageTestE2ETest() {
-                List<User> all = new ArrayList<>();
-                all = repository.findAll();
-                long firstId = all.get(0).getId();
+                long firstId = getFirstId();
 
                 byte[] result = get("/api/v1/user/" + firstId + "/image")
                                 .then()
@@ -165,9 +167,7 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
         @Test
         @DisplayName("Posting at /user/{id}/image should create a new profile image in correct user")
         public void uploadImageE2ETest() throws SerialException, SQLException {
-                List<User> all = new ArrayList<>();
-                all = repository.findAll();
-                long firstId = all.get(0).getId();
+                long firstId = getFirstId();
 
                 // It's necessary to be logged in in order to upload images
                 LoginRequest credentials = new LoginRequest("example@example.com", "demo1234");
@@ -221,9 +221,7 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
         @Test
         @DisplayName("Posting at /user/{id}/image with empty image should respond with 400")
         public void uploadImageEmptyImageE2ETest() {
-                List<User> all = new ArrayList<>();
-                all = repository.findAll();
-                long firstId = all.get(0).getId();
+                long firstId = getFirstId();
 
                 LoginRequest credentials = new LoginRequest("example@example.com", "demo1234");
                 String authToken = given()
@@ -276,9 +274,7 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
         public void banUserE2ETest() {
                 String adminToken = getAdminAuthToken();
 
-                List<User> all = new ArrayList<>();
-                all = repository.findAll();
-                long firstId = all.get(0).getId();
+                long firstId = getFirstId();
 
                 UserDTO user = given()
                                 .cookie("AuthToken", adminToken)
@@ -294,9 +290,7 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
         @Test
         @DisplayName("banUser should return 403 status when called with no admin auth")
         public void banUserNoAdminE2ETest() {
-                List<User> all = new ArrayList<>();
-                all = repository.findAll();
-                long firstId = all.get(0).getId();
+                long firstId = getFirstId();
 
                 given()
                                 .when()
@@ -310,9 +304,7 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
         public void getUserE2ETest() {
                 String adminToken = getAdminAuthToken();
 
-                List<User> all = new ArrayList<>();
-                all = repository.findAll();
-                long firstId = all.get(0).getId();
+                long firstId = getFirstId();
 
                 UserDTO user = given()
                                 .cookie("AuthToken", adminToken)
@@ -328,9 +320,7 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
         @Test
         @DisplayName("getUser should return 403 status when called with no admin auth")
         public void getUserNoAdminE2ETest() {
-                List<User> all = new ArrayList<>();
-                all = repository.findAll();
-                long firstId = all.get(0).getId();
+                long firstId = getFirstId();
 
                 given()
                                 .when()
@@ -459,6 +449,44 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                                 .put("/api/v1/user/")
                                 .then()
                                 .statusCode(400);
+        }
+
+        @Test
+        @DisplayName("editPassword shoud return new password and change logged user password")
+        public void editPassword2ETest() {
+                String userToken = getUserAuthToken();
+
+                PasswordEditDTO body = new PasswordEditDTO("demo1234", "Edited1234");
+                PasswordDTO result = given()
+                                .cookie("AuthToken", userToken)
+                                .contentType(ContentType.JSON)
+                                .body(body)
+                                .when()
+                                .put("/api/v1/user/password")
+                                .then()
+                                .statusCode(200)
+                                .extract().as(PasswordDTO.class);
+
+                assertEquals(body.newPassword(), result.password());
+
+                Optional<User> op = repository.findByEmail("example@example.com");
+                User editedUser = op.get();
+                assertTrue(encoder.matches(body.newPassword(), editedUser.getPassword()));
+        }
+
+        @Test
+        @DisplayName("editPassword endpoint should return 403 if password is incorrect")
+        public void editPasswordIncorrectPasswordE2ETest() {
+                String userToken = getUserAuthToken();
+                PasswordEditDTO body = new PasswordEditDTO("incorrect", "Edited1234");
+                given()
+                                .cookie("AuthToken", userToken)
+                                .contentType(ContentType.JSON)
+                                .body(body)
+                                .when()
+                                .put("/api/v1/user/password")
+                                .then()
+                                .statusCode(403);
         }
 
         // ---------------- FIELD VALIDATION TESTS --------------------------------

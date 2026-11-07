@@ -58,11 +58,14 @@ public class PointOfInterestControllerE2ETest extends BaseIntegrationTest {
         }
     }
 
+    private long getFirstId() {
+        return repository.findAll().get(0).getId();
+    }
+
     @Test
     @DisplayName("Checks if getPointOfInterestById endpoint returns the correct POI")
     void getPointOfInterestByIdE2ETest() {
-        List<PointOfInterest> allList = repository.findAll();
-        long firstId = allList.get(0).getId();
+        long firstId = getFirstId();
 
         PointOfInterestDTO result = get("/api/v1/point-of-interest/" + firstId)
                 .then()

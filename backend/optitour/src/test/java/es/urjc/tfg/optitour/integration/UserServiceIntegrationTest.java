@@ -28,6 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import es.urjc.tfg.optitour.BaseIntegrationTest;
+import es.urjc.tfg.optitour.DTO.PasswordEditDTO;
 import es.urjc.tfg.optitour.DTO.UserEditDTO;
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.User;
@@ -60,6 +61,12 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
         }
     }
 
+    private long getFirstId() {
+        List<User> all = new ArrayList<>();
+        all = repository.findAll();
+        return all.get(0).getId();
+    }
+
     @Test
     @DisplayName("getUserByEmail method should return the corresponding user")
     void getUserByEmailTest() {
@@ -84,10 +91,7 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
     @Test
     @DisplayName("getUserById with correct id should return correct user")
     public void getUserByIdIntegrationTest() {
-        List<User> all = new ArrayList<>();
-        all = repository.findAll();
-        long firstId = all.get(0).getId();
-        User result = service.getUserById(firstId);
+        User result = service.getUserById(getFirstId());
 
         assertNotNull(result);
         assertEquals("example0@example.com", result.getEmail());
@@ -120,9 +124,7 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
     public void addImageToUserIntegrationTest() throws SerialException, SQLException {
         // Given: we need first user id (it's no deterministic because of before each
         // method)
-        List<User> all = new ArrayList<>();
-        all = repository.findAll();
-        long firstId = all.get(0).getId();
+        long firstId = getFirstId();
 
         // We also need a fake blob for image
         Blob imageFile = new SerialBlob("fake image".getBytes(StandardCharsets.UTF_8));
@@ -152,16 +154,12 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
     @Test
     @DisplayName("addImageToUser with other user's email should trhow exception")
     public void addImageToUserOtherEmailIntegrationTest() {
-        // We asume that logged user is the first one saved in database
-        List<User> all = new ArrayList<>();
-        all = repository.findAll();
-        long firstId = all.get(0).getId();
-
         service.saveUser(
                 new User("other@example.com", encoder.encode("demo1234"), "other", "111 111 111", false, "USER"));
 
+        // We asume that logged user is the first one saved in database
         ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
-            service.addImageToUser(firstId, null, "other@example.com");
+            service.addImageToUser(getFirstId(), null, "other@example.com");
         });
 
         assertEquals("403 FORBIDDEN \"No tienes permiso para modificar la imagen de perfil de otros usuarios.\"",
@@ -222,10 +220,7 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
     @Test
     @DisplayName("deleteById method should delete user with correct pass")
     public void deleteUserByIdIntegrationTest() {
-        List<User> all = new ArrayList<>();
-        all = repository.findAll();
-        long firstId = all.get(0).getId();
-
+        long firstId = getFirstId();
         User targetUser = service.getUserById(firstId);
         service.deleteUserById(targetUser.getEmail(), "demo1234");
 
@@ -246,16 +241,26 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
     @Test
     @DisplayName("editLoggedUser method should update user in database")
     public void editLoggedUserIntegrationTest() {
-        List<User> all = new ArrayList<>();
-        all = repository.findAll();
-        long firstId = all.get(0).getId();
-
+        long targetId = service.getUserByEmail("example0@example.com").getId();
         UserEditDTO editedUser = new UserEditDTO("updated@example.com", "111 111 111", "updated");
         service.editLoggedUser("example0@example.com", editedUser);
 
-        User updatedUser = service.getUserById(firstId);
+        User updatedUser = service.getUserById(targetId);
         assertEquals(editedUser.email(), updatedUser.getEmail());
         assertEquals(editedUser.phoneNumber(), updatedUser.getPhoneNumber());
         assertEquals(editedUser.userName(), updatedUser.getUserName());
+    }
+
+    @Test
+    @DisplayName("editLoggedPassword should change logged user password in database")
+    public void editLoggedPasswordIntegrationTest() {
+        long targetId = getFirstId();
+        User targetUser = service.getUserById(targetId);
+
+        service.editLoggedPassword(targetUser.getEmail(),
+                new PasswordEditDTO("demo1234", "Edited1234"));
+
+        User editedUser = service.getUserById(targetId);
+        assertTrue(service.checkUserPassword(editedUser, "Edited1234"));
     }
 }

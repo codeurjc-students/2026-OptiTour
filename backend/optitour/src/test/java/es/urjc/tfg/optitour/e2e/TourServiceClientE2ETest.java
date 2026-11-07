@@ -24,6 +24,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @SpringBootTest
 public class TourServiceClientE2ETest {
     protected WebDriver driver;
+    private WebDriverWait wait;
 
     @BeforeEach
     public void setUp() {
@@ -39,6 +40,7 @@ public class TourServiceClientE2ETest {
         options.addArguments("--window-size=1920,1080");
 
         driver = new ChromeDriver(options);
+        wait = new WebDriverWait(driver, Duration.ofSeconds(5));
     }
 
     // After each test, we tear down the driver if it's active.
@@ -60,7 +62,6 @@ public class TourServiceClientE2ETest {
 
         // Now, get the list (waiting until it's visible) and check if one of its
         // elements is correct.
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         wait.until(visibilityOfElementLocated(By.className("ot-tour-card__title")));
 
         WebElement tourTitle = driver.findElement(By.className("ot-tour-card__title"));
@@ -79,8 +80,6 @@ public class TourServiceClientE2ETest {
     @DisplayName("Checks if loadMore botton works properly")
     public void loadMoreTest() throws InterruptedException {
         driver.get("http://localhost:5173");
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         WebElement loadMoreButton = wait.until(elementToBeClickable(By.className("load-more-button")));
 
@@ -101,8 +100,6 @@ public class TourServiceClientE2ETest {
     @DisplayName("Checks if tour detail page works properly")
     public void tourDetailTest() {
         driver.get("http://localhost:5173");
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         // We also want to check if button link is correct, that's why we dont't visit
         // /tour/1 directly
@@ -130,8 +127,6 @@ public class TourServiceClientE2ETest {
     @DisplayName("Check if tour not found page works properly")
     public void tourNotFoundTest() {
         driver.get("http://localhost:5173/tour/100");
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         WebElement title = wait.until(visibilityOfElementLocated(By.tagName("h1")));
         WebElement errorCard = driver.findElement(By.className("ot-error-card"));

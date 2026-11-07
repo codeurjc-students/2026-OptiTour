@@ -24,6 +24,7 @@ import es.urjc.tfg.optitour.repository.UserRepository;
 @SpringBootTest
 public class AuthClientE2ETest {
     protected WebDriver driver;
+    private WebDriverWait wait;
 
     @Autowired
     private UserRepository userRepository;
@@ -47,6 +48,7 @@ public class AuthClientE2ETest {
         options.addArguments("--disable-gpu");
 
         driver = new ChromeDriver(options);
+        wait = new WebDriverWait(driver, Duration.ofSeconds(5));
     }
 
     @AfterEach
@@ -60,9 +62,6 @@ public class AuthClientE2ETest {
     @DisplayName("Check if login form works properly")
     public void loginFormTest() {
         driver.get("http://localhost:5173");
-
-        // We define de wait object
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         // We wait to the loginButton and click on it
         WebElement loginNavButton = wait.until(elementToBeClickable(By.className("loginButton")));
@@ -117,8 +116,6 @@ public class AuthClientE2ETest {
         } catch (Exception e) {
         }
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-
         WebElement emailField = null;
         try {
             emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
@@ -144,8 +141,6 @@ public class AuthClientE2ETest {
     @DisplayName("If anonymous user access /admin/profile without athentication, login form must appear with a special error card. If user access with admin account, login must be succesfull and go to the requested URL, that must show user data.")
     void privateURLLoginFormTest() {
         driver.get("http://localhost:5173/admin/profile"); // We directly visit /admin/profile
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
         String errorCardText = errorCard.getText();
@@ -179,8 +174,6 @@ public class AuthClientE2ETest {
     void privateURLLoginFormNoRolesTest() {
         driver.get("http://localhost:5173/admin/profile"); // We directly visit /admin/profile
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-
         WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
         String errorCardText = errorCard.getText();
 
@@ -211,8 +204,6 @@ public class AuthClientE2ETest {
     @DisplayName("Checks if 404 page works properly")
     void notFoundPageTest() {
         driver.get("http://localhost:5173/non-existing-page");
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         wait.until(textToBePresentInElementLocated(
                 By.className("ot-error-card"),

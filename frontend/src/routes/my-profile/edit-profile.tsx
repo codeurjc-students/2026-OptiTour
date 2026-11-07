@@ -20,7 +20,7 @@ export function meta() {
 type EditProfileFormInput = z.input<typeof editProfileSchema>;
 type EditProfileFormData = z.output<typeof editProfileSchema>;
 
-function EditProfile() {
+export default function EditProfile() {
     const { loggedUser, setLoggedUser, refreshProfileImage } = useAuthStore();
     const navigate = useNavigate();
 
@@ -126,5 +126,3 @@ function EditProfile() {
         </FormProvider>
     );
 }
-
-export default EditProfile;

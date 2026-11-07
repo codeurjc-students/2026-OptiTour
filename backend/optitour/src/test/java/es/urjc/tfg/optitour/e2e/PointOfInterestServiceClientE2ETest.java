@@ -19,6 +19,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class PointOfInterestServiceClientE2ETest {
     protected WebDriver driver;
+    private WebDriverWait wait;
 
     @BeforeEach
     public void setUp() {
@@ -32,6 +33,7 @@ public class PointOfInterestServiceClientE2ETest {
         options.addArguments("--window-size=1920,1080");
 
         driver = new ChromeDriver(options);
+        wait = new WebDriverWait(driver, Duration.ofSeconds(5));
     }
 
     @AfterEach
@@ -48,8 +50,6 @@ public class PointOfInterestServiceClientE2ETest {
         // We already tested se more button on index, it's not necessary to start in
         // index.
         driver.get("http://localhost:5173/tour/1");
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         WebElement seeMoreButton = wait.until(elementToBeClickable(By.cssSelector("a[href='/point-of-interest/1']")));
         seeMoreButton.click();
@@ -75,8 +75,6 @@ public class PointOfInterestServiceClientE2ETest {
     @DisplayName("Checks if poi not found page works properly")
     public void poiNotFoundTest() {
         driver.get("http://localhost:5173/point-of-interest/1000");
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         WebElement title = wait.until(visibilityOfElementLocated(By.tagName("h1")));
         WebElement errorCard = driver.findElement(By.className("ot-error-card"));

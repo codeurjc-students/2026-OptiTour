@@ -22,6 +22,10 @@ function MyProfile() {
         ? '/admin/profile/delete'
         : '/profile/delete';
 
+    const editPassPath = location.pathname.startsWith('admin')
+        ? '/admin/profile/edit/password'
+        : '/profile/edit/password';
+
     if (!loggedUser) {
         return null;
     }
@@ -36,7 +40,7 @@ function MyProfile() {
                 <Button variant="outline-dark" className="ot-my-profile__edit-btn" as={Link as any} to={editPath}>
                     Editar información de mi cuenta
                 </Button>
-                <Button variant="outline-dark" className="ot-my-profile__password-btn">
+                <Button variant="outline-dark" className="ot-my-profile__password-btn" as={Link as any} to={editPassPath}>
                     Cambiar mi contraseña
                 </Button>
                 <Button variant="outline-danger" className="ot-my-profile__delete-btn" as={Link as any} to={deletePath}>
