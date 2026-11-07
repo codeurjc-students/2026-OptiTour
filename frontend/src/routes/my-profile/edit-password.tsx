@@ -1,9 +1,15 @@
 import { Button, Card, Form } from 'react-bootstrap';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 import PasswordFieldsCard from '../../components/password-fields-card/password-fields-card';
 import PasswordInput from '../../components/password-input/password-input';
 import './edit-password.css';
+import { passwordEditSchema } from '../../schemas/password-edit-schema';
+import type z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import { changePassword } from '../../service/user-service';
+import ErrorCard from '../../components/error-card/error-card';
 
 export function meta() {
     return [
@@ -11,24 +17,46 @@ export function meta() {
     ];
 }
 
+type PasswordEditFormInput = z.input<typeof passwordEditSchema>;
+type PasswordEditFormData = z.output<typeof passwordEditSchema>;
+
 export default function EditPassword() {
     const location = useLocation();
     const cancelPath = location.pathname.startsWith('/admin')
         ? '/admin/profile'
         : '/profile';
 
-    const methods = useForm({
+    const methods = useForm<PasswordEditFormInput, undefined, PasswordEditFormData>({
         mode: "onChange",
-        defaultValues: {
-            oldPassword: "",
-            password: "",
-            repeatPassword: ""
-        }
+        resolver: zodResolver(passwordEditSchema)
     });
 
-    const handleSubmit = (data: any) => {
-        // En el futuro se invocará al endpoint correspondiente
-        console.log("Cambio de contraseña:", data);
+    const {
+        formState: { isValid, errors }
+    } = methods;
+
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
+
+    async function handleSubmit(data: any) {
+        setIsLoading(true);
+        try {
+            await changePassword({
+                oldPassword: data.oldPassword,
+                newPassword: data.password
+            });
+
+            navigate("/profile");
+        }
+        catch (err) {
+            err instanceof Error
+                ? setError(err.message)
+                : setError("Se ha producido un error al cambiar la contraseña. Inténtalo de nuevo más tarde.");
+        }
+        finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -58,7 +86,13 @@ export default function EditPassword() {
                             <PasswordInput
                                 placeholder="Introduce tu contraseña actual"
                                 {...methods.register("oldPassword")}
+                                isInvalid={!!errors.oldPassword}
                             />
+                            {errors.oldPassword && (
+                                <div className="invalid-feedback d-block">
+                                    {errors.oldPassword.message}
+                                </div>
+                            )}
                         </Form.Group>
                     </Card>
                 </div>
@@ -69,13 +103,14 @@ export default function EditPassword() {
                 </div>
 
                 <div className="ot-edit-password__actions">
-                    <Button type="submit" className="ot-edit-password__save-btn">
-                        Guardar cambios
+                    <Button type="submit" className="ot-edit-password__save-btn" disabled={!isValid || isLoading}>
+                        {isLoading ? "Guardando cambios..." : "Guardar cambios"}
                     </Button>
                     <Link to={cancelPath} className="btn btn-outline-dark ot-edit-password__cancel-btn">
                         Cancelar
                     </Link>
                 </div>
+                {error && <ErrorCard text={error!} />}
             </form>
         </FormProvider>
     );

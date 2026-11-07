@@ -3,6 +3,7 @@ import type { UserCreateDTO } from "../dto/user-create-dto";
 import type PasswordDTO from "../dto/password-dto";
 import type UserEditDTO from "../dto/user-edit-dto";
 import type { UserDTO } from "../dto/user-dto";
+import type { PasswordEditDTO } from "../dto/password-edit-dto";
 
 const base_url = `${API_BASE_URL}`;
 
@@ -107,6 +108,24 @@ export async function editLoggedUser(body: UserEditDTO): Promise<UserDTO> {
     const response = await fetch(url, {
         credentials: "include",
         headers: { "Content-Type": "application/json" },
+        method: "PUT",
+        body: JSON.stringify(body)
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+    }
+
+    return response.json();
+}
+
+export async function changePassword(body: PasswordEditDTO) {
+    const url = `${base_url}/user/password`;
+
+    const response = await fetch(url, {
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         method: "PUT",
         body: JSON.stringify(body)
     });
