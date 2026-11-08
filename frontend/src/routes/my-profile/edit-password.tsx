@@ -39,6 +39,10 @@ export default function EditPassword() {
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
+    const returnPage = location.pathname.startsWith('/admin')
+        ? '/admin/profile'
+        : '/profile';
+
     async function handleSubmit(data: any) {
         setIsLoading(true);
         try {
@@ -47,7 +51,7 @@ export default function EditPassword() {
                 newPassword: data.password
             });
 
-            navigate("/profile");
+            navigate(returnPage);
         }
         catch (err) {
             err instanceof Error
