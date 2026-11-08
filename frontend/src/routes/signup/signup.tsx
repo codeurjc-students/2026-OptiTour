@@ -3,12 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import AccountFieldsCard from '../../components/account-fields-card/account-fields-card';
 import PasswordFieldsCard from '../../components/password-fields-card/password-fields-card';
 import './signup.css';
-
-export function meta() {
-    return [
-        { title: "Registro | OptiTour" },
-    ];
-}
 import { useState } from 'react';
 import { signup, uploadUserImage } from '../../service/user-service';
 
@@ -18,6 +12,12 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { signupSchema } from '../../schemas/signup-schema';
 import type z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+
+export function meta() {
+    return [
+        { title: "Registro | OptiTour" },
+    ];
+}
 
 type SignupFormInput = z.input<typeof signupSchema>;
 type SignupFormData = z.output<typeof signupSchema>;
@@ -60,7 +60,7 @@ export function Signup() {
             navigate("/", {
                 state: {
                     showModal: true,
-                    modalMessage: `Tu cuenta de usuario se ha registrado correctamente en Optitour. ¡Te damos la bienvenida, ${data.userName}!`,
+                    modalMessage: `Tu cuenta de usuario se ha registrado correctamente en OptiTour. ¡Te damos la bienvenida, ${data.userName}!`,
                     welcome: true
                 }
             });
