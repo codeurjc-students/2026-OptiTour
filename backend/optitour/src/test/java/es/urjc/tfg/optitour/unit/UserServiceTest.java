@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
 
 import es.urjc.tfg.optitour.DTO.PasswordEditDTO;
+import es.urjc.tfg.optitour.DTO.UserCreateDTO;
 import es.urjc.tfg.optitour.DTO.UserEditDTO;
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.User;
@@ -108,13 +109,16 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("saveUser should call repository save method")
-    public void saveUserTest() {
-        // When: We call the save service method
-        testService.saveUser(testUser);
+    @DisplayName("signupUser should call repository save method")
+    public void signupUserTest() {
+        UserCreateDTO newUser = new UserCreateDTO(
+                "new@example.com", "111 111 111", "newuser", "Demo1234");
+
+        // When: We call the user creation service method
+        testService.signupUser(newUser, "USER");
 
         // Then: repository method must've been called
-        verify(repositoryMock).save(testUser);
+        verify(repositoryMock).save(any(User.class));
     }
 
     @Test

@@ -13,6 +13,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * This class is an exception handler for OptiTour REST API field validation, so
@@ -95,5 +96,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 Map.of("message", "Credenciales incorrectas. Revisa tu correo o contraseña."),
                 HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Map<String, String>> handleResponseStatusException(ResponseStatusException e) {
+        String message = e.getReason() != null
+                ? e.getReason()
+                : e.getStatusCode().toString();
+
+        return ResponseEntity.status(e.getStatusCode()).body(Map.of(
+                "message", message,
+                "status", String.valueOf(e.getStatusCode().value()),
+                "error", e.getStatusCode().toString()));
     }
 }

@@ -123,7 +123,9 @@ public class UserServiceClientE2ETest {
 
         WebElement modalBody = wait.until(visibilityOfElementLocated(By.className("ot-modal__body")));
         assertEquals(
-                String.format("Tu cuenta de usuario se ha registrado correctamente en Optitour. ¡Te damos la bienvenida, %s!", signupUser),
+                String.format(
+                        "Tu cuenta de usuario se ha registrado correctamente en OptiTour. ¡Te damos la bienvenida, %s!",
+                        signupUser),
                 modalBody.getText());
     }
 
@@ -134,7 +136,7 @@ public class UserServiceClientE2ETest {
         repository.save(
                 new User(
                         "example@example.com",
-                        "Demo1234",
+                        encoder.encode("Demo1234"),
                         "example",
                         "111 111 111",
                         false,
@@ -170,7 +172,7 @@ public class UserServiceClientE2ETest {
         repository.save(
                 new User(
                         "example2@example.com",
-                        "Demo1234",
+                        encoder.encode("Demo1234"),
                         "example",
                         "111 111 111",
                         false,
@@ -227,7 +229,7 @@ public class UserServiceClientE2ETest {
 
         WebElement ammountValue = wait.until(visibilityOfElementLocated(By.className("ot-stat-card__value")));
 
-        assertEquals("11", ammountValue.getText());
+        assertEquals(String.valueOf(repository.count()), ammountValue.getText());
     }
 
     @Test
@@ -276,7 +278,7 @@ public class UserServiceClientE2ETest {
 
         String uniqueEmail = "u" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
 
-        repository.save(new User(uniqueEmail, "Demo1234", "example", "111 111 111", true, "USER"));
+        repository.save(new User(uniqueEmail, encoder.encode("Demo1234"), "example", "111 111 111", true, "USER"));
 
         login(uniqueEmail, "Demo1234");
 
