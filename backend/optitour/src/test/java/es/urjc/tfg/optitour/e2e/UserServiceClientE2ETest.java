@@ -6,6 +6,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClick
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.AfterEach;
@@ -63,21 +64,25 @@ public class UserServiceClientE2ETest {
 
     @AfterEach
     public void tearDown() {
-        if (driver != null) {
-            driver.quit();
+        try {
+            if (driver != null) {
+                driver.quit();
+            }
+        } finally {
+            deleteTestUsers();
         }
-        deleteTestUsers();
     }
 
     private void deleteTestUsers() {
-        repository.findAll().forEach(user -> {
-            if ("example@example.com".equals(user.getEmail())
-                    || "example2@example.com".equals(user.getEmail())
-                    || "example".equals(user.getUserName())
-                    || (user.getEmail() != null && user.getEmail().endsWith("@ex.com"))) {
-                repository.delete(user);
-            }
-        });
+        List<User> testUsers = repository.findAll().stream()
+                .filter(user -> "example@example.com".equals(user.getEmail())
+                        || "example2@example.com".equals(user.getEmail())
+                        || "example".equals(user.getUserName())
+                        || (user.getEmail() != null && user.getEmail().endsWith("@ex.com")))
+                .toList();
+
+        repository.deleteAll(testUsers);
+        repository.flush();
     }
 
     private void login(String email, String password) {
@@ -115,18 +120,11 @@ public class UserServiceClientE2ETest {
         createAccountButton.click();
 
         wait.until(urlToBe("http://localhost:5173/"));
-        driver.get("http://localhost:5173/profile");
 
-        WebElement userName = wait.until(
-                visibilityOfElementLocated(By.className("ot-my-profile__name")));
-        WebElement email = wait.until(visibilityOfElementLocated(By.xpath(
-                "//dt[normalize-space()='Correo electrónico']/following-sibling::dd")));
-        WebElement phone = wait.until(visibilityOfElementLocated(By.xpath(
-                "//dt[normalize-space()='Número de teléfono']/following-sibling::dd")));
-
-        assertEquals(signupUser, userName.getText());
-        assertEquals(signupEmail, email.getText());
-        assertEquals("123 45 67 89", phone.getText());
+        WebElement modalBody = wait.until(visibilityOfElementLocated(By.className("ot-modal__body")));
+        assertEquals(
+                String.format("Tu cuenta de usuario se ha registrado correctamente en Optitour. ¡Te damos la bienvenida, %s!", signupUser),
+                modalBody.getText());
     }
 
     @Test
@@ -308,6 +306,9 @@ public class UserServiceClientE2ETest {
         deleteButton.click();
 
         wait.until(urlToBe("http://localhost:5173/"));
+
+        WebElement modalBody = wait.until(visibilityOfElementLocated(By.className("ot-modal__body")));
+        assertEquals("Tu cuenta ha sido eliminada correctamente. ¡Vuelve pronto!", modalBody.getText());
     }
 
     @Test
@@ -380,13 +381,13 @@ public class UserServiceClientE2ETest {
 
         wait.until(elementToBeClickable(By.className("ot-edit-profile__save-btn"))).click();
 
-        // Now, profile should show updated data
-
         wait.until(urlToBe("http://localhost:5173/profile"));
 
-        WebElement profileEmail = wait.until(visibilityOfElementLocated(
-                By.xpath("//dt[normalize-space()='Correo electrónico']/following-sibling::dd")));
-        assertEquals(updatedEmail, profileEmail.getText());
+        WebElement modalTitle = wait.until(visibilityOfElementLocated(By.className("ot-modal__title")));
+        assertEquals("¡Perfil editado!", modalTitle.getText());
+
+        WebElement modalBody = driver.findElement(By.className("ot-modal__body"));
+        assertEquals("La información de tu perfil ha sido actualizada correctamente.", modalBody.getText());
     }
 
     @Test
@@ -472,6 +473,12 @@ public class UserServiceClientE2ETest {
         editPassworButton.click();
 
         wait.until(urlToBe("http://localhost:5173/profile"));
+
+        WebElement modalTitle = wait.until(visibilityOfElementLocated(By.className("ot-modal__title")));
+        assertEquals("¡Contraseña cambiada!", modalTitle.getText());
+
+        WebElement modalBody = driver.findElement(By.className("ot-modal__body"));
+        assertEquals("Se ha cambiado correctamente la contraseña de la cuenta.", modalBody.getText());
     }
 
     @Test
