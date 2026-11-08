@@ -49,7 +49,13 @@ export default function DeleteProfile() {
             });
 
             await doLogout();
-            navigate("/");
+            navigate("/", {
+                state: {
+                    showModal: true,
+                    modalTitle: "¡Te echaremos de menos!",
+                    modalMessage: "Tu cuenta ha sido eliminada correctamente. ¡Vuelve pronto!"
+                }
+            });
         }
         catch (err) {
             err instanceof Error

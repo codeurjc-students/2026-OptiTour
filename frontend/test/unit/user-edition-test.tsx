@@ -84,5 +84,7 @@ test('Checks user edition with correct inputs workflow', async () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => expect(setLoggedUser).toHaveBeenCalled());
-    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/profile"));
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/profile", expect.objectContaining({
+        state: expect.objectContaining({ showModal: true })
+    })));
 });

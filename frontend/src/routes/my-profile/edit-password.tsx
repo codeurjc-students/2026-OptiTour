@@ -51,7 +51,14 @@ export default function EditPassword() {
                 newPassword: data.password
             });
 
-            navigate(returnPage);
+            navigate(returnPage,
+                {
+                    state: {
+                        showModal: true,
+                        modalMessage: "Se ha cambiado correctamente la contraseña de la cuenta.",
+                        modalTitle: "¡Contraseña cambiada!"
+                    }
+                });
         }
         catch (err) {
             err instanceof Error

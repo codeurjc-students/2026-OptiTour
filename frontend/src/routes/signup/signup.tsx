@@ -57,7 +57,13 @@ export function Signup() {
                 refreshProfileImage();
             }
 
-            navigate("/");
+            navigate("/", {
+                state: {
+                    showModal: true,
+                    modalTitle: "¡Bienvenido a Optitour!",
+                    modalMessage: "Tu cuenta de usuario se ha registrado correctamente en Optitour. ¡Te damos la bienvenida!"
+                }
+            });
         }
         catch (err) {
             err instanceof Error

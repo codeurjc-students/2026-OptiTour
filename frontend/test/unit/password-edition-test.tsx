@@ -71,5 +71,7 @@ test('Filling the form with correct inputs should navigate to profile', async ()
     await waitFor(() => expect(submitButton).toBeEnabled());
     fireEvent.click(submitButton);
 
-    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/profile"));
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/profile", expect.objectContaining({
+        state: expect.objectContaining({ showModal: true })
+    })));
 });

@@ -1,0 +1,81 @@
+.ot-modal .modal-dialog {
+  max-width: 460px;
+}
+
+.ot-modal .modal-content {
+  border-radius: var(--ot-radius);
+  border: 1px solid var(--ot-border);
+  background-color: var(--ot-bg);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  padding: 1.75rem;
+  font-family: var(--font-base);
+}
+
+.ot-modal .modal-header {
+  border-bottom: none;
+  padding: 0 0 0.75rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ot-modal__title {
+  font-family: var(--font-base);
+  font-weight: 800;
+  font-size: 1.35rem;
+  color: var(--ot-text);
+  margin: 0;
+}
+
+.ot-modal .btn-close {
+  box-shadow: none;
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+}
+
+.ot-modal .btn-close:hover {
+  opacity: 1;
+}
+
+.ot-modal .modal-body {
+  padding: 0 0 1.5rem 0;
+  font-family: var(--font-base);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ot-text-muted);
+  line-height: 1.5;
+}
+
+.ot-modal .modal-footer {
+  border-top: none;
+  padding: 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ot-modal__btn,
+.ot-modal .modal-footer .btn {
+  font-family: var(--font-base);
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: var(--ot-radius-pill);
+  padding: 0.5rem 1.5rem;
+  background-color: var(--ot-primary);
+  border: 1px solid var(--ot-primary);
+  color: #fff;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.ot-modal__btn:hover,
+.ot-modal__btn:focus,
+.ot-modal .modal-footer .btn:hover,
+.ot-modal .modal-footer .btn:focus {
+  background-color: var(--ot-primary-dark) !important;
+  border-color: var(--ot-primary-dark) !important;
+  color: #fff !important;
+}
+
+.ot-modal__btn:active,
+.ot-modal .modal-footer .btn:active {
+  transform: scale(0.98);
+}
