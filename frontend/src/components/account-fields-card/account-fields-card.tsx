@@ -14,6 +14,7 @@ const base_url = API_BASE_URL;
 function AccountFieldsCard({ loggedUser }: AccountFieldsCard) {
     const [, setImage] = useState<File | null>(null);
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+    const [imageError, setImageError] = useState<boolean>(false);
 
     const { control, register } = useFormContext();
     const emailField = useController({ name: "email", control });
@@ -41,7 +42,11 @@ function AccountFieldsCard({ loggedUser }: AccountFieldsCard) {
         }
     }, [imagePreviewUrl]);
 
-    const imageUrl = imagePreviewUrl ?? (loggedUser ? `${base_url}/user/${loggedUser.id}/image` : null);
+    useEffect(() => {
+        setImageError(false);
+    }, [loggedUser?.id]);
+
+    const imageUrl = imagePreviewUrl ?? (loggedUser && !imageError ? `${base_url}/user/${loggedUser.id}/image` : null);
 
     return (
         <Card className="ot-account-fields">
@@ -49,7 +54,7 @@ function AccountFieldsCard({ loggedUser }: AccountFieldsCard) {
                 <Col md={4} className="ot-account-fields__avatar-col">
                     <div className="ot-account-fields__avatar">
                         {imageUrl ? (
-                            <img src={imageUrl} alt="Foto de perfil" />
+                            <img src={imageUrl} alt="Foto de perfil" onError={() => setImageError(true)} />
                         ) : (
                             <svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                                 <circle cx="12" cy="9" r="3.5" />

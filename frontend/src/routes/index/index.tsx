@@ -8,6 +8,8 @@ import { getToursByPage } from '../../service/tour-service';
 import { API_BASE_URL } from '../../service/api-config';
 import Spinner from '../../components/spinner/spinner';
 import ErrorCard from '../../components/error-card/error-card';
+import { useLocation } from 'react-router-dom';
+import FeedbackModal from '../../components/feedback-modal/feedback-modal';
 
 export function meta() {
   return [
@@ -18,6 +20,7 @@ export function meta() {
 const base_url = API_BASE_URL;
 
 function Index() {
+  const location = useLocation();
   const [tours, setTours] = useState<TourDTO[]>();
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
@@ -27,6 +30,7 @@ function Index() {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [loadMoreUsed, setLoadMoreUsed] = useState<boolean>(false);
   const [randomUrlImageList, setRandomUrlImageList] = useState<string[]>([]);
+  const [showModal, setShowModal] = useState<boolean>(location.state?.showModal);
 
   async function handleGetTours(page: number, size: number, isUseEffect: boolean) {
     try {
@@ -74,8 +78,22 @@ function Index() {
 
   useEffect(() => { handleGetTours(0, 8, true) }, []);
 
+  function handleModalClose() {
+    setShowModal(false);
+    window.history.replaceState({}, '');
+  }
+
   return (
     <>
+      <FeedbackModal
+        show={showModal}
+        onHide={handleModalClose}
+        title={location.state?.modalTitle}
+        message={location.state?.modalMessage}
+        welcome={location.state?.welcome}
+        goodbye={location.state?.goodbye}
+      />
+
       <section className="ot-index__hero">
         <ImageCarousel
           tours={tours?.slice(0, 4)}

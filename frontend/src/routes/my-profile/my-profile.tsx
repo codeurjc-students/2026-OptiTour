@@ -1,8 +1,10 @@
 import { Button } from 'react-bootstrap';
+import FeedbackModal from '../../components/feedback-modal/feedback-modal';
 import { Link, useLocation } from 'react-router-dom';
 import './my-profile.css';
 import { useAuthStore } from '../../store/auth-store';
 import Profile from '../../components/profile/profile';
+import { useState } from 'react';
 
 export function meta() {
     return [
@@ -26,6 +28,13 @@ function MyProfile() {
         ? '/admin/profile/edit/password'
         : '/profile/edit/password';
 
+    const [showModal, setShowModal] = useState<boolean>(location.state?.showModal);
+
+    function handleModalClose() {
+        setShowModal(false);
+        window.history.replaceState({}, '');
+    }
+
     if (!loggedUser) {
         return null;
     }
@@ -33,6 +42,13 @@ function MyProfile() {
     return (
         <div className="ot-my-profile">
             <h1 className="ot-panel-title text-center">Mi perfil</h1>
+
+            <FeedbackModal
+                show={showModal}
+                onHide={handleModalClose}
+                title={location.state?.modalTitle}
+                message={location.state?.modalMessage}
+            />
 
             <Profile user={loggedUser} />
 

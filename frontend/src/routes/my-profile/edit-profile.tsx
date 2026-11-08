@@ -75,7 +75,14 @@ export default function EditProfile() {
             }
 
             setLoggedUser(updatedUser);
-            navigate(returnPage);
+            navigate(returnPage,
+                {
+                    state: {
+                        showModal: true,
+                        modalMessage: "La información de tu perfil ha sido actualizada correctamente.",
+                        modalTitle: "¡Perfil editado!"
+                    }
+                });
         }
         catch (err) {
             err instanceof Error

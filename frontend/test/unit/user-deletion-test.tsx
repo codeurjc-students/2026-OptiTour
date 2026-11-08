@@ -92,6 +92,8 @@ test('Checks if click on submit button triggers a successful event flow', async 
     await waitFor(() => {
         expect(service.deleteloggedUser).toHaveBeenCalledWith({ password: "password" });
         expect(mockDoLogout).toHaveBeenCalled();
-        expect(mockNavigate).toHaveBeenCalledWith("/");
+        expect(mockNavigate).toHaveBeenCalledWith("/", expect.objectContaining({
+            state: expect.objectContaining({ showModal: true })
+        }));
     });
 });
