@@ -3,7 +3,6 @@ package es.urjc.tfg.optitour.controller;
 import java.io.IOException;
 import java.net.URI;
 import java.security.Principal;
-import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.Collection;
 
@@ -21,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
+import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath;
 
 import jakarta.validation.Valid;
 import es.urjc.tfg.optitour.DTO.ImageDTO;
@@ -48,8 +48,6 @@ public class UserController {
 
     private final UserService userService;
 
-    private final PasswordEncoder encoder;
-
     private final UserMapper mapper;
 
     private final ImageService imageService;
@@ -61,7 +59,6 @@ public class UserController {
     public UserController(UserService userService, PasswordEncoder encoder, UserMapper mapper,
             ImageService imageService, ImageMapper imageMapper, PasswordMapper passwordMapper) {
         this.userService = userService;
-        this.encoder = encoder;
         this.mapper = mapper;
         this.imageService = imageService;
         this.imageMapper = imageMapper;
@@ -86,16 +83,17 @@ public class UserController {
     @PostMapping("/")
     public ResponseEntity<UserDTO> signupUser(
             @Valid @RequestBody UserCreateDTO newUserDTO) {
-        userService.validateUniqueEmail(newUserDTO.email());
-        userService.validateUniqueUserName(newUserDTO.userName());
-        User newUser = new User(newUserDTO.email(), encoder.encode(newUserDTO.password()), newUserDTO.userName(),
-                newUserDTO.phoneNumber(), false,
-                (Blob) null, "USER");
-
-        userService.saveUser(newUser);
-
+        User newUser = userService.signupUser(newUserDTO, "USER");
         UserDTO responseDTO = mapper.toDTO(newUser);
         URI location = fromCurrentRequest().path("/{id}").buildAndExpand(newUser.getId()).toUri();
+        return ResponseEntity.created(location).body(responseDTO);
+    }
+
+    @PostMapping("/admin")
+    public ResponseEntity<UserDTO> signupAdmin(@Valid @RequestBody UserCreateDTO newAdminDTO) {
+        User newAdmin = userService.signupUser(newAdminDTO, "USER", "ADMIN");
+        UserDTO responseDTO = mapper.toDTO(newAdmin);
+        URI location = fromCurrentContextPath().path("/user/{id}").buildAndExpand(newAdmin.getId()).toUri();
         return ResponseEntity.created(location).body(responseDTO);
     }
 
