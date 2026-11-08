@@ -52,8 +52,8 @@ export default function DeleteProfile() {
             navigate("/", {
                 state: {
                     showModal: true,
-                    modalTitle: "¡Te echaremos de menos!",
-                    modalMessage: "Tu cuenta ha sido eliminada correctamente. ¡Vuelve pronto!"
+                    modalMessage: "Tu cuenta ha sido eliminada correctamente. ¡Vuelve pronto!",
+                    goodbye: true
                 }
             });
         }

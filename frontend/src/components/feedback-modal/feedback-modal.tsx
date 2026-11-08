@@ -1,5 +1,7 @@
 import { Modal, Button } from 'react-bootstrap';
 import './feedback-modal.css';
+import welcomeLogo from '../../assets/welcome-logo.png';
+import goodbyeLogo from '../../assets/goodbye-logo.png';
 
 interface FeedbackModalProps {
     show: boolean;
@@ -7,6 +9,8 @@ interface FeedbackModalProps {
     title?: string;
     message?: string;
     buttonText?: string;
+    welcome?: boolean;
+    goodbye?: boolean;
 }
 
 export default function FeedbackModal({
@@ -14,7 +18,9 @@ export default function FeedbackModal({
     onHide,
     title,
     message,
-    buttonText = "Entendido"
+    buttonText = "Entendido",
+    welcome,
+    goodbye
 }: FeedbackModalProps) {
     return (
         <Modal
@@ -23,8 +29,10 @@ export default function FeedbackModal({
             centered
             className="ot-modal"
         >
+            {welcome && <img src={welcomeLogo} alt="OptiTour" className="ot-modal__logo" />}
+            {goodbye && <img src={goodbyeLogo} alt="OptiTour" className="ot-modal__logo" />}
             {title && (
-                <Modal.Header closeButton className="ot-modal__header">
+                <Modal.Header className="ot-modal__header">
                     <Modal.Title className="ot-modal__title">{title}</Modal.Title>
                 </Modal.Header>
             )}

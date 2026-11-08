@@ -60,8 +60,8 @@ export function Signup() {
             navigate("/", {
                 state: {
                     showModal: true,
-                    modalTitle: "¡Bienvenido a Optitour!",
-                    modalMessage: "Tu cuenta de usuario se ha registrado correctamente en Optitour. ¡Te damos la bienvenida!"
+                    modalMessage: `Tu cuenta de usuario se ha registrado correctamente en Optitour. ¡Te damos la bienvenida, ${data.userName}!`,
+                    welcome: true
                 }
             });
         }

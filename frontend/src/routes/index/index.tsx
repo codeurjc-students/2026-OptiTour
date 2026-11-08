@@ -90,6 +90,8 @@ function Index() {
         onHide={handleModalClose}
         title={location.state?.modalTitle}
         message={location.state?.modalMessage}
+        welcome={location.state?.welcome}
+        goodbye={location.state?.goodbye}
       />
 
       <section className="ot-index__hero">
