@@ -22,7 +22,7 @@ function MyProfile() {
         ? '/admin/profile/delete'
         : '/profile/delete';
 
-    const editPassPath = location.pathname.startsWith('admin')
+    const editPassPath = location.pathname.startsWith('/admin')
         ? '/admin/profile/edit/password'
         : '/profile/edit/password';
 

@@ -11,5 +11,4 @@ public class OptitourApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(OptitourApplication.class, args);
 	}
-
 }

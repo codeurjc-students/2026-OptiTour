@@ -55,6 +55,10 @@ export default function EditProfile() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
+    const returnPage = location.pathname.startsWith('/admin')
+        ? '/admin/profile'
+        : '/profile';
+
     async function handleSubmit(data: EditProfileFormData) {
         setIsLoading(true);
         try {
@@ -71,7 +75,7 @@ export default function EditProfile() {
             }
 
             setLoggedUser(updatedUser);
-            navigate("/profile");
+            navigate(returnPage);
         }
         catch (err) {
             err instanceof Error

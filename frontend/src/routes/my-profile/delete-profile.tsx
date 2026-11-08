@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button, Form, Card } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import PasswordInput from '../../components/password-input/password-input';
 import './delete-profile.css';
 import { useForm } from 'react-hook-form';
@@ -20,6 +20,7 @@ export default function DeleteProfile() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
+    const location = useLocation();
     const { doLogout } = useAuthStore()
 
     const {
@@ -34,6 +35,10 @@ export default function DeleteProfile() {
             isConfirmed: false
         }
     });
+
+    const returnPage = location.pathname.startsWith('/admin')
+        ? '/admin/profile'
+        : '/profile';
 
     async function handleSubmit(data: DeleteProfileFormData) {
         try {
@@ -132,7 +137,7 @@ export default function DeleteProfile() {
                             </svg>
                             {isLoading ? "Eliminando cuenta..." : "Eliminar cuenta permanentemente"}
                         </Button>
-                        <Link to="/profile" className="btn btn-outline-dark ot-delete-profile__cancel-btn">
+                        <Link to={returnPage} className="btn btn-outline-dark ot-delete-profile__cancel-btn">
                             Cancelar
                         </Link>
                     </div>
