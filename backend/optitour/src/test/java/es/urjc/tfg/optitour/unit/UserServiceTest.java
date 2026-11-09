@@ -170,6 +170,24 @@ public class UserServiceTest {
     }
 
     @Test
+    @DisplayName("addImageToUser should allow an admin to update another user's image")
+    public void addImageToUserAsAdminTest() throws SQLException {
+        when(repositoryMock.findById(1)).thenReturn(Optional.of(testUser));
+        when(repositoryMock.findByEmail("admin@optitour.com")).thenReturn(Optional.of(testAdmin));
+
+        Blob imageFile = new SerialBlob("admin image".getBytes(StandardCharsets.UTF_8));
+        Image image = new Image();
+        image.setImageFile(imageFile);
+
+        testService.addImageToUser(1, image, "admin@optitour.com");
+
+        assertEquals("admin image", new String(
+                testUser.getProfileImage().getBytes(1, (int) testUser.getProfileImage().length()),
+                StandardCharsets.UTF_8));
+        verify(repositoryMock).save(testUser);
+    }
+
+    @Test
     @DisplayName("Test user creation with repeated email")
     public void testUniqueEmail() {
         // Given: we have one user saved (see before each method)

@@ -35,6 +35,11 @@ export async function uploadUserImage(image: File, id: number) {
         body: formData
     });
 
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+    }
+
     return response;
 }
 

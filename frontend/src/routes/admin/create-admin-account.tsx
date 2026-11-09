@@ -8,8 +8,9 @@ import type z from 'zod';
 import { signupSchema } from '../../schemas/signup-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import { createAdminAccount } from '../../service/user-service';
+import { createAdminAccount, uploadUserImage } from '../../service/user-service';
 import ErrorCard from '../../components/error-card/error-card';
+import { useAuthStore } from '../../store/auth-store';
 
 export function meta() {
     return [
@@ -34,6 +35,7 @@ function CreateAdminAccount() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
+    const { refreshProfileImage } = useAuthStore();
 
     async function handleSubmit(data: SignupFormData) {
         setIsLoading(true);
@@ -44,6 +46,12 @@ function CreateAdminAccount() {
                 userName: data.userName,
                 password: data.password,
             });
+
+            if (data.image && data.image.length > 0) {
+                const file = data.image[0];
+                await uploadUserImage(file, response.id);
+                refreshProfileImage();
+            }
 
             navigate(`/admin/users/${response.id}`, {
                 state: {

@@ -85,9 +85,11 @@ public class UserService {
                     "No se encuentra ningún usuario con el id " + id + " al que añadir la imagen.");
         else {
             User targetUser = op.get();
+            User loggedUser = getUserByEmail(loggedEmail);
 
-            // If target user is not logged, image can't be modified
-            if (!targetUser.getEmail().equals(getUserByEmail(loggedEmail).getEmail()))
+            // Users can edit their own image; admins can edit any user's image.
+            if (!targetUser.getEmail().equals(loggedUser.getEmail())
+                    && !loggedUser.getRoles().contains("ADMIN"))
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                         "No tienes permiso para modificar la imagen de perfil de otros usuarios.");
 
