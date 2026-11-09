@@ -1,8 +1,9 @@
 package es.urjc.tfg.optitour.service;
 
-import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,10 +17,6 @@ public class TourService {
 
     public TourService(TourRepository repository) {
         this.repository = repository;
-    }
-
-    public List<Tour> getAllTours() {
-        return repository.findAll();
     }
 
     public void saveTour(Tour tour) {
@@ -36,5 +33,9 @@ public class TourService {
 
         // We set the exception message in Spanish because we want to show it on screen
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe ningún tour con el ID " + id + ".");
+    }
+
+    public Page<Tour> getPagedTours(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 }

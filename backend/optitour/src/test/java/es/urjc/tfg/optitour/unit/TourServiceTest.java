@@ -8,6 +8,9 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.server.ResponseStatusException;
 
 import es.urjc.tfg.optitour.model.PointOfInterest;
@@ -16,12 +19,9 @@ import es.urjc.tfg.optitour.repository.TourRepository;
 import es.urjc.tfg.optitour.service.TourService;
 import java.util.Optional;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TourServiceTest {
 	TourRepository repositoryMock;
@@ -46,23 +46,17 @@ public class TourServiceTest {
 	}
 
 	@Test
-	@DisplayName("getAllTours method should return all tours in database")
-	void getAllToursTest() {
-		// Given: Mock methods configuration: we return tours list when findAll is
-		// called
-		when(repositoryMock.findAll()).thenReturn(tours);
+	@DisplayName("getPagedTours method should return the requested page")
+	void getPagedToursTest() {
+		PageRequest pageRequest = PageRequest.of(0, 2);
+		when(repositoryMock.findAll(pageRequest)).thenReturn(new PageImpl<>(tours.subList(0, 2), pageRequest, tours.size()));
 
-		// Now, we verify that testService returns the tours list, with the correct data
-		// in it
+		Page<Tour> result = service.getPagedTours(pageRequest);
 
-		List<Tour> testResult = service.getAllTours();
-		assertThat(testResult, hasSize(3));
-
-		for (Tour tour : testResult) {
-			assertTrue(tour.getName().contains("Test tour"), "All example tours should contain Test tour in its name");
-			assertTrue(tour.getDescription().contains("Test desc"),
-					"All example tours should contain Test tour in its description");
-		}
+		assertEquals(2, result.getContent().size());
+		assertEquals(3, result.getTotalElements());
+		assertEquals("Test tour 0", result.getContent().get(0).getName());
+		verify(repositoryMock).findAll(pageRequest);
 	}
 
 	@Test

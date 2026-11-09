@@ -8,6 +8,9 @@ import es.urjc.tfg.optitour.model.PointOfInterest;
 import es.urjc.tfg.optitour.service.PointOfInterestService;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -27,6 +30,11 @@ public class PointOfInterestController {
     public PointOfInterestDTO getPoiById(@PathVariable long id) {
         PointOfInterest poi = service.getPointOfInterestById(id);
         return mapper.toDTO(poi);
+    }
+
+    @GetMapping("/")
+    public Page<PointOfInterestDTO> getPagedPois(Pageable pageable) {
+        return service.getPagedPois(pageable).map(mapper::toDTO);
     }
 
 }

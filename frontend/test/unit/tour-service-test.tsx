@@ -23,7 +23,7 @@ test('Index displays tour list from request', async () => {
     vi.mocked(service.getToursByPage).mockResolvedValue(testTourPage as any);
 
     // Now, we render the index component with the JSDOM virtual DOM
-    // Thanks to useEffect, it will call getAllTours function, but it will recieve test data instead of real ones. 
+    // Thanks to useEffect, it will call getToursByPage, but it will receive test data instead of real ones.
     render(
         <MemoryRouter>
             <Index />

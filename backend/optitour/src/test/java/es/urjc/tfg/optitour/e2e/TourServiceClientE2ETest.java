@@ -52,8 +52,8 @@ public class TourServiceClientE2ETest {
     }
 
     @Test
-    @DisplayName("Check if rendered list in frontend is correct")
-    public void getAllToursClientE2ETest() {
+    @DisplayName("Check if paginated tour list in frontend is correct")
+    public void paginatedToursClientE2ETest() {
         driver.get("http://localhost:5173"); // We visit the frontend app
         try {
             Thread.sleep(1000);

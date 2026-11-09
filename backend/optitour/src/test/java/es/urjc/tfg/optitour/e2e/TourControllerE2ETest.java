@@ -87,26 +87,6 @@ public class TourControllerE2ETest extends BaseIntegrationTest {
         }
 
         @Test
-        @DisplayName("Calling api at /tour/all should return the SampleDataService example tours")
-        public void tourServiceE2Etest() {
-                // We make the api call, check the HTTP status code and get the sample tour list
-                List<TourDTO> result = get("/api/v1/tour/all")
-                                .then()
-                                .statusCode(200)
-                                .extract().jsonPath().getList("$", TourDTO.class);
-
-                // Now, we can check if received data is correct:
-
-                assertThat(result, hasSize(30));
-
-                for (int i = 0; i < 30; i++) {
-                        assertThat(result.get(i).id(), equalTo((long) i + 1));
-                        assertThat(result.get(i).name(), equalTo(tourNames.get(i)));
-                        assertThat(result.get(i).description(), equalTo(tourDescriptions.get(i)));
-                }
-        }
-
-        @Test
         @DisplayName("Checks if pageable tour endpoint works properly")
         void pagaebleToursTest() {
                 List<TourDTO> result = get("/api/v1/tour/?page=0&size=5")
