@@ -18,7 +18,7 @@ interface ListItemProps {
 }
 
 
-function ListItem({
+export default function ListItem({
     title,
     desc,
     imageSrc,
@@ -80,5 +80,3 @@ function ListItem({
         </div>
     );
 }
-
-export default ListItem;
