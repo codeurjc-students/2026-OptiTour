@@ -1,5 +1,6 @@
 package es.urjc.tfg.optitour.service;
 
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import es.urjc.tfg.optitour.DTO.PasswordEditDTO;
+import es.urjc.tfg.optitour.DTO.UserCreateDTO;
 import es.urjc.tfg.optitour.DTO.UserEditDTO;
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.User;
@@ -75,10 +77,6 @@ public class UserService {
         return user.getProfileImage().getBytes(1, (int) user.getProfileImage().length());
     }
 
-    public void saveUser(User user) {
-        userRepository.save(user);
-    }
-
     public void addImageToUser(long id, Image image, String loggedEmail) {
         Optional<User> op = userRepository.findById(id);
 
@@ -87,14 +85,16 @@ public class UserService {
                     "No se encuentra ningún usuario con el id " + id + " al que añadir la imagen.");
         else {
             User targetUser = op.get();
+            User loggedUser = getUserByEmail(loggedEmail);
 
-            // If target user is not logged, image can't be modified
-            if (!targetUser.getEmail().equals(getUserByEmail(loggedEmail).getEmail()))
+            // Users can edit their own image; admins can edit any user's image.
+            if (!targetUser.getEmail().equals(loggedUser.getEmail())
+                    && !loggedUser.getRoles().contains("ADMIN"))
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                         "No tienes permiso para modificar la imagen de perfil de otros usuarios.");
 
             targetUser.setProfileImage(image.getImageFile());
-            saveUser(targetUser);
+            userRepository.save(targetUser);
         }
     }
 
@@ -181,5 +181,17 @@ public class UserService {
         targetUser.setPassword(encoder.encode(body.newPassword()));
         userRepository.save(targetUser);
         return body.newPassword();
+    }
+
+    public User signupUser(UserCreateDTO newUserDTO, String... roles) {
+        validateUniqueEmail(newUserDTO.email());
+        validateUniqueUserName(newUserDTO.userName());
+
+        User newUser = new User(newUserDTO.email(), encoder.encode(newUserDTO.password()), newUserDTO.userName(),
+                newUserDTO.phoneNumber(), false,
+                (Blob) null, roles);
+
+        userRepository.save(newUser);
+        return newUser;
     }
 }

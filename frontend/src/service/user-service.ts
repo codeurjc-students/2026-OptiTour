@@ -35,6 +35,11 @@ export async function uploadUserImage(image: File, id: number) {
         body: formData
     });
 
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+    }
+
     return response;
 }
 
@@ -128,6 +133,24 @@ export async function changePassword(body: PasswordEditDTO) {
         credentials: "include",
         method: "PUT",
         body: JSON.stringify(body)
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+    }
+
+    return response.json();
+}
+
+export async function createAdminAccount(newAdmin: UserCreateDTO) {
+    const url = `${base_url}/user/admin`;
+
+    const response = await fetch(url, {
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        method: "POST",
+        body: JSON.stringify(newAdmin)
     });
 
     if (!response.ok) {

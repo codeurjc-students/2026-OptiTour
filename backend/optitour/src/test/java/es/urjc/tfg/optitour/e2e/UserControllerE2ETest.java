@@ -489,6 +489,62 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                                 .statusCode(403);
         }
 
+        @Test
+        @DisplayName("signupAdmin endpoint should create a new user with the ADMIN role")
+        public void signupAdminE2ETest() {
+                String adminToken = getAdminAuthToken();
+
+                UserCreateDTO newAdmin = new UserCreateDTO("new@optitour.com", "111 111 111", "New Admin", "Admin1234");
+
+                UserDTO result = given()
+                                .cookie("AuthToken", adminToken)
+                                .contentType(ContentType.JSON)
+                                .body(newAdmin)
+                                .when()
+                                .post("/api/v1/user/admin")
+                                .then()
+                                .statusCode(201)
+                                .extract().as(UserDTO.class);
+
+                assertEquals(newAdmin.email(), result.email());
+                assertTrue(result.roles().contains("ADMIN"));
+        }
+
+        @Test
+        @DisplayName("signupAdmin with repeated email should return 400 status code")
+        public void signupAdminRepeatedEmailE2ETest() {
+                String adminToken = getAdminAuthToken();
+
+                UserCreateDTO newAdmin = new UserCreateDTO("admin@optitour.com", "111 111 111", "New Admin",
+                                "Admin1234");
+
+                given()
+                                .cookie("AuthToken", adminToken)
+                                .contentType(ContentType.JSON)
+                                .body(newAdmin)
+                                .when()
+                                .post("/api/v1/user/admin")
+                                .then()
+                                .statusCode(400);
+        }
+
+        @Test
+        @DisplayName("signupAdmin with repeated username should return 400 status code")
+        public void signupAdminRepeatedUserE2ETest() {
+                String adminToken = getAdminAuthToken();
+
+                UserCreateDTO newAdmin = new UserCreateDTO("new@optitour.com", "111 111 111", "admin",
+                                "Admin1234");
+
+                given()
+                                .cookie("AuthToken", adminToken)
+                                .contentType(ContentType.JSON)
+                                .body(newAdmin)
+                                .when()
+                                .post("/api/v1/user/admin")
+                                .then()
+                                .statusCode(400);
+        }
         // ---------------- FIELD VALIDATION TESTS --------------------------------
 
         // ---------------- EMAIL VALIDATION TESTS --------------------------------

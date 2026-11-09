@@ -29,6 +29,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import es.urjc.tfg.optitour.BaseIntegrationTest;
 import es.urjc.tfg.optitour.DTO.PasswordEditDTO;
+import es.urjc.tfg.optitour.DTO.UserCreateDTO;
 import es.urjc.tfg.optitour.DTO.UserEditDTO;
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.User;
@@ -109,14 +110,16 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("saveUser should save user in repository and must be possible recovering it")
-    public void saveUserIntegrationTest() {
-        service.saveUser(
-                new User("other@example.com", encoder.encode("demo1234"), "other", "111 111 111", false, "USER"));
+    @DisplayName("signupUser should save user in repository and must be possible recovering it")
+    public void signupUserIntegrationTest() {
+        service.signupUser(
+                new UserCreateDTO("other@example.com", "111 111 111", "other", "Demo1234"), "USER", "ADMIN");
 
         User recoverUser = service.getUserByEmail("other@example.com");
         assertNotNull(recoverUser);
         assertEquals("other", recoverUser.getUserName());
+        assertTrue(recoverUser.getRoles().contains("USER"));
+        assertTrue(recoverUser.getRoles().contains("ADMIN"));
     }
 
     @Test
@@ -154,8 +157,8 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
     @Test
     @DisplayName("addImageToUser with other user's email should trhow exception")
     public void addImageToUserOtherEmailIntegrationTest() {
-        service.saveUser(
-                new User("other@example.com", encoder.encode("demo1234"), "other", "111 111 111", false, "USER"));
+        service.signupUser(
+                new UserCreateDTO("other@example.com", "111 111 111", "other", "Demo1234"), "USER");
 
         // We asume that logged user is the first one saved in database
         ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {

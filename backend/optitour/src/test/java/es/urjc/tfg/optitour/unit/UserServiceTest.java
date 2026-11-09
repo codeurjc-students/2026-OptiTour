@@ -1,16 +1,21 @@
 package es.urjc.tfg.optitour.unit;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.Optional;
 
 import javax.sql.rowset.serial.SerialBlob;
-import java.sql.Blob;
 import javax.sql.rowset.serial.SerialException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -21,17 +26,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
 
 import es.urjc.tfg.optitour.DTO.PasswordEditDTO;
+import es.urjc.tfg.optitour.DTO.UserCreateDTO;
 import es.urjc.tfg.optitour.DTO.UserEditDTO;
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.User;
 import es.urjc.tfg.optitour.repository.UserRepository;
 import es.urjc.tfg.optitour.service.UserService;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserServiceTest {
 
@@ -108,13 +108,52 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("saveUser should call repository save method")
-    public void saveUserTest() {
-        // When: We call the save service method
-        testService.saveUser(testUser);
+    @DisplayName("signupUser should call repository save method")
+    public void signupUserTest() {
+        UserCreateDTO newUser = new UserCreateDTO(
+                "new@example.com", "111 111 111", "newuser", "Demo1234");
+
+        // When: We call the user creation service method
+        testService.signupUser(newUser, "USER");
 
         // Then: repository method must've been called
-        verify(repositoryMock).save(testUser);
+        verify(repositoryMock).save(any(User.class));
+    }
+
+    @Test
+    @DisplayName("signupUser with repeated email should throw")
+    public void signupUserRepeatedEmailTest() {
+        when(repositoryMock.findByEmail("example@example.com")).thenReturn(Optional.of(testUser));
+
+        UserCreateDTO newUser = new UserCreateDTO(
+                "example@example.com", "111 111 111", "newuser", "Demo1234");
+
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
+            testService.signupUser(newUser, "USER");
+        });
+
+        assertEquals(
+                "400 BAD_REQUEST \"El correo electrónico escogido ya está siendo utilizado por otro usuario.\n"
+                        + "Introduce otro correo electrónico e inténtalo de nuevo.\"",
+                e.getMessage());
+    }
+
+    @Test
+    @DisplayName("signupUser with repeated username should throw")
+    public void signupUserRepeatedUsernameTest() {
+        when(repositoryMock.findByUserName("example")).thenReturn(Optional.of(testUser));
+
+        UserCreateDTO newUser = new UserCreateDTO(
+                "new@example.com", "111 111 111", "example", "Demo1234");
+
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
+            testService.signupUser(newUser, "USER");
+        });
+
+        assertEquals(
+                "400 BAD_REQUEST \"El nombre de usuario escogido ya está siendo utilizado por otro usuario.\n"
+                        + "Introduce otro nombre de usuario e inténtalo de nuevo.\"",
+                e.getMessage());
     }
 
     @Test
@@ -163,6 +202,24 @@ public class UserServiceTest {
 
         assertEquals("403 FORBIDDEN \"No tienes permiso para modificar la imagen de perfil de otros usuarios.\"",
                 e.getMessage());
+    }
+
+    @Test
+    @DisplayName("addImageToUser should allow an admin to update another user's image")
+    public void addImageToUserAsAdminTest() throws SQLException {
+        when(repositoryMock.findById(1)).thenReturn(Optional.of(testUser));
+        when(repositoryMock.findByEmail("admin@optitour.com")).thenReturn(Optional.of(testAdmin));
+
+        Blob imageFile = new SerialBlob("admin image".getBytes(StandardCharsets.UTF_8));
+        Image image = new Image();
+        image.setImageFile(imageFile);
+
+        testService.addImageToUser(1, image, "admin@optitour.com");
+
+        assertEquals("admin image", new String(
+                testUser.getProfileImage().getBytes(1, (int) testUser.getProfileImage().length()),
+                StandardCharsets.UTF_8));
+        verify(repositoryMock).save(testUser);
     }
 
     @Test

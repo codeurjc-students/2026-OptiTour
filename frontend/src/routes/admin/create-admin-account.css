@@ -32,6 +32,20 @@
     border-color: var(--ot-primary-dark);
 }
 
+.ot-create-admin__submit:disabled,
+.ot-create-admin__submit[disabled] {
+    background-color: var(--ot-disabled);
+    border-color: var(--ot-disabled);
+    color: #f3f4f6;
+    opacity: 0.75;
+    cursor: not-allowed;
+}
+
+.ot-create-admin__submit:disabled:hover {
+    background-color: var(--ot-disabled);
+    border-color: var(--ot-disabled);
+}
+
 .ot-create-admin__cancel-btn {
     width: 100%;
     max-width: 260px;
