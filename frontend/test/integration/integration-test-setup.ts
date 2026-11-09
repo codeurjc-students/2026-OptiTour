@@ -10,7 +10,8 @@ const originalFetch = globalThis.fetch;
 beforeAll(() => {
     globalThis.fetch = async (input, init = {}) => {
         const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
-        const isAnonymousOnly = url.includes("/auth/login") || (url.includes("/user/") && init.method === "POST");
+        const isAnonymousOnly = url.includes("/auth/login")
+            || (new URL(url).pathname.endsWith("/user/") && init.method === "POST");
 
         const headers = new Headers(init.headers || {});
         if (cookieJar.length > 0 && !headers.has("Cookie") && !isAnonymousOnly) {

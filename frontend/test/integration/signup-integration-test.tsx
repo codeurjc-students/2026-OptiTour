@@ -7,6 +7,7 @@ import Signup from "../../src/routes/signup/signup";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import "@testing-library/jest-dom/vitest";
+import { loginAs } from "./integration-test-setup";
 
 test("Checks if signup service connects to real REST API and creates a user", async () => {
     const unique = Date.now().toString().slice(-6);
@@ -18,6 +19,25 @@ test("Checks if signup service connects to real REST API and creates a user", as
     };
 
     const response = await service.signup(newUser);
+
+    expect(response).toBeDefined();
+    expect(response.id).toBeDefined();
+    expect(response.email).toBe(newUser.email);
+    expect(response.userName).toBe(newUser.userName);
+});
+
+test("Checks if create admin account service connects to real REST API and creates a user", async () => {
+    await loginAs("admin@optitour.com", "Admin1234");
+
+    const unique = Date.now().toString().slice(-6);
+    const newUser = {
+        email: `client_int_${unique}@ex.com`,
+        phoneNumber: "111 222 333",
+        userName: `user_${unique}`,
+        password: "Demo1234"
+    };
+
+    const response = await service.createAdminAccount(newUser);
 
     expect(response).toBeDefined();
     expect(response.id).toBeDefined();

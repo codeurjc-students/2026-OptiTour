@@ -1,10 +1,11 @@
 import { beforeEach, expect, test, vi } from "vitest";
 import * as service from "../../src/service/user-service";
 import { useAuthStore as useAuthStoreOriginal } from "../../src/store/auth-store";
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, findByLabelText, findByRole, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import { MemoryRouter } from "react-router-dom";
 import Signup from "../../src/routes/signup/signup";
+import CreateAdminAccount from "../../src/routes/admin/create-admin-account";
 import { uploadUserImage } from "../../src/service/user-service";
 
 vi.mock("../../src/service/user-service");
@@ -28,16 +29,20 @@ vi.mock("react-router", () => ({ useNavigate: () => vi.fn() }));
 beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(service.signup).mockResolvedValue({ id: 10 });
+});
 
+function renderSignup() {
     render(
         <MemoryRouter>
             <Signup />
         </MemoryRouter>
     );
-});
+}
 
 
 test("Signup registers a user and logs in after valid form data", async () => {
+    renderSignup();
+
     fireEvent.change(screen.getByLabelText("Correo electrónico"), {
         target: { value: "example@example.com" }
     });
@@ -75,6 +80,8 @@ test("Signup registers a user and logs in after valid form data", async () => {
 });
 
 test("Signup with image should call uploadUserImage method", async () => {
+    renderSignup();
+
     const image = new File(["image contents"], "profile.png", {
         type: "image/png"
     });
@@ -111,11 +118,43 @@ test("Signup with image should call uploadUserImage method", async () => {
     });
 });
 
+test('Checks if sending create admin form calls service method', async () => {
+    render(
+        <MemoryRouter>
+            <CreateAdminAccount />
+        </MemoryRouter>
+    );
+
+    fireEvent.change(screen.getByLabelText("Correo electrónico"), {
+        target: { value: "example@example.com" }
+    });
+    fireEvent.change(screen.getByLabelText("Número de teléfono"), {
+        target: { value: "123" }
+    });
+    fireEvent.change(screen.getByLabelText("Nombre de usuario"), {
+        target: { value: "tester" }
+    });
+    fireEvent.change(screen.getByLabelText("Contraseña"), {
+        target: { value: "Demo1234" }
+    });
+    fireEvent.change(screen.getByLabelText("Repetir contraseña"), {
+        target: { value: "Demo1234" }
+    });
+
+    const submitButton = screen.getByRole('button', { name: "Crear cuenta de administración" });
+    await waitFor(() => { expect(submitButton).toBeEnabled() });
+
+    fireEvent.click(submitButton);
+
+    await waitFor(() => { expect(service.createAdminAccount).toHaveBeenCalled() });
+});
+
 // ------------------Field Validation Tests --------------------------------
 
 // ------------------ Invalid Email Tests --------------------------------
 
 test("Singup with empty email should render an error", async () => {
+    renderSignup();
 
     // Input error labels only appears after first time user writes.
     // If we didn't that, user would see a form full of errors only by
@@ -152,6 +191,8 @@ test("Singup with empty email should render an error", async () => {
 });
 
 test("Singup with a more of 30 chars email should render an error", async () => {
+    renderSignup();
+
     fireEvent.change(screen.getByLabelText("Correo electrónico"), {
         target: { value: "aaaaaaaaaaaaaa@aaaaaaaaaaaa.com" }
     });
@@ -177,6 +218,8 @@ test("Singup with a more of 30 chars email should render an error", async () => 
 });
 
 test("Singup with an invalid email format should render an error", async () => {
+    renderSignup();
+
     fireEvent.change(screen.getByLabelText("Correo electrónico"), {
         target: { value: "invalidEmail" }
     });
@@ -204,6 +247,8 @@ test("Singup with an invalid email format should render an error", async () => {
 // ------------------ Invalid Phone Tests --------------------------------
 
 test("Singup with a more of 12 chars phone should render an error", async () => {
+    renderSignup();
+
     fireEvent.change(screen.getByLabelText("Correo electrónico"), {
         target: { value: "example@example.com" }
     });
@@ -229,6 +274,8 @@ test("Singup with a more of 12 chars phone should render an error", async () => 
 });
 
 test("Singup with a phone with non-number chars should render an error", async () => {
+    renderSignup();
+
     fireEvent.change(screen.getByLabelText("Correo electrónico"), {
         target: { value: "example@example.com" }
     });
@@ -257,6 +304,8 @@ test("Singup with a phone with non-number chars should render an error", async (
 // ------------------ Invalid Username Tests --------------------------------
 
 test("Singup with an empty username should render an error", async () => {
+    renderSignup();
+
     fireEvent.change(screen.getByLabelText("Correo electrónico"), {
         target: { value: "example@example.com" }
     });
@@ -285,6 +334,8 @@ test("Singup with an empty username should render an error", async () => {
 });
 
 test("Singup with a less of 5 chars username should render an error", async () => {
+    renderSignup();
+
     fireEvent.change(screen.getByLabelText("Correo electrónico"), {
         target: { value: "example@example.com" }
     });
@@ -310,6 +361,8 @@ test("Singup with a less of 5 chars username should render an error", async () =
 });
 
 test("Singup with a more of 20 chars username should render an error", async () => {
+    renderSignup();
+
     fireEvent.change(screen.getByLabelText("Correo electrónico"), {
         target: { value: "example@example.com" }
     });
@@ -337,6 +390,8 @@ test("Singup with a more of 20 chars username should render an error", async () 
 // ------------------ Invalid Pass Tests --------------------------------
 
 test("Singup with different passwords should render an error", async () => {
+    renderSignup();
+
     fireEvent.change(screen.getByLabelText("Correo electrónico"), {
         target: { value: "example@example.com" }
     });
@@ -362,6 +417,8 @@ test("Singup with different passwords should render an error", async () => {
 });
 
 test("Singup with empty password should render an error", async () => {
+    renderSignup();
+
     fireEvent.change(screen.getByLabelText("Correo electrónico"), {
         target: { value: "example@example.com" }
     });
@@ -390,6 +447,8 @@ test("Singup with empty password should render an error", async () => {
 });
 
 test("Singup with a less of 8 chars password should render an error", async () => {
+    renderSignup();
+
     fireEvent.change(screen.getByLabelText("Correo electrónico"), {
         target: { value: "example@example.com" }
     });
@@ -415,6 +474,8 @@ test("Singup with a less of 8 chars password should render an error", async () =
 });
 
 test("Singup with a more of 20 chars password should render an error", async () => {
+    renderSignup();
+
     fireEvent.change(screen.getByLabelText("Correo electrónico"), {
         target: { value: "example@example.com" }
     });
@@ -440,6 +501,8 @@ test("Singup with a more of 20 chars password should render an error", async () 
 });
 
 test("Singup with a not secure password should render an error", async () => {
+    renderSignup();
+
     fireEvent.change(screen.getByLabelText("Correo electrónico"), {
         target: { value: "example@example.com" }
     });
