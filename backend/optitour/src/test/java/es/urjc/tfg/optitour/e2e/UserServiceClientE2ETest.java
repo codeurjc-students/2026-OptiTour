@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.AfterEach;
@@ -42,6 +43,7 @@ public class UserServiceClientE2ETest {
         // Clean up any test users to guarantee idempotency and avoid
         // NonUniqueResultException
         deleteTestUsers();
+        keepOnlyDefaultAdmin();
 
         repository.findByEmail("carmen@example.com").ifPresent(carmen -> {
             if (carmen.getIsBanned()) {
@@ -82,6 +84,16 @@ public class UserServiceClientE2ETest {
                 .toList();
 
         repository.deleteAll(testUsers);
+        repository.flush();
+    }
+
+    private void keepOnlyDefaultAdmin() {
+        List<User> extraAdmins = repository.findAll().stream()
+                .filter(user -> user.getRoles().contains("ADMIN"))
+                .filter(user -> !"admin@optitour.com".equals(user.getEmail()))
+                .toList();
+
+        repository.deleteAll(extraAdmins);
         repository.flush();
     }
 
@@ -484,7 +496,7 @@ public class UserServiceClientE2ETest {
     }
 
     @Test
-    @DisplayName("Checks if change password form workflow works properly")
+    @DisplayName("Checks if change password form shows error card when old password is not correct")
     public void editPasswordIncorrectPasswordClientE2ETest() {
         driver.get("http://localhost:5173/profile/edit/password");
 
@@ -507,5 +519,100 @@ public class UserServiceClientE2ETest {
 
         WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-edit-password__error")));
         assertEquals("La contraseña no es correcta.", errorCard.getText());
+    }
+
+    @Test
+    @DisplayName("Checks if create new admin account form works properly")
+    public void signupAdminClientE2ETest() {
+        driver.get("http://localhost:5173/admin/create");
+
+        login("admin@optitour.com", "Admin1234");
+        wait.until(urlToBe("http://localhost:5173/admin/create"));
+
+        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("email")));
+        WebElement phoneField = driver.findElement(By.id("phone"));
+        WebElement usernameField = driver.findElement(By.id("username"));
+        WebElement passwordField = driver.findElement(By.id("password"));
+        WebElement passwordRepeatField = driver.findElement(By.id("passwordRepeat"));
+        WebElement submitButton = driver.findElement(By.className("ot-create-admin__submit"));
+        String newAdminEmail = "a" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
+        String newAdminUserName = "Admin" + UUID.randomUUID().toString().substring(0, 8);
+
+        emailField.sendKeys(newAdminEmail);
+        phoneField.sendKeys("111 111 111");
+        usernameField.sendKeys(newAdminUserName);
+        passwordField.sendKeys("Admin1234");
+        passwordRepeatField.sendKeys("Admin1234");
+        submitButton.click();
+
+        wait.until(driver -> driver.getCurrentUrl().matches("http://localhost:5173/admin/users/\\d+"));
+
+        WebElement modalTitle = wait.until(visibilityOfElementLocated(By.cssSelector(".ot-modal__title.modal-title")));
+        WebElement modalMessage = driver.findElement(By.className("ot-modal__body"));
+
+        Optional<User> op = repository.findByEmail(newAdminEmail);
+        User newAdmin = op.orElseThrow();
+
+        assertEquals("Nueva cuenta de administración creada", modalTitle.getText());
+        assertEquals("Se ha creado correctamente la siguiente cuenta de administrador: " + newAdmin.getUserName(),
+                modalMessage.getText());
+    }
+
+    @Test
+    @DisplayName("Checks if create new admin account form works properly")
+    public void signupAdminClientRepeatedEmailE2ETest() {
+        driver.get("http://localhost:5173/admin/create");
+
+        login("admin@optitour.com", "Admin1234");
+        wait.until(urlToBe("http://localhost:5173/admin/create"));
+
+        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("email")));
+        WebElement phoneField = driver.findElement(By.id("phone"));
+        WebElement usernameField = driver.findElement(By.id("username"));
+        WebElement passwordField = driver.findElement(By.id("password"));
+        WebElement passwordRepeatField = driver.findElement(By.id("passwordRepeat"));
+        WebElement submitButton = driver.findElement(By.className("ot-create-admin__submit"));
+        String newAdminUserName = "Admin" + UUID.randomUUID().toString().substring(0, 8);
+
+        emailField.sendKeys("admin@optitour.com");
+        phoneField.sendKeys("111 111 111");
+        usernameField.sendKeys(newAdminUserName);
+        passwordField.sendKeys("Admin1234");
+        passwordRepeatField.sendKeys("Admin1234");
+        submitButton.click();
+
+        WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
+        assertEquals(
+                "El correo electrónico escogido ya está siendo utilizado por otro usuario. Introduce otro correo electrónico e inténtalo de nuevo.",
+                errorCard.getText());
+    }
+
+    @Test
+    @DisplayName("Checks if create new admin account form works properly")
+    public void signupAdminClientRepeatedUserE2ETest() {
+        driver.get("http://localhost:5173/admin/create");
+
+        login("admin@optitour.com", "Admin1234");
+        wait.until(urlToBe("http://localhost:5173/admin/create"));
+
+        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("email")));
+        WebElement phoneField = driver.findElement(By.id("phone"));
+        WebElement usernameField = driver.findElement(By.id("username"));
+        WebElement passwordField = driver.findElement(By.id("password"));
+        WebElement passwordRepeatField = driver.findElement(By.id("passwordRepeat"));
+        WebElement submitButton = driver.findElement(By.className("ot-create-admin__submit"));
+        String newAdminEmail = "a" + UUID.randomUUID().toString().substring(0, 8) + "@ex.com";
+
+        emailField.sendKeys(newAdminEmail);
+        phoneField.sendKeys("111 111 111");
+        usernameField.sendKeys("Admin");
+        passwordField.sendKeys("Admin1234");
+        passwordRepeatField.sendKeys("Admin1234");
+        submitButton.click();
+
+        WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
+        assertEquals(
+                "El nombre de usuario escogido ya está siendo utilizado por otro usuario. Introduce otro nombre de usuario e inténtalo de nuevo.",
+                errorCard.getText());
     }
 }

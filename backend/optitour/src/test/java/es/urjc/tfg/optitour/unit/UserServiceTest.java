@@ -1,16 +1,21 @@
 package es.urjc.tfg.optitour.unit;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.Optional;
 
 import javax.sql.rowset.serial.SerialBlob;
-import java.sql.Blob;
 import javax.sql.rowset.serial.SerialException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -27,12 +32,6 @@ import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.User;
 import es.urjc.tfg.optitour.repository.UserRepository;
 import es.urjc.tfg.optitour.service.UserService;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserServiceTest {
 
@@ -119,6 +118,42 @@ public class UserServiceTest {
 
         // Then: repository method must've been called
         verify(repositoryMock).save(any(User.class));
+    }
+
+    @Test
+    @DisplayName("signupUser with repeated email should throw")
+    public void signupUserRepeatedEmailTest() {
+        when(repositoryMock.findByEmail("example@example.com")).thenReturn(Optional.of(testUser));
+
+        UserCreateDTO newUser = new UserCreateDTO(
+                "example@example.com", "111 111 111", "newuser", "Demo1234");
+
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
+            testService.signupUser(newUser, "USER");
+        });
+
+        assertEquals(
+                "400 BAD_REQUEST \"El correo electrónico escogido ya está siendo utilizado por otro usuario.\n"
+                        + "Introduce otro correo electrónico e inténtalo de nuevo.\"",
+                e.getMessage());
+    }
+
+    @Test
+    @DisplayName("signupUser with repeated username should throw")
+    public void signupUserRepeatedUsernameTest() {
+        when(repositoryMock.findByUserName("example")).thenReturn(Optional.of(testUser));
+
+        UserCreateDTO newUser = new UserCreateDTO(
+                "new@example.com", "111 111 111", "example", "Demo1234");
+
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
+            testService.signupUser(newUser, "USER");
+        });
+
+        assertEquals(
+                "400 BAD_REQUEST \"El nombre de usuario escogido ya está siendo utilizado por otro usuario.\n"
+                        + "Introduce otro nombre de usuario e inténtalo de nuevo.\"",
+                e.getMessage());
     }
 
     @Test

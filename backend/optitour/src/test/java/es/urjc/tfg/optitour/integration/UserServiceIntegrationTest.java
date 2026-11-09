@@ -113,11 +113,13 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
     @DisplayName("signupUser should save user in repository and must be possible recovering it")
     public void signupUserIntegrationTest() {
         service.signupUser(
-                new UserCreateDTO("other@example.com", "111 111 111", "other", "Demo1234"), "USER");
+                new UserCreateDTO("other@example.com", "111 111 111", "other", "Demo1234"), "USER", "ADMIN");
 
         User recoverUser = service.getUserByEmail("other@example.com");
         assertNotNull(recoverUser);
         assertEquals("other", recoverUser.getUserName());
+        assertTrue(recoverUser.getRoles().contains("USER"));
+        assertTrue(recoverUser.getRoles().contains("ADMIN"));
     }
 
     @Test
