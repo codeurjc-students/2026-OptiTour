@@ -85,6 +85,26 @@ public class SampleDataService {
                                 .orElseThrow(() -> new IllegalStateException("Sample tour not found: " + name));
         }
 
+        private void assignSamplePoiDates(List<Tour> tours) {
+                LocalDateTime now = LocalDateTime.now();
+                int[] monthsAgo = { 11, 11, 11, 10, 10, 9, 9, 9, 8, 7, 7, 6, 6, 6, 6, 5, 4, 4, 3, 3, 2, 2, 1, 0,
+                                0, 0, 0 };
+                int poiIndex = 0;
+
+                for (Tour tour : tours) {
+                        for (PointOfInterest poi : tour.getPois()) {
+                                LocalDateTime createdAt = now.minusMonths(monthsAgo[poiIndex % monthsAgo.length])
+                                                .withDayOfMonth(1)
+                                                .withHour(12)
+                                                .withMinute(0)
+                                                .withSecond(0)
+                                                .withNano(0);
+                                poi.setCreatedAt(createdAt);
+                                poiIndex++;
+                        }
+                }
+        }
+
         private void addImagesToSampleTour(List<Tour> tours, String name, String tourFolder, String tourPrefix,
                         String... poiFolders) throws IOException {
                 Tour tour = findSampleTour(tours, name);
@@ -898,6 +918,7 @@ public class SampleDataService {
                                                                         "Kioto", "Gion", "35.003700,135.777200"))));
 
                         List<Tour> sampleTours = tourRepository.findAll();
+                        assignSamplePoiDates(sampleTours);
                         addImagesToSampleTour(sampleTours, "Madrid, España", "madrid", "madrid",
                                         "museo-del-prado", "retiro", "palacio-real", "plaza-mayor", "puerta-del-sol");
                         addImagesToSampleTour(sampleTours, "Barcelona, España", "barcelona", "barcelona",

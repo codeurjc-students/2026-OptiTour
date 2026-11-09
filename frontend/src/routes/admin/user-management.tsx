@@ -79,6 +79,7 @@ export default function UserManagement() {
     const COLORS = ['#26D12A', '#dc3545'];
 
     const evolutionData = users
+        // Filters elements with no createdAt field
         .filter(u => u.createdAt)
         // Order from old to recent
         .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
