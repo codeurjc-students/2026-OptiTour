@@ -1,17 +1,18 @@
 import { Button, Row, Col, Tooltip } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import StatCard from '../../components/stat-card/stat-card';
-import MediaListItem from '../../components/list-item/list-item';
+import StatCard from '../../../components/stat-card/stat-card';
+import MediaListItem from '../../../components/list-item/list-item';
 import { useEffect, useState } from 'react';
-import type { PointOfInterestDTO } from '../../dto/point-of-interest-dto';
-import { getPoisByPage } from '../../service/point-of-interest-service';
-import ErrorCard from '../../components/error-card/error-card';
-import Spinner from '../../components/spinner/spinner';
-import { API_BASE_URL } from '../../service/api-config';
+import type { PointOfInterestDTO } from '../../../dto/point-of-interest-dto';
+import { getPoisByPage } from '../../../service/point-of-interest-service';
+import ErrorCard from '../../../components/error-card/error-card';
+import Spinner from '../../../components/spinner/spinner';
+import { API_BASE_URL } from '../../../service/api-config';
 import '../../components/tour-card/tour-card.css';
 import './poi-management.css';
 import './user-management.css';
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+import { getEvolutionData } from '../getEvolutionData';
 
 // React Router requires this route metadata export alongside the component.
 // eslint-disable-next-line react-refresh/only-export-components
@@ -60,26 +61,7 @@ export default function POIManagement() {
         handleGetPois(currentPage, 10, true);
     }, []);
 
-    const evolutionData = pois
-        .filter(p => p.createdAt)
-        .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-        .reduce((acc, poi) => {
-            const date = new Date(poi.createdAt);
-            const month = date.toLocaleDateString('es-ES', { month: 'short', year: 'numeric' });
-            const period = month.charAt(0).toUpperCase() + month.slice(1);
-
-            const existing = acc.find(item => item.period === period);
-            if (existing)
-                existing.new += 1
-            else
-                acc.push({ period, new: 1, total: 0 });
-
-            return acc;
-        }, [] as { period: string, new: number, total: number }[])
-        .map((item, index, arr) => {
-            item.total = arr.slice(0, index + 1).reduce((sum, current) => sum + current.new, 0);
-            return item;
-        });
+    const evolutionData = getEvolutionData(pois, p => p.createdAt);
 
     return (
         <>
