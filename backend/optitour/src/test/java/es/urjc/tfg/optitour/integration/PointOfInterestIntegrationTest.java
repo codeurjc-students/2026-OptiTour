@@ -12,6 +12,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -50,6 +52,7 @@ public class PointOfInterestIntegrationTest extends BaseIntegrationTest {
             poi.setTours(tours);
             repository.save(poi);
         }
+
     }
 
     @Test
@@ -70,5 +73,15 @@ public class PointOfInterestIntegrationTest extends BaseIntegrationTest {
         });
 
         assertEquals("404 NOT_FOUND \"No existe ningún punto de interés con el ID 5\"", ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("getPagedPois method should return the requested page from the database")
+    void getPagedPoisTest() {
+        Page<PointOfInterest> result = service.getPagedPois(PageRequest.of(1, 2));
+
+        assertEquals(1, result.getContent().size());
+        assertEquals(3, result.getTotalElements());
+        assertEquals("Poi name 2", result.getContent().get(0).getName());
     }
 }

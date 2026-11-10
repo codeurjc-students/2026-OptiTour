@@ -133,7 +133,7 @@ public class TourControllerE2ETest extends BaseIntegrationTest {
         }
 
         @Test
-        @DisplayName("getToursById called with bad id should ")
+        @DisplayName("getToursById called with bad id should return 404 status code")
         void getTourByIdIncorrectIdE2ETest() {
                 long invalidId = 10000000;
                 get("/api/v1/tour/" + invalidId) // With incorrect id

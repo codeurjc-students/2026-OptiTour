@@ -1,10 +1,13 @@
 package es.urjc.tfg.optitour.e2e;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
+import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
 import java.time.Duration;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,10 +19,18 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import es.urjc.tfg.optitour.repository.PointOfInterestRepository;
+
+@SpringBootTest
 public class PointOfInterestServiceClientE2ETest {
     protected WebDriver driver;
     private WebDriverWait wait;
+
+    @Autowired
+    PointOfInterestRepository repository;
 
     @BeforeEach
     public void setUp() {
@@ -41,6 +52,16 @@ public class PointOfInterestServiceClientE2ETest {
         if (driver != null) {
             driver.quit();
         }
+    }
+
+    private void login(String email, String password) {
+        WebElement emailField = wait.until(visibilityOfElementLocated(By.id("loginEmail")));
+        WebElement passField = driver.findElement(By.id("loginPassword"));
+        WebElement submitButton = driver.findElement(By.className("ot-login__submit"));
+
+        emailField.sendKeys(email);
+        passField.sendKeys(password);
+        submitButton.click();
     }
 
     @Test
@@ -83,4 +104,37 @@ public class PointOfInterestServiceClientE2ETest {
         assertEquals("No existe ningún punto de interés con el ID 1000.", errorCard.getText());
     }
 
+    @Test
+    @DisplayName("Checks if pagination in poi panel works properly")
+    public void poiManagementClientE2ETest() {
+        driver.get("http://localhost:5173/admin/poi");
+        login("admin@optitour.com", "Admin1234");
+
+        wait.until(visibilityOfElementLocated(By.className("ot-list-item__title")));
+        List<WebElement> items = driver.findElements(By.className("ot-list-item__title"));
+
+        assertNotNull(items);
+        assertEquals(10, items.size());
+
+        WebElement loadMoreButton = driver.findElement(By.className("ot-tour-card__btn"));
+        loadMoreButton.click();
+
+        wait.until(invisibilityOfElementLocated((By.className("ot-spinner"))));
+
+        wait.until(visibilityOfElementLocated(By.className("ot-list-item__title")));
+        List<WebElement> moreItems = driver.findElements(By.className("ot-list-item__title"));
+
+        assertNotNull(moreItems);
+        assertEquals(15, moreItems.size());
+    }
+
+    @Test
+    @DisplayName("Checks if poi ammount displayed is correct")
+    public void poiManagementAmmountClientE2ETest() {
+        driver.get("http://localhost:5173/admin/poi");
+        login("admin@optitour.com", "Admin1234");
+
+        WebElement ammountCard = wait.until(visibilityOfElementLocated(By.className("ot-stat-card__value")));
+        assertEquals(repository.count(), Integer.parseInt(ammountCard.getText()));
+    }
 }
