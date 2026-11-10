@@ -8,9 +8,9 @@ import { getPoisByPage } from '../../../service/point-of-interest-service';
 import ErrorCard from '../../../components/error-card/error-card';
 import Spinner from '../../../components/spinner/spinner';
 import { API_BASE_URL } from '../../../service/api-config';
-import '../../components/tour-card/tour-card.css';
+import '../../../components/tour-card/tour-card.css';
 import './poi-management.css';
-import './user-management.css';
+import '../user-management/user-management.css';
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { getEvolutionData } from '../getEvolutionData';
 

@@ -1,16 +1,16 @@
 import { Button, Row, Col, Form } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import AccountFieldsCard from '../../components/account-fields-card/account-fields-card';
-import PasswordFieldsCard from '../../components/password-fields-card/password-fields-card';
+import AccountFieldsCard from '../../../components/account-fields-card/account-fields-card';
+import PasswordFieldsCard from '../../../components/password-fields-card/password-fields-card';
 import './create-admin-account.css';
 import { FormProvider, useForm } from 'react-hook-form';
 import type z from 'zod';
-import { signupSchema } from '../../schemas/signup-schema';
+import { signupSchema } from '../../../schemas/signup-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import { createAdminAccount, uploadUserImage } from '../../service/user-service';
-import ErrorCard from '../../components/error-card/error-card';
-import { useAuthStore } from '../../store/auth-store';
+import { createAdminAccount, uploadUserImage } from '../../../service/user-service';
+import ErrorCard from '../../../components/error-card/error-card';
+import { useAuthStore } from '../../../store/auth-store';
 
 export function meta() {
     return [

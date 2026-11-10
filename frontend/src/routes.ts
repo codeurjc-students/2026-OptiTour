@@ -18,17 +18,17 @@ export default [
         route("/profile/delete", "routes/my-profile/delete-profile.tsx")
     ]),
     layout("layouts/admin-layout.tsx", [
-        route("/admin/users", "routes/admin/user-management.tsx"),
-        route("/admin/users/:id", "routes/admin/user-profile.tsx"),
-        route("/admin/poi", "routes/admin/poi-management.tsx"),
+        route("/admin/users", "routes/admin/user-management/user-management.tsx"),
+        route("/admin/users/:id", "routes/admin/user-management/user-profile.tsx"),
+        route("/admin/poi", "routes/admin/poi-management/poi-management.tsx"),
         route("/admin/billing", "routes/admin/billing.tsx"),
         route("/admin/profile", "routes/admin/admin-profile.tsx"),
         route("/admin/profile/edit", "routes/my-profile/edit-profile.tsx", { id: "admin-edit-profile" }),
         route("/admin/profile/edit/password", "routes/my-profile/edit-password.tsx", { id: "admin-edit-password" }),
         route("/admin/profile/delete", "routes/my-profile/delete-profile.tsx", { id: "admin-delete-profile" }),
         route("/admin/notifications", "routes/admin/admin-notifications.tsx"),
-        route("/admin/create", "routes/admin/create-admin-account.tsx"),
-        route("/admin/addpoi", "routes/admin/create-poi.tsx"),
+        route("/admin/create", "routes/admin/create-admin-account/create-admin-account.tsx"),
+        route("/admin/addpoi", "routes/admin/create-poi/create-poi.tsx"),
         route("/admin/tours", "routes/admin/tour-management.tsx")
     ]),
     layout("layouts/protected-layout.tsx", [

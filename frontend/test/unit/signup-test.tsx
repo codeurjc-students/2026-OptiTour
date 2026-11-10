@@ -5,7 +5,7 @@ import { act, findByLabelText, findByRole, fireEvent, render, screen, waitFor } 
 import "@testing-library/jest-dom/vitest";
 import { MemoryRouter } from "react-router-dom";
 import Signup from "../../src/routes/signup/signup";
-import CreateAdminAccount from "../../src/routes/admin/create-admin-account";
+import CreateAdminAccount from "../../src/routes/admin/create-admin-account/create-admin-account";
 import { uploadUserImage } from "../../src/service/user-service";
 
 vi.mock("../../src/service/user-service");
