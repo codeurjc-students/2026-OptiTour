@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import es.urjc.tfg.optitour.BaseIntegrationTest;
 import es.urjc.tfg.optitour.model.PointOfInterest;
 import es.urjc.tfg.optitour.model.Tour;
+import es.urjc.tfg.optitour.repository.PointOfInterestRepository;
 import es.urjc.tfg.optitour.repository.TourRepository;
 import es.urjc.tfg.optitour.service.TourService;
 
@@ -44,12 +46,16 @@ public class TourServiceIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private TourRepository repository;
 
+    @Autowired
+    private PointOfInterestRepository poiRepository;
+
     @BeforeEach // Given: We have a testcontainers database running in docker envoronment with
                 // some sample data:
     public void initSampleData() {
         // If in future we add more test, they'll use the same container. It's necessary
         // to delete data before each test
         repository.deleteAll();
+        poiRepository.deleteAll();
 
         for (int i = 0; i < 3; i++) {
             Tour tour = new Tour("Test tour " + i, "Test description " + i);
@@ -64,6 +70,12 @@ public class TourServiceIntegrationTest extends BaseIntegrationTest {
             tour.setPois(pois);
             service.saveTour(tour);
         }
+    }
+
+    @AfterEach
+    public void tearDown() {
+        repository.deleteAll();
+        poiRepository.deleteAll();
     }
 
     @Test

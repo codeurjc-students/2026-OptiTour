@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.sql.rowset.serial.SerialBlob;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -139,5 +140,11 @@ public class TourControllerE2ETest extends BaseIntegrationTest {
                 get("/api/v1/tour/" + invalidId) // With incorrect id
                                 .then()
                                 .statusCode(404);
+        }
+
+        @AfterEach
+        void tearDown() {
+                jdbcTemplate.execute("TRUNCATE TABLE tour RESTART IDENTITY CASCADE");
+                jdbcTemplate.execute("TRUNCATE TABLE point_of_interest RESTART IDENTITY CASCADE");
         }
 }

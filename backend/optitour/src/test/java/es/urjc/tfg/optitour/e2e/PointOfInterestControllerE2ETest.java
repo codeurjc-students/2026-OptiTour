@@ -16,6 +16,7 @@ import java.util.List;
 
 import javax.sql.rowset.serial.SerialBlob;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -168,5 +169,11 @@ public class PointOfInterestControllerE2ETest extends BaseIntegrationTest {
                 assertTrue(image.id() > 0);
             }
         }
+    }
+
+    @AfterEach
+    void tearDown() {
+        jdbcTemplate.execute("TRUNCATE TABLE tour RESTART IDENTITY CASCADE");
+        jdbcTemplate.execute("TRUNCATE TABLE point_of_interest RESTART IDENTITY CASCADE");
     }
 }
