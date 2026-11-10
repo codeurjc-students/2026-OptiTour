@@ -46,15 +46,20 @@ public class PointOfInterestIntegrationTest extends BaseIntegrationTest {
         tourRepository.deleteAll();
         repository.deleteAll();
 
+        List<Tour> tours = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            tours.add(new Tour("Test tour " + i, "Test desc " + i));
+        }
+
         List<PointOfInterest> savedPois = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             PointOfInterest poi = new PointOfInterest("Poi name " + i, "Poi desc " + i, "sample city", "sample adress",
                     "sample coords");
+            poi.setTours(tours);
             savedPois.add(repository.save(poi));
         }
 
-        for (int i = 0; i < 3; i++) {
-            Tour tour = new Tour("Test tour " + i, "Test desc " + i);
+        for (Tour tour : tours) {
             tour.setPois(savedPois);
             tourRepository.save(tour);
         }
