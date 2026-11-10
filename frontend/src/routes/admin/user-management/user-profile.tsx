@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import Profile from "../../components/profile/profile";
+import Profile from "../../../components/profile/profile";
 import { useParams, Link, useLocation } from "react-router-dom";
-import { getUserById } from "../../service/user-service";
-import type { UserDTO } from "../../dto/user-dto";
-import Spinner from "../../components/spinner/spinner";
-import ErrorCard from "../../components/error-card/error-card";
-import useDocumentTitle from "../../hooks/use-document-title";
-import FeedbackModal from "../../components/feedback-modal/feedback-modal";
+import { getUserById } from "../../../service/user-service";
+import type { UserDTO } from "../../../dto/user-dto";
+import Spinner from "../../../components/spinner/spinner";
+import ErrorCard from "../../../components/error-card/error-card";
+import useDocumentTitle from "../../../hooks/use-document-title";
+import FeedbackModal from "../../../components/feedback-modal/feedback-modal";
 
 export function meta() {
     return [

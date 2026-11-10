@@ -9,5 +9,6 @@ export interface PointOfInterestDTO {
     address: string,
     coords: string,
     tours: TourNameDTO[],
-    images: ImageDTO[]
+    images: ImageDTO[],
+    createdAt: string
 }

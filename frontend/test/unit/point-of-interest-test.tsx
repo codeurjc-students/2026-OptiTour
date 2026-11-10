@@ -2,9 +2,10 @@ import { expect, test, vi } from "vitest";
 import '@testing-library/jest-dom/vitest';
 import * as service from '../../src/service/point-of-interest-service'
 import { PointOfInterestDTO } from "../../src/dto/point-of-interest-dto";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import PointOfInterestDetail from '../../src/routes/point-of-interest-detail/point-of-interest-detail';
+import POIManagement from "../../src/routes/admin/poi-management/poi-management";
 
 
 vi.mock('../../src/service/point-of-interest-service');
@@ -50,5 +51,51 @@ test('Point of interest detail displays requierded poi information properly', as
 
     const tourTitle = await screen.findByText("Madrid, España");
     expect(tourTitle).toBeInTheDocument();
+});
 
+test('Checks if pois are displayed properly in poi panel', async () => {
+    let pois: PointOfInterestDTO[] = [];
+
+    for (let i = 0; i < 10; i++) {
+        pois.push({
+            id: i + 1,
+            name: "Test poi " + i,
+            description: "Test desc " + i,
+            city: "Test",
+            address: "Test",
+            coords: "Test",
+            images: [{ id: 1, name: "test.jpg", path: "/test.jpg" } as any],
+            createdAt: "2026-01-01T00:00:00.000Z",
+            tours: [
+                {
+                    id: 1,
+                    name: "Test tour",
+                    images: []
+                }
+            ]
+        });
+    }
+
+    vi.mocked(service.getPoisByPage).mockResolvedValue({
+        content: pois,
+        page: { number: 0, totalPages: 1, totalElements: 10 }
+    } as any);
+
+    const { container } = render(
+        <MemoryRouter>
+            <POIManagement />
+        </MemoryRouter>
+    );
+
+    await waitFor(() => {
+        expect(container.querySelectorAll('.ot-poi-list-item').length).toBe(10);
+    });
+
+    const poiList = container.querySelectorAll('.ot-poi-list-item');
+    poiList.forEach((poiItem, index) => {
+        const title = poiItem.querySelector('.ot-list-item__title')?.textContent;
+        expect(title).toBe(pois[index].name);
+    });
+
+    expect(service.getPoisByPage).toHaveBeenCalled();
 });

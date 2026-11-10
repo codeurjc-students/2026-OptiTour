@@ -60,6 +60,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/auth/login").anonymous()
 
                         // PRIVATE ENDPOINTS
+                        // User endpoints
                         .requestMatchers(HttpMethod.GET, "/user/all").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/user/admin").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/user/password").hasAnyRole("USER", "ADMIN")
@@ -68,6 +69,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, "/user/*/ban").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/user/").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/user/**").authenticated()
+                        // Point of interest endpoints
+                        .requestMatchers(HttpMethod.GET, "/point-of-interest/").hasRole("ADMIN")
 
                         // PUBLIC ENDPOINTS
                         .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()

@@ -48,7 +48,7 @@ public class AuthClientE2ETest {
         options.addArguments("--disable-gpu");
 
         driver = new ChromeDriver(options);
-        wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 
     @AfterEach

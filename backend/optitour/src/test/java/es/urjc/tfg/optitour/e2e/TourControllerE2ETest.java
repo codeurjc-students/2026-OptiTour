@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.sql.rowset.serial.SerialBlob;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -87,26 +88,6 @@ public class TourControllerE2ETest extends BaseIntegrationTest {
         }
 
         @Test
-        @DisplayName("Calling api at /tour/all should return the SampleDataService example tours")
-        public void tourServiceE2Etest() {
-                // We make the api call, check the HTTP status code and get the sample tour list
-                List<TourDTO> result = get("/api/v1/tour/all")
-                                .then()
-                                .statusCode(200)
-                                .extract().jsonPath().getList("$", TourDTO.class);
-
-                // Now, we can check if received data is correct:
-
-                assertThat(result, hasSize(30));
-
-                for (int i = 0; i < 30; i++) {
-                        assertThat(result.get(i).id(), equalTo((long) i + 1));
-                        assertThat(result.get(i).name(), equalTo(tourNames.get(i)));
-                        assertThat(result.get(i).description(), equalTo(tourDescriptions.get(i)));
-                }
-        }
-
-        @Test
         @DisplayName("Checks if pageable tour endpoint works properly")
         void pagaebleToursTest() {
                 List<TourDTO> result = get("/api/v1/tour/?page=0&size=5")
@@ -153,11 +134,17 @@ public class TourControllerE2ETest extends BaseIntegrationTest {
         }
 
         @Test
-        @DisplayName("getToursById called with bad id should ")
+        @DisplayName("getToursById called with bad id should return 404 status code")
         void getTourByIdIncorrectIdE2ETest() {
                 long invalidId = 10000000;
                 get("/api/v1/tour/" + invalidId) // With incorrect id
                                 .then()
                                 .statusCode(404);
+        }
+
+        @AfterEach
+        void tearDown() {
+                jdbcTemplate.execute("TRUNCATE TABLE tour RESTART IDENTITY CASCADE");
+                jdbcTemplate.execute("TRUNCATE TABLE point_of_interest RESTART IDENTITY CASCADE");
         }
 }

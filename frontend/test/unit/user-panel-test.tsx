@@ -4,7 +4,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { UserDTO } from "../../src/dto/user-dto";
 import * as service from '../../src/service/user-service';
-import UserManagement from "../../src/routes/admin/user-management";
+import UserManagement from "../../src/routes/admin/user-management/user-management";
 
 vi.mock('../../src/service/user-service');
 

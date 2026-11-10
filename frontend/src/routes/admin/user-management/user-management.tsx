@@ -1,15 +1,16 @@
 import { Button, Row, Col } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
-import StatCard from '../../components/stat-card/stat-card';
-import UserListItem from '../../components/user-list-item/user-list-item';
+import StatCard from '../../../components/stat-card/stat-card';
+import UserListItem from '../../../components/user-list-item/user-list-item';
 import { useEffect, useState } from 'react';
-import type { UserDTO } from '../../dto/user-dto';
-import { changeIsUserBanned, getAllUsers } from '../../service/user-service';
-import Spinner from '../../components/spinner/spinner';
-import ErrorCard from '../../components/error-card/error-card';
-import { API_BASE_URL } from '../../service/api-config';
+import type { UserDTO } from '../../../dto/user-dto';
+import { changeIsUserBanned, getAllUsers } from '../../../service/user-service';
+import Spinner from '../../../components/spinner/spinner';
+import ErrorCard from '../../../components/error-card/error-card';
+import { API_BASE_URL } from '../../../service/api-config';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, LineChart, CartesianGrid, XAxis, YAxis, Line } from 'recharts';
 import './user-management.css';
+import { getEvolutionData } from '../getEvolutionData';
 
 const base_url = API_BASE_URL;
 
@@ -78,29 +79,7 @@ export default function UserManagement() {
 
     const COLORS = ['#26D12A', '#dc3545'];
 
-    const evolutionData = users
-        .filter(u => u.createdAt)
-        // Order from old to recent
-        .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-        // Group by month
-        .reduce((acc, user) => {
-            const date = new Date(user.createdAt);
-            const month = date.toLocaleDateString('es-ES', { month: 'short', year: 'numeric' });
-            const period = month.charAt(0).toUpperCase() + month.slice(1);
-
-            const existing = acc.find(item => item.period === period);
-            if (existing)
-                existing.new += 1;
-            else
-                acc.push({ period, new: 1, total: 0 });
-
-            return acc;
-        }, [] as { period: string; new: number; total: number }[])
-        // Calculate total accumulate
-        .map((item, index, arr) => {
-            item.total = arr.slice(0, index + 1).reduce((sum, current) => sum + current.new, 0);
-            return item;
-        });
+    const evolutionData = getEvolutionData(users, u => u.createdAt);
 
     return (
         <>

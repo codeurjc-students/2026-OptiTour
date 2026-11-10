@@ -1,5 +1,6 @@
 package es.urjc.tfg.optitour.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 
 @Entity
 public class PointOfInterest { // Abbreviated "POI" in the rest of the project's variables and comments
@@ -19,23 +21,31 @@ public class PointOfInterest { // Abbreviated "POI" in the rest of the project's
     private long id;
 
     private String name;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public List<Image> getImages() {
-        return images;
-    }
-
     private String description;
     private String city;
     private String address;
     private String coords;
+
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
+    }
 
     @OneToMany(mappedBy = "poi", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
@@ -111,6 +121,18 @@ public class PointOfInterest { // Abbreviated "POI" in the rest of the project's
 
     public void setTours(List<Tour> tours) {
         this.tours = tours;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public List<Image> getImages() {
+        return images;
     }
 
 }

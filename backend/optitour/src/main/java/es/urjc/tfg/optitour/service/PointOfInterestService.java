@@ -2,6 +2,8 @@ package es.urjc.tfg.optitour.service;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -31,5 +33,9 @@ public class PointOfInterestService {
 
     public void savePoi(PointOfInterest poi) {
         repository.save(poi);
+    }
+
+    public Page<PointOfInterest> getPagedPois(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 }

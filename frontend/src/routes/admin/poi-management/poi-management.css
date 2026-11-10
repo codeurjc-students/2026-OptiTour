@@ -1,0 +1,21 @@
+.ot-poi-load-more-spinner .ot-spinner-wrap {
+    min-height: 0;
+    padding: 0;
+}
+
+@keyframes ot-poi-scale-fade-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.92) translateY(-15px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.ot-poi-list-item {
+    margin-bottom: 0.75rem;
+    animation: ot-poi-scale-fade-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}

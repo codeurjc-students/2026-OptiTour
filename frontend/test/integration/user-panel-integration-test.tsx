@@ -2,7 +2,7 @@ import { expect, test } from "vitest";
 import { fireEvent, render, screen, waitForElementToBeRemoved, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import "@testing-library/jest-dom/vitest";
-import UserManagement from "../../src/routes/admin/user-management";
+import UserManagement from "../../src/routes/admin/user-management/user-management";
 import { loginAs } from "./integration-test-setup";
 
 test('Shows spinner while fetching from API. Then, renders user panel', async () => {

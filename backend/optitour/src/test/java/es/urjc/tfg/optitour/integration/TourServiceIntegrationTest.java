@@ -3,15 +3,17 @@ package es.urjc.tfg.optitour.integration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import es.urjc.tfg.optitour.BaseIntegrationTest;
 import es.urjc.tfg.optitour.model.PointOfInterest;
 import es.urjc.tfg.optitour.model.Tour;
+import es.urjc.tfg.optitour.repository.PointOfInterestRepository;
 import es.urjc.tfg.optitour.repository.TourRepository;
 import es.urjc.tfg.optitour.service.TourService;
 
@@ -43,12 +46,16 @@ public class TourServiceIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private TourRepository repository;
 
+    @Autowired
+    private PointOfInterestRepository poiRepository;
+
     @BeforeEach // Given: We have a testcontainers database running in docker envoronment with
                 // some sample data:
     public void initSampleData() {
         // If in future we add more test, they'll use the same container. It's necessary
         // to delete data before each test
         repository.deleteAll();
+        poiRepository.deleteAll();
 
         for (int i = 0; i < 3; i++) {
             Tour tour = new Tour("Test tour " + i, "Test description " + i);
@@ -65,17 +72,20 @@ public class TourServiceIntegrationTest extends BaseIntegrationTest {
         }
     }
 
+    @AfterEach
+    public void tearDown() {
+        repository.deleteAll();
+        poiRepository.deleteAll();
+    }
+
     @Test
-    @DisplayName("getAllTours method should return the Testcontainers databse example tours")
-    void getAllToursTest() {
-        List<Tour> testTours = service.getAllTours();
+    @DisplayName("getPagedTours method should return the requested page from the database")
+    void getPagedToursTest() {
+        Page<Tour> result = service.getPagedTours(PageRequest.of(1, 2));
 
-        assertEquals(3, testTours.size());
-
-        for (Tour tour : testTours) {
-            assertTrue(tour.getName().contains("Test tour "));
-            assertTrue(tour.getDescription().contains("Test description "));
-        }
+        assertEquals(1, result.getContent().size());
+        assertEquals(3, result.getTotalElements());
+        assertEquals("Test tour 2", result.getContent().get(0).getName());
     }
 
     @Test
@@ -88,8 +98,7 @@ public class TourServiceIntegrationTest extends BaseIntegrationTest {
         // We get the id directly from first tour so we don't need to deduct new ids in
         // sucesive tests
 
-        List<Tour> allTours = service.getAllTours();
-        Long firstTourId = allTours.get(0).getId();
+        Long firstTourId = repository.findAll().get(0).getId();
 
         // When: we call the method with correct ID
         Tour correctResult = service.getTourById(firstTourId);
