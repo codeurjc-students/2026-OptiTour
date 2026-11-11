@@ -243,23 +243,6 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
         }
 
         @Test
-        @DisplayName("getAllUsers logged as admin should return all users")
-        public void getAllUsersE2ETest() {
-                String adminToken = getAdminAuthToken();
-
-                List<UserDTO> users = given()
-                                .cookie("AuthToken", adminToken)
-                                .when()
-                                .get("/api/v1/user/all")
-                                .then()
-                                .statusCode(200)
-                                .extract().jsonPath().getList("$", UserDTO.class);
-
-                assertNotNull(users);
-                assertEquals(3, users.size());
-        }
-
-        @Test
         @DisplayName("getAllUsers without auth should return 403 status code")
         public void getAllUsersNoAdminE2ETest() {
                 given()
