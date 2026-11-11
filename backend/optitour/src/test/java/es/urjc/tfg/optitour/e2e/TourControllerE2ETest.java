@@ -84,7 +84,11 @@ public class TourControllerE2ETest extends BaseIntegrationTest {
         }
 
         private long getFirstId() {
-                return repository.findAll().get(0).getId();
+                return repository.findAll().stream()
+                                .filter(t -> "Test tour 0".equals(t.getName()))
+                                .findFirst()
+                                .map(Tour::getId)
+                                .orElseThrow();
         }
 
         @Test

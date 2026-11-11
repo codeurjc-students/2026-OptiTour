@@ -98,7 +98,11 @@ public class TourServiceIntegrationTest extends BaseIntegrationTest {
         // We get the id directly from first tour so we don't need to deduct new ids in
         // sucesive tests
 
-        Long firstTourId = repository.findAll().get(0).getId();
+        Long firstTourId = repository.findAll().stream()
+                .filter(t -> "Test tour 0".equals(t.getName()))
+                .findFirst()
+                .map(Tour::getId)
+                .orElseThrow();
 
         // When: we call the method with correct ID
         Tour correctResult = service.getTourById(firstTourId);

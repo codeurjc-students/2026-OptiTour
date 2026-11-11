@@ -132,7 +132,11 @@ public class PointOfInterestControllerE2ETest extends BaseIntegrationTest {
     }
 
     private long getFirstId() {
-        return repository.findAll().get(0).getId();
+        return repository.findAll().stream()
+                .filter(p -> "Poi name 0".equals(p.getName()))
+                .findFirst()
+                .map(PointOfInterest::getId)
+                .orElseThrow();
     }
 
     @Test

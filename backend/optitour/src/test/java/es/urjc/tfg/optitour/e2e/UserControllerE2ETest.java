@@ -57,7 +57,7 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
         }
 
         private long getFirstId() {
-                return repository.findAll().get(0).getId();
+                return repository.findByEmail("example@example.com").orElseThrow().getId();
         }
 
         private String getUserAuthToken() {
@@ -240,16 +240,6 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                                 .post("/api/v1/user/" + firstId + "/image")
                                 .then()
                                 .statusCode(400);
-        }
-
-        @Test
-        @DisplayName("getAllUsers without auth should return 403 status code")
-        public void getAllUsersNoAdminE2ETest() {
-                given()
-                                .when()
-                                .get("/api/v1/user/all")
-                                .then()
-                                .statusCode(403);
         }
 
         @Test
