@@ -71,8 +71,14 @@ public class PointOfInterestControllerE2ETest extends BaseIntegrationTest {
         repository.deleteAll();
         userRepository.deleteAll();
 
-        User adminUser = new User("admin@optitour.com", passwordEncoder.encode("Admin1234"), "admin", "111 111 111", false, "USER", "ADMIN");
+        User adminUser = new User("admin@optitour.com", passwordEncoder.encode("Admin1234"), "admin", "111 111 111",
+                false, "USER", "ADMIN");
         userRepository.save(adminUser);
+
+        User newUser = new User("example@example.com", passwordEncoder.encode("demo1234"), "example", "111 111 111",
+                false,
+                "USER");
+        userRepository.save(newUser);
 
         poiNames = new ArrayList<>();
         poiDescriptions = new ArrayList<>();
@@ -112,8 +118,25 @@ public class PointOfInterestControllerE2ETest extends BaseIntegrationTest {
                 .extract().cookie("AuthToken");
     }
 
+    private String getUserAuthToken() {
+        LoginRequest credentials = new LoginRequest("example@example.com", "demo1234");
+
+        return given()
+                .contentType(ContentType.JSON)
+                .body(credentials)
+                .when()
+                .post("/api/v1/auth/login")
+                .then()
+                .statusCode(200)
+                .extract().cookie("AuthToken");
+    }
+
     private long getFirstId() {
-        return repository.findAll().get(0).getId();
+        return repository.findAll().stream()
+                .filter(p -> "Poi name 0".equals(p.getName()))
+                .findFirst()
+                .map(PointOfInterest::getId)
+                .orElseThrow();
     }
 
     @Test
@@ -143,7 +166,7 @@ public class PointOfInterestControllerE2ETest extends BaseIntegrationTest {
 
     @Test
     @DisplayName("Checks if pageable point of interest endpoint works properly")
-    void pageablePoisTest() {
+    void pageablePoisE2ETest() {
         String adminToken = getAdminAuthToken();
 
         List<PointOfInterestDTO> result = given()
@@ -169,6 +192,19 @@ public class PointOfInterestControllerE2ETest extends BaseIntegrationTest {
                 assertTrue(image.id() > 0);
             }
         }
+    }
+
+    @Test
+    @DisplayName("Checks if pageable point of interest endpoint works properly")
+    void pageablePoisNoAuthE2ETest() {
+        String userToken = getUserAuthToken();
+
+        given()
+                .cookie("AuthToken", userToken)
+                .when()
+                .get("/api/v1/point-of-interest/?page=0&size=2")
+                .then()
+                .statusCode(403);
     }
 
     @AfterEach

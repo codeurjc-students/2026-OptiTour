@@ -32,7 +32,7 @@ export default function POIManagement() {
     const [isLastPage, setIsLastPage] = useState<boolean>(false);
     const [poiAmmount, setPoiAmmount] = useState<number>(0);
 
-    async function handleGetPois(page: number, size: number, isUseEffect: boolean) {
+    async function handleGetPois(page: number, size: number, isUseEffct: boolean) {
         try {
             const response = await getPoisByPage(page, size);
             setPois([...(pois || []), ...response.content])
@@ -42,8 +42,16 @@ export default function POIManagement() {
 
             setIsLastPage(response.page.number + 1 >= response.page.totalPages);
 
-            if (isUseEffect)
+            if (isUseEffct) {
                 setPoiAmmount(response.page.totalElements);
+                const newPage = currentPage + 2;
+                setCurrentPage(newPage);
+            }
+            else {
+                const newPage = currentPage + 1;
+                setCurrentPage(newPage);
+            }
+
         } catch {
             setError("Se ha producido un error al cargar los datos de los puntos de interés.");
         } finally {
@@ -101,6 +109,8 @@ export default function POIManagement() {
                             </LineChart>
                         </ResponsiveContainer>
                     </div>
+
+                    <h2 className="ot-panel-subtitle">Lista de puntos de interés</h2>
 
                     {error ? (
                         <ErrorCard text={error} />

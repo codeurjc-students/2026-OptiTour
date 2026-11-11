@@ -2,6 +2,8 @@ package es.urjc.tfg.optitour.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +27,7 @@ public class TourController {
     }
 
     @GetMapping("/")
-    public Page<TourDTO> getPagedTours(Pageable pageable) {
+    public Page<TourDTO> getPagedTours(@PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         return service.getPagedTours(pageable).map(mapper::toDTO);
     }
 

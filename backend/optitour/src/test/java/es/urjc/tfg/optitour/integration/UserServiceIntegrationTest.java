@@ -22,6 +22,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
@@ -196,39 +198,13 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("getAllUsers method should return all users in database")
-    public void getAllUsersIntegrationTest() {
-        List<User> allUsers = new ArrayList<>();
-        allUsers = service.getAllUsers();
-
-        assertEquals(3, allUsers.size());
-
-        for (int i = 0; i < 3; i++) {
-            assertEquals("example" + i + "@example.com", allUsers.get(i).getEmail());
-        }
-    }
-
-    @Test
-    @DisplayName("getAllUsers method should throw if there is no users")
-    public void getAllUsersWithNoUsersIntegrationTest() {
-        repository.deleteAll();
-
-        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
-            service.getAllUsers();
-        });
-
-        assertEquals(e.getMessage(), "404 NOT_FOUND \"No hay ningún usuario registrado.\"");
-    }
-
-    @Test
     @DisplayName("deleteById method should delete user with correct pass")
     public void deleteUserByIdIntegrationTest() {
         long firstId = getFirstId();
         User targetUser = service.getUserById(firstId);
         service.deleteUserById(targetUser.getEmail(), "demo1234");
 
-        List<User> remainingUsers = new ArrayList<>();
-        remainingUsers = service.getAllUsers();
+        List<User> remainingUsers = repository.findAll();
 
         assertEquals(2, remainingUsers.size());
 
@@ -265,5 +241,15 @@ public class UserServiceIntegrationTest extends BaseIntegrationTest {
 
         User editedUser = service.getUserById(targetId);
         assertTrue(service.checkUserPassword(editedUser, "Edited1234"));
+    }
+
+    @Test
+    @DisplayName("getPagedUsers method should return the requested page from the database")
+    void getPagedPoisTest() {
+        Page<User> result = service.getPagedUsers(PageRequest.of(0, 2));
+
+        assertEquals(2, result.getContent().size());
+        assertEquals(3, result.getTotalElements());
+        assertEquals("example0@example.com", result.getContent().get(0).getEmail());
     }
 }

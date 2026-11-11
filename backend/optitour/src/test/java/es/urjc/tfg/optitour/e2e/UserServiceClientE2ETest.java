@@ -277,7 +277,7 @@ public class UserServiceClientE2ETest {
         WebElement viewProfileBtn = userCard.findElement(By.xpath(".//a[normalize-space()='Ver perfil']"));
         viewProfileBtn.click();
 
-        wait.until(urlToBe("http://localhost:5173/admin/users/1"));
+        wait.until(urlToBe("http://localhost:5173/admin/users/2"));
 
         WebElement userName = wait.until(visibilityOfElementLocated(By.className("ot-my-profile__name")));
         assertEquals("Carmen García", userName.getText());
