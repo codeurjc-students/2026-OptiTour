@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -95,6 +96,7 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                 RestAssured.useRelaxedHTTPSValidation();
                 jdbcTemplate.execute("TRUNCATE TABLE tour RESTART IDENTITY CASCADE");
                 jdbcTemplate.execute("TRUNCATE TABLE point_of_interest RESTART IDENTITY CASCADE");
+                jdbcTemplate.execute("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
 
                 repository.deleteAll();
 
@@ -788,5 +790,10 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                                 .statusCode(400)
                                 .body("message", equalTo(
                                                 "La contraseña debe contener al menos una letra mayúscula, una minúscula y un número."));
+        }
+
+        @AfterEach
+        void tearDown() {
+                jdbcTemplate.execute("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
         }
 }

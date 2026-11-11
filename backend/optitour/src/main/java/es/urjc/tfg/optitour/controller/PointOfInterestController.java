@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -33,7 +35,7 @@ public class PointOfInterestController {
     }
 
     @GetMapping("/")
-    public Page<PointOfInterestDTO> getPagedPois(Pageable pageable) {
+    public Page<PointOfInterestDTO> getPagedPois(@PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         return service.getPagedPois(pageable).map(mapper::toDTO);
     }
 
