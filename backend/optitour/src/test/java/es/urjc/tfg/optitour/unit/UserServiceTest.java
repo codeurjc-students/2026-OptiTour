@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 import java.nio.charset.StandardCharsets;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -21,6 +22,9 @@ import javax.sql.rowset.serial.SerialException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
@@ -404,5 +408,21 @@ public class UserServiceTest {
 
         verify(repositoryMock).save(any(User.class));
         assertEquals("Edit1234", result);
+    }
+
+    @Test
+    @DisplayName("getPagedTours method should return the requested page")
+    void getPagedToursTest() {
+        List<User> users = List.of(testUser, testAdmin);
+        PageRequest pageRequest = PageRequest.of(0, 2);
+        when(repositoryMock.findAll(pageRequest))
+                .thenReturn(new PageImpl<>(users.subList(0, 2), pageRequest, users.size()));
+
+        Page<User> result = testService.getPagedUsers(pageRequest);
+
+        assertEquals(2, result.getContent().size());
+        assertEquals(2, result.getTotalElements());
+        assertEquals("example@example.com", result.getContent().get(0).getEmail());
+        verify(repositoryMock).findAll(pageRequest);
     }
 }

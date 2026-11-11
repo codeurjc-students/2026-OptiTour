@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.security.Principal;
 import java.sql.SQLException;
-import java.util.Collection;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -120,9 +121,9 @@ public class UserController {
         return ResponseEntity.created(location).body(imageMapper.toDTO(image));
     }
 
-    @GetMapping("/all")
-    public Collection<UserDTO> getUsers() {
-        return mapper.toDTOs(userService.getAllUsers());
+    @GetMapping("/")
+    public Page<UserDTO> getUsers(Pageable pageable) {
+        return userService.getPagedUsers(pageable).map(mapper::toDTO);
     }
 
     @PutMapping("/{id}/ban")

@@ -545,6 +545,40 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                                 .then()
                                 .statusCode(400);
         }
+
+        @Test
+        @DisplayName("Checks if pageable point of interest endpoint works properly")
+        void pageableUsers2ETest() {
+                String adminToken = getAdminAuthToken();
+
+                List<UserDTO> result = given()
+                                .cookie("AuthToken", adminToken)
+                                .when()
+                                .get("/api/v1/user/?page=0&size=2")
+                                .then()
+                                .statusCode(200)
+                                .extract().jsonPath().getList("content", UserDTO.class);
+
+                assertNotNull(result);
+                assertEquals(2, result.size());
+
+                assertEquals("example@example.com", result.get(0).email());
+                assertEquals("admin@optitour.com", result.get(1).email());
+        }
+
+        @Test
+        @DisplayName("Checks if pageable point of interest endpoint works properly")
+        void pageableUsersNoAuthE2ETest() {
+                String userToken = getUserAuthToken();
+
+                given()
+                                .cookie("AuthToken", userToken)
+                                .when()
+                                .get("/api/v1/user/?page=0&size=2")
+                                .then()
+                                .statusCode(403);
+        }
+
         // ---------------- FIELD VALIDATION TESTS --------------------------------
 
         // ---------------- EMAIL VALIDATION TESTS --------------------------------
