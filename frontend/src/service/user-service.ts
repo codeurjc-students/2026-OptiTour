@@ -43,8 +43,8 @@ export async function uploadUserImage(image: File, id: number) {
     return response;
 }
 
-export async function getAllUsers() {
-    const url = `${base_url}/user/all`;
+export async function getPagedUsers(page: number, size: number) {
+    const url = `${base_url}/user/?page=${page}&size=${size}`;
 
     const response = await fetch(url, {
         credentials: "include"

@@ -59,7 +59,7 @@ test('Checks if block button works properly', async () => {
     await within(userCard).findByRole('button', { name: /Bloquear/i });
 });
 
-test('Checks if front forbids admins to block themselves', async () => {
+test('Checks if front forbides admins to block themselves', async () => {
     await loginAs("admin@optitour.com", "Admin1234");
 
     render(
