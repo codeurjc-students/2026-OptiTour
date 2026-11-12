@@ -145,7 +145,7 @@ public class UserController {
     }
 
     @PutMapping("/")
-    public UserDTO editUser(@RequestBody UserEditDTO editedUser, HttpServletRequest request) {
+    public UserDTO editUser(@Valid @RequestBody UserEditDTO editedUser, HttpServletRequest request) {
         String loggedEmail = request.getUserPrincipal().getName();
         return mapper.toDTO(userService.editLoggedUser(loggedEmail, editedUser));
     }
