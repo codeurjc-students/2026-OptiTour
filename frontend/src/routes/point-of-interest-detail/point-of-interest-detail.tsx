@@ -114,18 +114,20 @@ export default function PointOfInterestDetail() {
                                 <Card className="ot-poi-detail__sidebar-card">
                                     <span className="ot-poi-detail__sidebar-heading">Tours en los que se visita</span>
                                     <div className="ot-poi-detail__tour-list">
-                                        {poi?.tours.map((tour) => (
-                                            <ListItem
-                                                key={tour.id}
-                                                title={tour.name}
-                                                to={`/tour/${tour.id}`}
-                                                actionLabel="Ver más"
-                                                size="sm"
-                                                imageSrc={tour.images?.length
-                                                    ? `${base_url}/image/${tour.images[0].id}`
-                                                    : undefined}
-                                            />
-                                        ))}
+                                        {poi?.tours.length == 0 ? <p>Este punto de interés no aparece en ningún tour.</p>
+                                            :
+                                            poi?.tours.map((tour) => (
+                                                <ListItem
+                                                    key={tour.id}
+                                                    title={tour.name}
+                                                    to={`/tour/${tour.id}`}
+                                                    actionLabel="Ver más"
+                                                    size="sm"
+                                                    imageSrc={tour.images?.length
+                                                        ? `${base_url}/image/${tour.images[0].id}`
+                                                        : undefined}
+                                                />
+                                            ))}
                                     </div>
                                 </Card>
                             </Col>

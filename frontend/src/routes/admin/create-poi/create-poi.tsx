@@ -39,7 +39,17 @@ export default function CreatePointOfInterest() {
                 coords: `${data.lat},${data.lng}`
             });
 
-            navigate("/point-of-interest/" + response.id);
+            navigate("/admin/poi", {
+                state: {
+                    showModal: true,
+                    modalTitle: "Punto de interés creado",
+                    modalMessage: `Se ha creado el siguiente punto de interés:\n ${response.name}\n ¿Quieres ver su detalle?`,
+                    navButton: true,
+                    navButtonText: "Sí, ver detalle",
+                    navUrl: `/point-of-interest/${response.id}`,
+                    buttonText: "No, volver al panel",
+                }
+            });
         }
         catch (err) {
             err instanceof Error
