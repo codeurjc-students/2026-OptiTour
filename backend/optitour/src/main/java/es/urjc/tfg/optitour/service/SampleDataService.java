@@ -144,17 +144,25 @@ public class SampleDataService {
         @EventListener(ApplicationReadyEvent.class)
         @Transactional
         public void init() throws IOException {
+                if (userRepository.findByEmail("admin@optitour.com").isEmpty()) {
+                        User admin = new User("admin@optitour.com", passwordEncoder.encode("Admin1234"), "Admin",
+                                        "111 111 111", false, loadProfilePicture("admin.png"), "USER", "ADMIN");
+                        admin.setCreatedAt(LocalDateTime.now().minusMonths(6));
+                        userRepository.save(admin);
+                }
 
                 if (userRepository.findByEmail("carmen@example.com").isEmpty()) {
                         LocalDateTime now = LocalDateTime.now();
 
                         User carmen = new User("carmen@example.com", passwordEncoder.encode(password),
-                                        "Carmen García", "611 223 344", false, loadProfilePicture("carmen.jpg"), "USER");
+                                        "Carmen García", "611 223 344", false, loadProfilePicture("carmen.jpg"),
+                                        "USER");
                         carmen.setCreatedAt(now.minusMonths(5));
                         userRepository.save(carmen);
 
                         User laura = new User("laura@example.com", passwordEncoder.encode(password),
-                                        "Laura Martínez", "655 443 322", false, loadProfilePicture("laura.jpg"), "USER");
+                                        "Laura Martínez", "655 443 322", false, loadProfilePicture("laura.jpg"),
+                                        "USER");
                         laura.setCreatedAt(now.minusMonths(4));
                         userRepository.save(laura);
 
@@ -184,26 +192,22 @@ public class SampleDataService {
                         userRepository.save(carlos);
 
                         User david = new User("david@example.com", passwordEncoder.encode(password),
-                                        "David Rodríguez", "699 111 222", false, loadProfilePicture("david.jpg"), "USER");
+                                        "David Rodríguez", "699 111 222", false, loadProfilePicture("david.jpg"),
+                                        "USER");
                         david.setCreatedAt(now.minusMonths(1));
                         userRepository.save(david);
 
                         User alejandro = new User("alejandro@example.com", passwordEncoder.encode(password),
-                                        "Alejandro Ruiz", "644 332 211", false, loadProfilePicture("alejandro.jpg"), "USER");
+                                        "Alejandro Ruiz", "644 332 211", false, loadProfilePicture("alejandro.jpg"),
+                                        "USER");
                         alejandro.setCreatedAt(now);
                         userRepository.save(alejandro);
 
                         User daniel = new User("daniel@example.com", passwordEncoder.encode(password),
-                                        "Daniel Martín", "666 555 444", false, loadProfilePicture("daniel.jpg"), "USER");
+                                        "Daniel Martín", "666 555 444", false, loadProfilePicture("daniel.jpg"),
+                                        "USER");
                         daniel.setCreatedAt(now);
                         userRepository.save(daniel);
-                }
-
-                if (userRepository.findByEmail("admin@optitour.com").isEmpty()) {
-                        User admin = new User("admin@optitour.com", passwordEncoder.encode("Admin1234"), "Admin",
-                                        "111 111 111", false, loadProfilePicture("admin.png"), "USER", "ADMIN");
-                        admin.setCreatedAt(LocalDateTime.now().minusMonths(6));
-                        userRepository.save(admin);
                 }
 
                 if (tourRepository.count() == 0)

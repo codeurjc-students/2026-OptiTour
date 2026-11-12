@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,7 +58,7 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
         }
 
         private long getFirstId() {
-                return repository.findAll().get(0).getId();
+                return repository.findByEmail("example@example.com").orElseThrow().getId();
         }
 
         private String getUserAuthToken() {
@@ -95,6 +96,7 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                 RestAssured.useRelaxedHTTPSValidation();
                 jdbcTemplate.execute("TRUNCATE TABLE tour RESTART IDENTITY CASCADE");
                 jdbcTemplate.execute("TRUNCATE TABLE point_of_interest RESTART IDENTITY CASCADE");
+                jdbcTemplate.execute("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
 
                 repository.deleteAll();
 
@@ -240,33 +242,6 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                                 .post("/api/v1/user/" + firstId + "/image")
                                 .then()
                                 .statusCode(400);
-        }
-
-        @Test
-        @DisplayName("getAllUsers logged as admin should return all users")
-        public void getAllUsersE2ETest() {
-                String adminToken = getAdminAuthToken();
-
-                List<UserDTO> users = given()
-                                .cookie("AuthToken", adminToken)
-                                .when()
-                                .get("/api/v1/user/all")
-                                .then()
-                                .statusCode(200)
-                                .extract().jsonPath().getList("$", UserDTO.class);
-
-                assertNotNull(users);
-                assertEquals(3, users.size());
-        }
-
-        @Test
-        @DisplayName("getAllUsers without auth should return 403 status code")
-        public void getAllUsersNoAdminE2ETest() {
-                given()
-                                .when()
-                                .get("/api/v1/user/all")
-                                .then()
-                                .statusCode(403);
         }
 
         @Test
@@ -545,6 +520,40 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                                 .then()
                                 .statusCode(400);
         }
+
+        @Test
+        @DisplayName("Checks if pageable point of interest endpoint works properly")
+        void pageableUsers2ETest() {
+                String adminToken = getAdminAuthToken();
+
+                List<UserDTO> result = given()
+                                .cookie("AuthToken", adminToken)
+                                .when()
+                                .get("/api/v1/user/?page=0&size=2")
+                                .then()
+                                .statusCode(200)
+                                .extract().jsonPath().getList("content", UserDTO.class);
+
+                assertNotNull(result);
+                assertEquals(2, result.size());
+
+                assertEquals("example@example.com", result.get(0).email());
+                assertEquals("admin@optitour.com", result.get(1).email());
+        }
+
+        @Test
+        @DisplayName("Checks if pageable point of interest endpoint works properly")
+        void pageableUsersNoAuthE2ETest() {
+                String userToken = getUserAuthToken();
+
+                given()
+                                .cookie("AuthToken", userToken)
+                                .when()
+                                .get("/api/v1/user/?page=0&size=2")
+                                .then()
+                                .statusCode(403);
+        }
+
         // ---------------- FIELD VALIDATION TESTS --------------------------------
 
         // ---------------- EMAIL VALIDATION TESTS --------------------------------
@@ -781,5 +790,10 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                                 .statusCode(400)
                                 .body("message", equalTo(
                                                 "La contraseña debe contener al menos una letra mayúscula, una minúscula y un número."));
+        }
+
+        @AfterEach
+        void tearDown() {
+                jdbcTemplate.execute("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
         }
 }
