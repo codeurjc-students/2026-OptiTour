@@ -59,6 +59,10 @@
     margin-top: 1.5rem;
 }
 
+.ot-create-poi > .ot-error-card {
+    margin-top: 1.5rem;
+}
+
 .ot-create-poi__submit {
     background-color: var(--ot-primary);
     border-color: var(--ot-primary);
@@ -70,6 +74,19 @@
 .ot-create-poi__submit:hover {
     background-color: var(--ot-primary-dark);
     border-color: var(--ot-primary-dark);
+}
+
+.ot-create-poi__submit:disabled,
+.ot-create-poi__submit[disabled] {
+    background-color: var(--ot-disabled);
+    border-color: var(--ot-disabled);
+    color: #f3f4f6;
+    opacity: 0.75;
+}
+
+.ot-create-poi__submit:disabled:hover {
+    background-color: var(--ot-disabled);
+    border-color: var(--ot-disabled);
 }
 
 .ot-create-poi__cancel-btn {

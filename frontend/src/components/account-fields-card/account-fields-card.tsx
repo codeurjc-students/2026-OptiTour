@@ -11,7 +11,7 @@ export interface AccountFieldsCard {
 
 const base_url = API_BASE_URL;
 
-function AccountFieldsCard({ loggedUser }: AccountFieldsCard) {
+export default function AccountFieldsCard({ loggedUser }: AccountFieldsCard) {
     const [, setImage] = useState<File | null>(null);
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
     const [imageError, setImageError] = useState<boolean>(false);
@@ -127,5 +127,3 @@ function AccountFieldsCard({ loggedUser }: AccountFieldsCard) {
         </Card>
     );
 }
-
-export default AccountFieldsCard;
