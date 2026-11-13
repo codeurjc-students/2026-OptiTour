@@ -51,7 +51,7 @@ export default function FeedbackModal({
                 </Modal.Body>
             )}
             <Modal.Footer className="ot-modal__footer">
-                {navButton && <Button className="ot-modal__btn ot-modal__nav-btn" onClick={() => navigate(navUrl!)}>
+                {navButton && <Button className="ot-modal__btn ot-modal__nav-btn" onClick={() => { navigate(navUrl!); window.history.replaceState({}, ''); }}>
                     {navButtonText}
                 </Button>}
                 <Button className="ot-modal__btn" onClick={onHide}>

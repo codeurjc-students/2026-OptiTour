@@ -7,7 +7,10 @@ import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -17,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.Resource;
+import org.springframework.web.server.ResponseStatusException;
 
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.repository.ImageRepository;
@@ -87,6 +91,35 @@ public class ImageServiceTest {
         Image image = service.createImage(new ByteArrayInputStream(bytes));
         assertNotNull(image);
         assertNotNull(image.getImageFile());
+    }
+
+    @Test
+    @DisplayName("Checks if createImageList rejects a null stream")
+    void createImageListNullStreamTest() {
+        List<InputStream> streams = new ArrayList<>();
+        streams.add(null);
+
+        assertThrows(ResponseStatusException.class,
+            () -> service.createImageList(streams));
+    }
+
+    @Test
+    @DisplayName("Checks if createImageList rejects an empty stream")
+    void createImageListEmptyStreamTest() {
+        assertThrows(ResponseStatusException.class,
+                () -> service.createImageList(List.of(new ByteArrayInputStream(new byte[0]))));
+    }
+
+    @Test
+    @DisplayName("Checks if createImageList creates images from non-empty streams")
+    void createImageListTest() throws IOException {
+        List<Image> images = service.createImageList(List.of(
+                new ByteArrayInputStream(new byte[] { 1 }),
+                new ByteArrayInputStream(new byte[] { 2, 3 })));
+
+        assertNotNull(images);
+        assertNotNull(images.get(0).getImageFile());
+        assertNotNull(images.get(1).getImageFile());
     }
 
 }

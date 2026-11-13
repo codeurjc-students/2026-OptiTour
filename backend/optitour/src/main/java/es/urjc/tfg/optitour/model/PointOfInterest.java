@@ -26,6 +26,9 @@ public class PointOfInterest { // Abbreviated "POI" in the rest of the project's
     private String address;
     private String coords;
 
+    @OneToMany(mappedBy = "poi", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Image> images = new ArrayList<>();
+
     private LocalDateTime createdAt;
 
     @PrePersist
@@ -46,9 +49,6 @@ public class PointOfInterest { // Abbreviated "POI" in the rest of the project's
     public void setImages(List<Image> images) {
         this.images = images;
     }
-
-    @OneToMany(mappedBy = "poi", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Image> images = new ArrayList<>();
 
     @ManyToMany(mappedBy = "pois")
     private List<Tour> tours;

@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.server.ResponseStatusException;
 
+import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.PointOfInterest;
 import es.urjc.tfg.optitour.model.Tour;
 import es.urjc.tfg.optitour.repository.PointOfInterestRepository;
@@ -92,5 +93,21 @@ public class PointOfInterestServiceTest {
         assertEquals(3, result.getTotalElements());
         assertEquals("Poi name 0", result.getContent().get(0).getName());
         verify(repositoryMock).findAll(pageRequest);
+    }
+
+    @Test
+    @DisplayName("addImagesToPoi should link and add images to the point of interest")
+    void addImagesToPoiTest() {
+        PointOfInterest poi = pois.get(0);
+        Image image = new Image();
+        when(repositoryMock.findById(1L)).thenReturn(Optional.of(poi));
+        when(repositoryMock.save(poi)).thenReturn(poi);
+
+        List<Image> savedImages = service.addImagesToPoi(1L, List.of(image));
+
+        assertEquals(poi, image.getPoi());
+        assertEquals(List.of(image), poi.getImages());
+        assertEquals(List.of(image), savedImages);
+        verify(repositoryMock).save(poi);
     }
 }
