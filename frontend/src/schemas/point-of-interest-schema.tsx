@@ -1,5 +1,8 @@
 import z from "zod";
 
+const MAX_FILE_SIZE = 15 * 1024 * 1024 // 15MB
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
 export const poiSchema = z.object({
     name: z.string().trim()
         .min(1, "El nombre es obligatorio")
@@ -19,4 +22,9 @@ export const poiSchema = z.object({
     lng: z.string().trim()
         .min(1, "La longitud es obligatoria")
         .regex(/^-?\d{1,3}\.\d+$/, "Debe ser un número decimal (ej: -3.7038)")
+        .min(1, "Debes introducir la contraseña de nuevo."),
+    images: z.any()
+        // For image management, we can use file native file list created in dom
+        .refine((files) => !files || files.length === 0 || files[0].size <= MAX_FILE_SIZE, "")
+        .refine((files) => !files || files.length === 0 || ACCEPTED_IMAGE_TYPES.includes(files[0].type))
 });

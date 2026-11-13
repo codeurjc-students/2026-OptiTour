@@ -6,7 +6,7 @@ import { poiSchema } from '../../../schemas/point-of-interest-schema';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import { createPoi } from '../../../service/point-of-interest-service';
+import { createPoi, uploadPoiUIamges } from '../../../service/point-of-interest-service';
 import ErrorCard from '../../../components/error-card/error-card';
 
 export function meta() {
@@ -21,6 +21,8 @@ type CreatePoiFormData = z.output<typeof poiSchema>;
 export default function CreatePointOfInterest() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [selectedImages, setSelectedImages] = useState<File[]>([]);
+    const [_imagePreviews, setImagesPreviwews] = useState<string[]>([])
 
     const navigate = useNavigate();
 
@@ -28,6 +30,7 @@ export default function CreatePointOfInterest() {
         resolver: zodResolver(poiSchema),
         mode: "onChange"
     });
+
     async function handleSubmit(data: CreatePoiFormData) {
         setIsLoading(true);
         try {
@@ -38,6 +41,8 @@ export default function CreatePointOfInterest() {
                 address: data.address,
                 coords: `${data.lat},${data.lng}`
             });
+
+            await uploadPoiUIamges(selectedImages, response.id);
 
             navigate("/admin/poi", {
                 state: {
@@ -66,6 +71,26 @@ export default function CreatePointOfInterest() {
         handleSubmit: handleFormSubmit,
     } = methods;
 
+    function handlePreview(event: React.ChangeEvent<HTMLInputElement>) {
+        const files = Array.from(event.target.files ?? []);
+
+        let previews: string[] = []
+        files.forEach(file => {
+            previews.push(URL.createObjectURL(file));
+        });
+
+        setImagesPreviwews(previews);
+        setSelectedImages(previous => [...previous, ...files]);
+    }
+
+    function handleDeleteImage(deleteIndex: number) {
+        const deletedList = selectedImages.filter((_image, index) => {
+            return index != deleteIndex
+        });
+
+        setSelectedImages(deletedList);
+    }
+
     return (
         <FormProvider {...methods}>
             <Form onSubmit={handleFormSubmit(handleSubmit)} noValidate>
@@ -89,12 +114,52 @@ export default function CreatePointOfInterest() {
                         <Form.Group className="ot-create-poi__field">
                             <Form.Label>Imágenes</Form.Label>
                             <div className="ot-create-poi__images">
-                                <div className="ot-create-poi__image-slot"><span>Img</span></div>
-                                <div className="ot-create-poi__image-slot"><span>Img</span></div>
-                                <div className="ot-create-poi__image-slot"><span>Img</span></div>
-                                <Button variant="outline-dark" className="ot-create-poi__upload-btn">
-                                    Subir imágenes
-                                </Button>
+                                {selectedImages.length === 0 ? (
+                                    <Button
+                                        variant="outline-dark"
+                                        className="ot-create-poi__upload-btn"
+                                        as="label"
+                                        htmlFor="upload-image"
+                                    >
+                                        Subir imágenes
+                                    </Button>
+                                ) : (
+                                    <>
+                                        {selectedImages.map((image, index) => (
+                                            <div className="ot-create-poi__image-slot" key={image.name + index}>
+                                                <img src={URL.createObjectURL(image)} alt={`Imagen ${index + 1}`} />
+                                                <button
+                                                    type="button"
+                                                    className="ot-create-poi__remove-image"
+                                                    aria-label={`Eliminar imagen ${index + 1}`}
+                                                    onClick={() => { handleDeleteImage(index) }}
+                                                >
+                                                    X
+                                                </button>
+                                            </div>
+                                        ))}
+
+                                        <Button
+                                            variant="outline-dark"
+                                            className="ot-create-poi__upload-btn"
+                                            as="label"
+                                            htmlFor="upload-image"
+                                        >
+                                            +
+                                        </Button>
+                                    </>
+                                )}
+                                <input
+                                    {...methods.register("images")}
+                                    type="file"
+                                    className="d-none"
+                                    id="upload-image"
+                                    accept=".png, .jpg, .webp"
+                                    multiple
+                                    onChange={(event) => {
+                                        handlePreview(event);
+                                    }}
+                                />
                             </div>
                         </Form.Group>
 
