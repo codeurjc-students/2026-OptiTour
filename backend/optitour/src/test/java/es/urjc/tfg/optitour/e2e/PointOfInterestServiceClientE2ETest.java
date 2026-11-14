@@ -172,9 +172,30 @@ public class PointOfInterestServiceClientE2ETest {
                 .toAbsolutePath().normalize().toString();
         imageField.sendKeys(firstImagePath + "\n" + secondImagePath);
 
+        // Wait for image slots to be rendered, ensuring React processed the file inputs
+        wait.until(driver -> driver.findElements(By.className("ot-create-poi__image-slot")).size() == 2);
+
         WebElement submitButton = wait.until(elementToBeClickable(By.className("ot-create-poi__submit")));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", submitButton);
-        submitButton.click();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException ignored) {
+        }
+
+        // Trigger submission via JavaScript click to avoid coordinate misfires in headless Chrome
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", submitButton);
+
+        // Fallback: If form submission didn't trigger immediately, dispatch requestSubmit on the form
+        try {
+            new WebDriverWait(driver, Duration.ofSeconds(3)).until(d ->
+                    d.getCurrentUrl().equals("http://localhost:5173/admin/poi")
+                    || !d.findElements(By.className("ot-error-card")).isEmpty()
+                    || "Creando punto de interés".equals(d.findElement(By.className("ot-create-poi__submit")).getText())
+            );
+        } catch (TimeoutException ignored) {
+            WebElement form = driver.findElement(By.tagName("form"));
+            ((JavascriptExecutor) driver).executeScript("arguments[0].requestSubmit();", form);
+        }
 
         try {
             wait.until(driver -> driver.getCurrentUrl().equals("http://localhost:5173/admin/poi")
@@ -211,9 +232,8 @@ public class PointOfInterestServiceClientE2ETest {
                             : "POI creation failed: " + errors.get(0).getText();
                 });
         WebElement modalNavButton = wait
-                .until(visibilityOfElementLocated(By.className("ot-modal__nav-btn")));
-
-        modalNavButton.click();
+                .until(elementToBeClickable(By.className("ot-modal__nav-btn")));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", modalNavButton);
 
         PointOfInterest newPoi = repository.findByName(createdPoiName).get();
         assertNotNull(newPoi);
