@@ -3,6 +3,7 @@ package es.urjc.tfg.optitour.unit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.server.ResponseStatusException;
 
+import es.urjc.tfg.optitour.DTO.PointOfInterestCreateDTO;
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.PointOfInterest;
 import es.urjc.tfg.optitour.model.Tour;
@@ -62,8 +64,11 @@ public class PointOfInterestServiceTest {
 
         // Then: the received data is correct and not null
         assertNotNull(correctResult);
-        assertEquals(correctResult.getName(), "Poi name 1");
-        assertEquals(correctResult.getDescription(), "Poi desc 1");
+        assertEquals("Poi name 1", correctResult.getName());
+        assertEquals("Poi desc 1", correctResult.getDescription());
+        assertEquals("sample city", correctResult.getCity());
+        assertEquals("sample adress", correctResult.getAddress());
+        assertEquals("sample coords", correctResult.getCoords());
         assertNotNull(correctResult.getTours());
 
     }
@@ -82,7 +87,7 @@ public class PointOfInterestServiceTest {
 
     @Test
     @DisplayName("getPagedTours method should return the requested page")
-    void getPagedToursTest() {
+    void getPagedPoisTest() {
         PageRequest pageRequest = PageRequest.of(0, 2);
         when(repositoryMock.findAll(pageRequest))
                 .thenReturn(new PageImpl<>(pois.subList(0, 2), pageRequest, pois.size()));
@@ -109,5 +114,42 @@ public class PointOfInterestServiceTest {
         assertEquals(List.of(image), poi.getImages());
         assertEquals(List.of(image), savedImages);
         verify(repositoryMock).save(poi);
+    }
+
+    @Test
+    @DisplayName("saveNewPoi should call save repository method")
+    public void saveNewPoiTest() {
+        // Given: There isn't any Point Of Interest with "New POI" name
+        when(repositoryMock.findByName("New POI")).thenReturn(Optional.empty());
+
+        // When: We create a POI with that name
+        PointOfInterest result = service
+                .saveNewPoi(new PointOfInterestCreateDTO("New POI", "New POI desc", "Test city", "Test address",
+                        "1.11111,1.11111"));
+
+        // Then: repository should have saved it and returned object must have the same
+        // data.
+        verify(repositoryMock).save(any(PointOfInterest.class));
+        assertEquals("New POI", result.getName());
+        assertEquals("New POI desc", result.getDescription());
+        assertEquals("Test city", result.getCity());
+        assertEquals("Test address", result.getAddress());
+        assertEquals("1.11111,1.11111", result.getCoords());
+    }
+
+    @Test
+    @DisplayName("saveNewPoi with repeated name should throw exception")
+    public void saveNewPoiRepeatedName() {
+        when(repositoryMock.findByName("Poi name 0")).thenReturn(Optional.of(pois.get(0)));
+
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
+            service
+                    .saveNewPoi(new PointOfInterestCreateDTO("Poi name 0", "New POI desc", "Test city", "Test address",
+                            "1.11111,1.11111"));
+        });
+
+        assertEquals(
+                "400 BAD_REQUEST \"Ya exisite un punto de interés con este nombre. Prueba con otro punto de interés e inténtalo de nuevo\"",
+                e.getMessage());
     }
 }

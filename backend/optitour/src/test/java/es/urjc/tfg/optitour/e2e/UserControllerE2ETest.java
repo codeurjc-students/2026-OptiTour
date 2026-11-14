@@ -158,6 +158,13 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                                 .statusCode(201)
                                 .extract().as(UserDTO.class);
 
+                assertNotNull(createdDTO);
+                assertEquals(newUser.email(), createdDTO.email());
+                assertEquals(newUser.userName(), createdDTO.userName());
+                assertEquals(newUser.phoneNumber(), createdDTO.phoneNumber());
+                assertEquals(false, createdDTO.isBanned());
+                assertTrue(createdDTO.roles().contains("USER"));
+
                 Optional<User> createdOp = repository.findById(createdDTO.id());
                 User created = createdOp.get();
 
@@ -172,15 +179,7 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                 long firstId = getFirstId();
 
                 // It's necessary to be logged in in order to upload images
-                LoginRequest credentials = new LoginRequest("example@example.com", "demo1234");
-                String authToken = given()
-                                .contentType(ContentType.JSON)
-                                .body(credentials)
-                                .when()
-                                .post("api/v1/auth/login")
-                                .then()
-                                .statusCode(200)
-                                .extract().cookie("AuthToken");
+                String authToken = getUserAuthToken();
 
                 ImageDTO result = given()
                                 .cookie("AuthToken", authToken)
@@ -193,6 +192,7 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                                 .extract().as(ImageDTO.class);
 
                 assertNotNull(result);
+
                 User user = repository.findById(firstId).get();
                 assertNotNull(user.getProfileImage());
         }
@@ -481,8 +481,20 @@ public class UserControllerE2ETest extends BaseIntegrationTest {
                                 .statusCode(201)
                                 .extract().as(UserDTO.class);
 
+                assertNotNull(result);
                 assertEquals(newAdmin.email(), result.email());
+                assertEquals(newAdmin.userName(), result.userName());
+                assertEquals(newAdmin.phoneNumber(), result.phoneNumber());
+                assertEquals(false, result.isBanned());
                 assertTrue(result.roles().contains("ADMIN"));
+
+                User createdAdmin = repository.findById(result.id()).orElseThrow();
+                assertNotNull(createdAdmin);
+                assertEquals(newAdmin.email(), createdAdmin.getEmail());
+                assertEquals(newAdmin.userName(), createdAdmin.getUserName());
+                assertEquals(newAdmin.phoneNumber(), createdAdmin.getPhoneNumber());
+                assertEquals(false, createdAdmin.getIsBanned());
+                assertTrue(createdAdmin.getRoles().contains("ADMIN"));
         }
 
         @Test

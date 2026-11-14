@@ -21,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import es.urjc.tfg.optitour.BaseIntegrationTest;
+import es.urjc.tfg.optitour.DTO.PointOfInterestCreateDTO;
 import es.urjc.tfg.optitour.model.PointOfInterest;
 import es.urjc.tfg.optitour.model.Tour;
 import es.urjc.tfg.optitour.repository.PointOfInterestRepository;
@@ -87,6 +88,9 @@ public class PointOfInterestIntegrationTest extends BaseIntegrationTest {
         assertNotNull(correctResult);
         assertEquals("Poi name 1", correctResult.getName());
         assertEquals("Poi desc 1", correctResult.getDescription());
+        assertEquals("sample city", correctResult.getCity());
+        assertEquals("sample adress", correctResult.getAddress());
+        assertEquals("sample coords", correctResult.getCoords());
         assertNotNull(correctResult.getTours());
 
         // When: we call service method with incorrect id:
@@ -95,7 +99,8 @@ public class PointOfInterestIntegrationTest extends BaseIntegrationTest {
             service.getPointOfInterestById(invalidId);
         });
 
-        assertEquals("404 NOT_FOUND \"No existe ningún punto de interés con el ID " + invalidId + ".\"", ex.getMessage());
+        assertEquals("404 NOT_FOUND \"No existe ningún punto de interés con el ID " + invalidId + ".\"",
+                ex.getMessage());
     }
 
     @Test
@@ -106,5 +111,21 @@ public class PointOfInterestIntegrationTest extends BaseIntegrationTest {
         assertEquals(1, result.getContent().size());
         assertEquals(3, result.getTotalElements());
         assertEquals("Poi name 2", result.getContent().get(0).getName());
+    }
+
+    @Test
+    @DisplayName("saveNewPoi should save a new poi in database")
+    public void saveNewPoiIntegrationTest() {
+        service.saveNewPoi(new PointOfInterestCreateDTO("New POI", "New POI desc", "Test city", "Test address",
+                "1.11111,1.11111"));
+
+        PointOfInterest result = repository.findByName("New POI").get();
+
+        assertNotNull(result);
+        assertEquals("New POI", result.getName());
+        assertEquals("New POI desc", result.getDescription());
+        assertEquals("Test city", result.getCity());
+        assertEquals("Test address", result.getAddress());
+        assertEquals("1.11111,1.11111", result.getCoords());
     }
 }

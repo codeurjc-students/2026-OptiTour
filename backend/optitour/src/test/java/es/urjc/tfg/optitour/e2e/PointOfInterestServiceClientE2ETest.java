@@ -4,8 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 
@@ -22,6 +24,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import es.urjc.tfg.optitour.model.PointOfInterest;
 import es.urjc.tfg.optitour.repository.PointOfInterestRepository;
 
 @SpringBootTest
@@ -136,5 +139,53 @@ public class PointOfInterestServiceClientE2ETest {
 
         WebElement ammountCard = wait.until(visibilityOfElementLocated(By.className("ot-stat-card__value")));
         assertEquals(repository.count(), Integer.parseInt(ammountCard.getText()));
+    }
+
+    @Test
+    @DisplayName("Checks if poi creation form works properly, and then the detail is showed")
+    public void poiCreationFormClientE2ETest() {
+        driver.get("http://localhost:5173/admin/addpoi");
+        login("admin@optitour.com", "Admin1234");
+
+        wait.until(urlToBe("http://localhost:5173/admin/addpoi"));
+
+        String createdPoiName = "New POI " + System.currentTimeMillis();
+        WebElement nameField = wait.until(visibilityOfElementLocated(By.id("poiName")));
+        WebElement descField = driver.findElement(By.id("poiDescription"));
+        WebElement cityField = driver.findElement(By.id("poiCity"));
+        WebElement addressField = driver.findElement(By.id("poiAddress"));
+        WebElement latitudeField = driver.findElement(By.id("poiLat"));
+        WebElement longitudeField = driver.findElement(By.id("poiLng"));
+        WebElement imageField = driver.findElement(By.id("upload-image"));
+        WebElement submitButton = driver.findElement(By.className("ot-create-poi__submit"));
+
+        nameField.sendKeys(createdPoiName);
+        descField.sendKeys("New POI desc");
+        cityField.sendKeys("Test City");
+        addressField.sendKeys("Test address");
+        latitudeField.sendKeys("1.11111");
+        longitudeField.sendKeys("1.11111");
+        String firstImagePath = Path.of("..", "..", "docs", "images", "tour-service-e2e-test.png")
+                .toAbsolutePath().normalize().toString();
+        String secondImagePath = Path.of("..", "..", "docs", "images", "tour-service-client-integration-test.png")
+                .toAbsolutePath().normalize().toString();
+        imageField.sendKeys(firstImagePath + "\n" + secondImagePath);
+
+        wait.until(elementToBeClickable(submitButton));
+        submitButton.click();
+
+        wait.until(urlToBe("http://localhost:5173/admin/poi"));
+        WebElement modalNavButton = wait
+                .until(visibilityOfElementLocated(By.className("ot-modal__nav-btn")));
+
+        modalNavButton.click();
+
+        PointOfInterest newPoi = repository.findByName(createdPoiName).get();
+        assertNotNull(newPoi);
+
+        wait.until(urlToBe("http://localhost:5173/point-of-interest/" + newPoi.getId()));
+
+        WebElement poiName = wait.until(visibilityOfElementLocated(By.className("ot-poi-detail__title")));
+        assertEquals(createdPoiName, poiName.getText());
     }
 }

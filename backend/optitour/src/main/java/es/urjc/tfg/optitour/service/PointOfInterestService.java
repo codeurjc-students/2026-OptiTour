@@ -68,5 +68,4 @@ public class PointOfInterestService {
         int firstNewImageIndex = savedPoi.getImages().size() - images.size();
         return new ArrayList<>(savedPoi.getImages().subList(firstNewImageIndex, savedPoi.getImages().size()));
     }
-
 }

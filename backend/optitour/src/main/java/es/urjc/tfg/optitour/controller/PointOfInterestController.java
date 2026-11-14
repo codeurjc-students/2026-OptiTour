@@ -66,7 +66,7 @@ public class PointOfInterestController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<PointOfInterestDTO> PointOfInterestDTO(
+    public ResponseEntity<PointOfInterestDTO> createPoi(
             @Valid @RequestBody PointOfInterestCreateDTO newPoiDTO) {
         PointOfInterest newPoi = service.saveNewPoi(newPoiDTO);
         URI location = fromCurrentRequest().path("/{id}").buildAndExpand(newPoi.getId()).toUri();

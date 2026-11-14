@@ -545,7 +545,7 @@ public class UserServiceClientE2ETest {
         passwordRepeatField.sendKeys("Admin1234");
         submitButton.click();
 
-        wait.until(driver -> driver.getCurrentUrl().matches("http://localhost:5173/admin/users/\\d+"));
+        wait.until(urlToBe("http://localhost:5173/admin/users"));
 
         WebElement modalTitle = wait.until(visibilityOfElementLocated(By.cssSelector(".ot-modal__title.modal-title")));
         WebElement modalMessage = driver.findElement(By.className("ot-modal__body"));
@@ -554,7 +554,8 @@ public class UserServiceClientE2ETest {
         User newAdmin = op.orElseThrow();
 
         assertEquals("Nueva cuenta de administración creada", modalTitle.getText());
-        assertEquals("Se ha creado correctamente la siguiente cuenta de administrador: " + newAdmin.getUserName(),
+        assertEquals("Se ha creado correctamente la siguiente cuenta de administrador: \n "
+                + newAdmin.getUserName() + " \n ¿Quieres ver su perfil?",
                 modalMessage.getText());
     }
 
