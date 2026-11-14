@@ -181,20 +181,13 @@ public class PointOfInterestServiceClientE2ETest {
         } catch (InterruptedException ignored) {
         }
 
-        ((JavascriptExecutor) driver).executeScript(
-                "const btn = document.querySelector('.ot-create-poi__submit');" +
-                "if (btn) {" +
-                "  btn.scrollIntoView({block: 'center'});" +
-                "  btn.click();" +
-                "  setTimeout(() => {" +
-                "    const currentBtn = document.querySelector('.ot-create-poi__submit');" +
-                "    if (currentBtn && currentBtn.innerText.includes('Crear punto de interés')) {" +
-                "      const form = currentBtn.closest('form');" +
-                "      if (form) form.requestSubmit(currentBtn);" +
-                "    }" +
-                "  }, 1000);" +
-                "}"
-        );
+        WebElement submitButton = wait.until(elementToBeClickable(By.className("ot-create-poi__submit")));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", submitButton);
+        try {
+            submitButton.click();
+        } catch (Exception e) {
+            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", submitButton);
+        }
 
         try {
             wait.until(driver -> driver.getCurrentUrl().equals("http://localhost:5173/admin/poi")
