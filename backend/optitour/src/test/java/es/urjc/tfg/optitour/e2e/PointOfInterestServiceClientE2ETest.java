@@ -186,16 +186,6 @@ public class PointOfInterestServiceClientE2ETest {
         submitButton.click();
 
         try {
-            new WebDriverWait(driver, Duration.ofSeconds(3)).until(d ->
-                    d.getCurrentUrl().equals("http://localhost:5173/admin/poi")
-                    || !d.findElements(By.className("ot-error-card")).isEmpty()
-                    || !"Crear punto de interés".equals(d.findElement(By.className("ot-create-poi__submit")).getText())
-            );
-        } catch (TimeoutException ignored) {
-            submitButton.sendKeys(org.openqa.selenium.Keys.ENTER);
-        }
-
-        try {
             wait.until(driver -> driver.getCurrentUrl().equals("http://localhost:5173/admin/poi")
                     || !driver.findElements(By.className("ot-error-card")).isEmpty());
         } catch (TimeoutException e) {
