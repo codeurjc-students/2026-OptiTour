@@ -70,6 +70,7 @@ export default function CreatePointOfInterest() {
         formState: { isValid, errors },
         handleSubmit: handleFormSubmit,
     } = methods;
+    const imagesRegistration = methods.register("images");
 
     function handlePreview(event: React.ChangeEvent<HTMLInputElement>) {
         const files = Array.from(event.target.files ?? []);
@@ -89,6 +90,10 @@ export default function CreatePointOfInterest() {
         });
 
         setSelectedImages(deletedList);
+        methods.setValue("images", deletedList.length > 0 ? deletedList : undefined, {
+            shouldDirty: true,
+            shouldValidate: true
+        });
     }
 
     return (
@@ -150,17 +155,21 @@ export default function CreatePointOfInterest() {
                                     </>
                                 )}
                                 <input
-                                    {...methods.register("images")}
+                                    {...imagesRegistration}
                                     type="file"
                                     className="d-none"
                                     id="upload-image"
                                     accept=".png, .jpg, .webp"
                                     multiple
                                     onChange={(event) => {
+                                        imagesRegistration.onChange(event);
                                         handlePreview(event);
                                     }}
                                 />
                             </div>
+                            <Form.Control.Feedback type="invalid" className="d-block">
+                                {typeof errors.images?.message === "string" ? errors.images.message : null}
+                            </Form.Control.Feedback>
                         </Form.Group>
 
                         <Form.Group controlId="poiDescription" className="ot-create-poi__field">

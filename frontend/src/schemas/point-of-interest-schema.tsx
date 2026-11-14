@@ -24,7 +24,10 @@ export const poiSchema = z.object({
         .regex(/^-?\d{1,3}\.\d+$/, "Debe ser un número decimal (ej: -3.7038)")
         .min(1, "Debes introducir la contraseña de nuevo."),
     images: z.any()
+        .refine((files) => files && files.length > 0, "Debes seleccionar al menos una imagen")
         // For image management, we can use file native file list created in dom
-        .refine((files) => !files || files.length === 0 || files[0].size <= MAX_FILE_SIZE, "")
-        .refine((files) => !files || files.length === 0 || ACCEPTED_IMAGE_TYPES.includes(files[0].type))
+        .refine((files) => files && Array.from(files).every((file) => file.size <= MAX_FILE_SIZE),
+            "Cada imagen debe pesar menos de 15 MB")
+        .refine((files) => files && Array.from(files).every((file) => ACCEPTED_IMAGE_TYPES.includes(file.type)),
+            "Solo se permiten imágenes JPG, PNG o WEBP")
 });

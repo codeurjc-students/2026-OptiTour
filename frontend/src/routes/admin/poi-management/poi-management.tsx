@@ -98,7 +98,10 @@ export default function POIManagement() {
                     <div>
                         <div className="ot-panel-header">
                             <h1 className="ot-panel-title">Panel de gestión de puntos de interés</h1>
-                            <Button onClick={() => navigate('/admin/addpoi')} className="ot-panel-action ot-panel-action--inline">Añadir punto de interés</Button>
+                            <Button onClick={() => navigate('/admin/addpoi')} className="ot-panel-action ot-panel-action--inline">
+                                <i className="bi bi-plus-circle" />
+                                Añadir punto de interés
+                            </Button>
                         </div>
 
                         <Row className="g-3 mb-3">

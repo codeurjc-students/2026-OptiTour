@@ -130,6 +130,7 @@ export default function UserManagement() {
                         <h1 className="ot-panel-title">Panel de gestión de usuarios</h1>
 
                         <Button onClick={() => navigate('/admin/create')} className="ot-panel-action ot-panel-action--inline">
+                            <i className="bi bi-plus-circle"></i>
                             Crear nueva cuenta de administración
                         </Button>
                     </div>
