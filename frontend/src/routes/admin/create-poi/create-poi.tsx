@@ -42,7 +42,11 @@ export default function CreatePointOfInterest() {
                 coords: `${data.lat},${data.lng}`
             });
 
-            await uploadPoiUIamges(selectedImages, response.id);
+            const imagesToUpload = selectedImages && selectedImages.length > 0
+                ? selectedImages
+                : (data.images ? Array.from(data.images as FileList | File[]) : []);
+
+            await uploadPoiUIamges(imagesToUpload, response.id);
 
             navigate("/admin/poi", {
                 state: {

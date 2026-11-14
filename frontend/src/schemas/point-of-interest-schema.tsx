@@ -26,8 +26,9 @@ export const poiSchema = z.object({
     images: z.any()
         .refine((files) => files && files.length > 0, "Debes seleccionar al menos una imagen")
         // For image management, we can use file native file list created in dom
-        .refine((files) => files && Array.from(files).every((file) => file.size <= MAX_FILE_SIZE),
+        .refine((files) => files && Array.from(files).every((file: any) => file.size <= MAX_FILE_SIZE),
             "Cada imagen debe pesar menos de 15 MB")
-        .refine((files) => files && Array.from(files).every((file) => ACCEPTED_IMAGE_TYPES.includes(file.type)),
-            "Solo se permiten imágenes JPG, PNG o WEBP")
+        .refine((files) => files && Array.from(files).every((file: any) =>
+            ACCEPTED_IMAGE_TYPES.includes(file.type) || (file.name && /\.(jpe?g|png|webp)$/i.test(file.name))
+        ), "Solo se permiten imágenes JPG, PNG o WEBP")
 });

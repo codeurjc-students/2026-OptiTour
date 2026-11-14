@@ -174,7 +174,14 @@ public class PointOfInterestServiceClientE2ETest {
         wait.until(elementToBeClickable(submitButton));
         submitButton.click();
 
-        wait.until(urlToBe("http://localhost:5173/admin/poi"));
+        wait.until(driver -> driver.getCurrentUrl().equals("http://localhost:5173/admin/poi")
+                || !driver.findElements(By.className("ot-error-card")).isEmpty());
+        assertEquals("http://localhost:5173/admin/poi", driver.getCurrentUrl(),
+                () -> {
+                    List<WebElement> errors = driver.findElements(By.className("ot-error-card"));
+                    return errors.isEmpty() ? "POI creation timed out without navigating to /admin/poi"
+                            : "POI creation failed: " + errors.get(0).getText();
+                });
         WebElement modalNavButton = wait
                 .until(visibilityOfElementLocated(By.className("ot-modal__nav-btn")));
 
