@@ -47,6 +47,7 @@
   color: var(--ot-text-muted);
   line-height: 1.5;
   text-align: center;
+  white-space: pre-line;
 }
 
 .ot-modal .modal-footer {
@@ -76,6 +77,19 @@
 .ot-modal .modal-footer .btn:focus {
   background-color: var(--ot-primary-dark) !important;
   border-color: var(--ot-primary-dark) !important;
+  color: #fff !important;
+}
+
+.ot-modal .modal-footer .ot-modal__nav-btn {
+  background-color: #fff;
+  border-color: #212529;
+  color: #212529;
+}
+
+.ot-modal .modal-footer .ot-modal__nav-btn:hover,
+.ot-modal .modal-footer .ot-modal__nav-btn:focus {
+  background-color: #212529 !important;
+  border-color: #212529 !important;
   color: #fff !important;
 }
 

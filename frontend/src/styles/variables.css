@@ -75,6 +75,10 @@ body {
   align-self: center;
 }
 
+.ot-panel-action .bi-plus-circle {
+  margin-right: 0.5rem;
+}
+
 .ot-panel-action:hover {
   background-color: var(--ot-primary-dark);
   border-color: var(--ot-primary-dark);

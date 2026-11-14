@@ -3,6 +3,8 @@ package es.urjc.tfg.optitour.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.sql.rowset.serial.SerialBlob;
 
@@ -38,6 +40,37 @@ public class ImageService {
 
     public Image saveImage(Image image) {
         return imageRepository.save(image);
+    }
+
+    public List<Image> createImageList(List<InputStream> imageFiles) throws IOException {
+        if (imageFiles == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "La lista de archivos de imagen no puede ser nula");
+
+        List<Image> images = new ArrayList<>();
+
+        for (InputStream imageFile : imageFiles) {
+            if (imageFile == null)
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Se ha encontrado un archivo de imagen vacío");
+
+            Image image = new Image();
+            try { // We try to set file from imageFileParameter bytes
+                byte[] imageBytes = imageFile.readAllBytes();
+                if (imageBytes.length == 0)
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "Se ha encontrado un archivo de imagen vacío");
+
+                image.setImageFile(new SerialBlob(imageBytes));
+            } catch (Exception e) {
+                if (e instanceof ResponseStatusException responseStatusException)
+                    throw responseStatusException;
+                throw new IOException("Failed to create image", e);
+            }
+
+            images.add(image);
+        }
+        return images;
     }
 
     @Transactional(readOnly = true)
