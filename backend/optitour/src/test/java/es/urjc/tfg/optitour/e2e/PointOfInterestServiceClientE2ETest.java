@@ -22,6 +22,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -203,8 +204,11 @@ public class PointOfInterestServiceClientE2ETest {
         } catch (TimeoutException e) {
             String url = driver.getCurrentUrl();
             String btnText = "";
+            String btnDisabled = "";
             try {
-                btnText = driver.findElement(By.className("ot-create-poi__submit")).getText();
+                WebElement btn = driver.findElement(By.className("ot-create-poi__submit"));
+                btnText = btn.getText();
+                btnDisabled = String.valueOf(btn.getAttribute("disabled"));
             } catch (Exception ignored) {
             }
             List<WebElement> invalidFeedbacks = driver.findElements(By.className("invalid-feedback"));
@@ -219,10 +223,19 @@ public class PointOfInterestServiceClientE2ETest {
             for (WebElement ec : errorCards) {
                 errorCardMsg.append("[").append(ec.getText()).append("] ");
             }
+            StringBuilder consoleLogs = new StringBuilder();
+            try {
+                for (var entry : driver.manage().logs().get(LogType.BROWSER)) {
+                    consoleLogs.append("[").append(entry.getLevel()).append("] ").append(entry.getMessage()).append(" ");
+                }
+            } catch (Exception ignored) {
+            }
             throw new AssertionError("POI creation timeout after 15s! URL: " + url
                     + " | Submit button text: '" + btnText + "'"
+                    + " | Button disabled attr: '" + btnDisabled + "'"
                     + " | Validation errors: " + feedbackMsg
-                    + " | Error card: " + errorCardMsg, e);
+                    + " | Error card: " + errorCardMsg
+                    + " | Browser console: " + consoleLogs, e);
         }
 
         assertEquals("http://localhost:5173/admin/poi", driver.getCurrentUrl(),

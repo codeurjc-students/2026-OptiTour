@@ -85,7 +85,12 @@ export default function CreatePointOfInterest() {
         });
 
         setImagesPreviwews(previews);
-        setSelectedImages(previous => [...previous, ...files]);
+        const updatedImages = [...selectedImages, ...files];
+        setSelectedImages(updatedImages);
+        methods.setValue("images", updatedImages.length > 0 ? updatedImages : undefined, {
+            shouldDirty: true,
+            shouldValidate: true
+        });
     }
 
     function handleDeleteImage(deleteIndex: number) {
@@ -263,7 +268,12 @@ export default function CreatePointOfInterest() {
                     </Card>
 
                     <div className="ot-create-poi__actions">
-                        <Button type="submit" className="ot-create-poi__submit" disabled={isLoading || !isValid}>
+                        <Button
+                            type="submit"
+                            className="ot-create-poi__submit"
+                            disabled={isLoading}
+                            onClick={handleFormSubmit(handleSubmit, handleInvalidSubmit)}
+                        >
                             {isLoading ? "Creando punto de interés" : "Crear punto de interés"}
                         </Button>
                         <Link to="/admin/poi" className="btn btn-outline-dark ot-create-poi__cancel-btn">
