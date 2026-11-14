@@ -100,9 +100,16 @@ export default function CreatePointOfInterest() {
         });
     }
 
+    function handleInvalidSubmit(formErrors: any) {
+        const errorList = Object.keys(formErrors)
+            .map((k) => `${k}: ${formErrors[k]?.message || "inválido"}`)
+            .join("; ");
+        setError("Error de validación: " + (errorList || "Datos del formulario inválidos"));
+    }
+
     return (
         <FormProvider {...methods}>
-            <Form onSubmit={handleFormSubmit(handleSubmit)} noValidate>
+            <Form onSubmit={handleFormSubmit(handleSubmit, handleInvalidSubmit)} noValidate>
                 <div className="ot-create-poi">
                     <h1 className="ot-panel-title">Añadir punto de interés</h1>
 

@@ -16,6 +16,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -157,7 +159,6 @@ public class PointOfInterestServiceClientE2ETest {
         WebElement latitudeField = driver.findElement(By.id("poiLat"));
         WebElement longitudeField = driver.findElement(By.id("poiLng"));
         WebElement imageField = driver.findElement(By.id("upload-image"));
-        WebElement submitButton = driver.findElement(By.className("ot-create-poi__submit"));
 
         nameField.sendKeys(createdPoiName);
         descField.sendKeys("New POI desc");
@@ -171,11 +172,38 @@ public class PointOfInterestServiceClientE2ETest {
                 .toAbsolutePath().normalize().toString();
         imageField.sendKeys(firstImagePath + "\n" + secondImagePath);
 
-        wait.until(elementToBeClickable(submitButton));
+        WebElement submitButton = wait.until(elementToBeClickable(By.className("ot-create-poi__submit")));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", submitButton);
         submitButton.click();
 
-        wait.until(driver -> driver.getCurrentUrl().equals("http://localhost:5173/admin/poi")
-                || !driver.findElements(By.className("ot-error-card")).isEmpty());
+        try {
+            wait.until(driver -> driver.getCurrentUrl().equals("http://localhost:5173/admin/poi")
+                    || !driver.findElements(By.className("ot-error-card")).isEmpty());
+        } catch (TimeoutException e) {
+            String url = driver.getCurrentUrl();
+            String btnText = "";
+            try {
+                btnText = driver.findElement(By.className("ot-create-poi__submit")).getText();
+            } catch (Exception ignored) {
+            }
+            List<WebElement> invalidFeedbacks = driver.findElements(By.className("invalid-feedback"));
+            StringBuilder feedbackMsg = new StringBuilder();
+            for (WebElement fb : invalidFeedbacks) {
+                if (fb.isDisplayed() && !fb.getText().isBlank()) {
+                    feedbackMsg.append("[").append(fb.getText()).append("] ");
+                }
+            }
+            List<WebElement> errorCards = driver.findElements(By.className("ot-error-card"));
+            StringBuilder errorCardMsg = new StringBuilder();
+            for (WebElement ec : errorCards) {
+                errorCardMsg.append("[").append(ec.getText()).append("] ");
+            }
+            throw new AssertionError("POI creation timeout after 15s! URL: " + url
+                    + " | Submit button text: '" + btnText + "'"
+                    + " | Validation errors: " + feedbackMsg
+                    + " | Error card: " + errorCardMsg, e);
+        }
+
         assertEquals("http://localhost:5173/admin/poi", driver.getCurrentUrl(),
                 () -> {
                     List<WebElement> errors = driver.findElements(By.className("ot-error-card"));
