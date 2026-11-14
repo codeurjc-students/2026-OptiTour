@@ -32,10 +32,9 @@ export default function CreatePointOfInterest() {
     });
 
     async function handleSubmit(data: CreatePoiFormData) {
-        console.error("DEBUG: handleSubmit called with:", JSON.stringify(data.name));
+        if (isLoading) return;
         setIsLoading(true);
         try {
-            console.error("DEBUG: calling createPoi API");
             const response = await createPoi({
                 name: data.name,
                 description: data.desc,
@@ -43,15 +42,12 @@ export default function CreatePointOfInterest() {
                 address: data.address,
                 coords: `${data.lat},${data.lng}`
             });
-            console.error("DEBUG: createPoi API success, id:", response.id);
 
             const imagesToUpload = selectedImages && selectedImages.length > 0
                 ? selectedImages
                 : (data.images ? Array.from(data.images as FileList | File[]) : []);
 
-            console.error("DEBUG: calling uploadPoiUIamges with", imagesToUpload.length, "images");
             await uploadPoiUIamges(imagesToUpload, response.id);
-            console.error("DEBUG: uploadPoiUIamges success, navigating to /admin/poi");
 
             navigate("/admin/poi", {
                 state: {
@@ -66,7 +62,7 @@ export default function CreatePointOfInterest() {
             });
         }
         catch (err) {
-            console.error("DEBUG: submit caught error:", err);
+            console.error("Error creating POI:", err);
             err instanceof Error
                 ? setError(err.message)
                 : setError("Se ha producido un error durante la creación del punto de interés.")
@@ -84,7 +80,6 @@ export default function CreatePointOfInterest() {
 
     function handlePreview(event: React.ChangeEvent<HTMLInputElement>) {
         const files = Array.from(event.target.files ?? []);
-        console.error("DEBUG: handlePreview files count:", files.length);
 
         let previews: string[] = []
         files.forEach(file => {
@@ -98,7 +93,6 @@ export default function CreatePointOfInterest() {
             shouldDirty: true,
             shouldValidate: true
         });
-        console.error("DEBUG: handlePreview setValue complete, total images:", updatedImages.length);
     }
 
     function handleDeleteImage(deleteIndex: number) {
@@ -114,7 +108,6 @@ export default function CreatePointOfInterest() {
     }
 
     function handleInvalidSubmit(formErrors: any) {
-        console.error("DEBUG: handleInvalidSubmit called with errors:", JSON.stringify(formErrors));
         const errorList = Object.keys(formErrors)
             .map((k) => `${k}: ${formErrors[k]?.message || "inválido"}`)
             .join("; ");
@@ -123,13 +116,7 @@ export default function CreatePointOfInterest() {
 
     return (
         <FormProvider {...methods}>
-            <Form
-                onSubmit={(e) => {
-                    console.error("DEBUG: Form onSubmit event triggered");
-                    handleFormSubmit(handleSubmit, handleInvalidSubmit)(e);
-                }}
-                noValidate
-            >
+            <Form onSubmit={handleFormSubmit(handleSubmit, handleInvalidSubmit)} noValidate>
                 <div className="ot-create-poi">
                     <h1 className="ot-panel-title">Añadir punto de interés</h1>
 
@@ -287,10 +274,7 @@ export default function CreatePointOfInterest() {
                             type="submit"
                             className="ot-create-poi__submit"
                             disabled={isLoading}
-                            onClick={(e) => {
-                                console.error("DEBUG: Button onClick triggered");
-                                handleFormSubmit(handleSubmit, handleInvalidSubmit)(e);
-                            }}
+                            onClick={handleFormSubmit(handleSubmit, handleInvalidSubmit)}
                         >
                             {isLoading ? "Creando punto de interés" : "Crear punto de interés"}
                         </Button>
