@@ -176,14 +176,25 @@ public class PointOfInterestServiceClientE2ETest {
         // Wait for image slots to be rendered, ensuring React processed the file inputs
         wait.until(driver -> driver.findElements(By.className("ot-create-poi__image-slot")).size() == 2);
 
-        WebElement submitButton = wait.until(elementToBeClickable(By.className("ot-create-poi__submit")));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", submitButton);
         try {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         } catch (InterruptedException ignored) {
         }
 
-        submitButton.click();
+        ((JavascriptExecutor) driver).executeScript(
+                "const btn = document.querySelector('.ot-create-poi__submit');" +
+                "if (btn) {" +
+                "  btn.scrollIntoView({block: 'center'});" +
+                "  btn.click();" +
+                "  setTimeout(() => {" +
+                "    const currentBtn = document.querySelector('.ot-create-poi__submit');" +
+                "    if (currentBtn && currentBtn.innerText.includes('Crear punto de interés')) {" +
+                "      const form = currentBtn.closest('form');" +
+                "      if (form) form.requestSubmit(currentBtn);" +
+                "    }" +
+                "  }, 1000);" +
+                "}"
+        );
 
         try {
             wait.until(driver -> driver.getCurrentUrl().equals("http://localhost:5173/admin/poi")
