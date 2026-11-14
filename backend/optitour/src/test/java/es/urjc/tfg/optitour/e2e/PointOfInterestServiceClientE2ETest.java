@@ -183,19 +183,16 @@ public class PointOfInterestServiceClientE2ETest {
         } catch (InterruptedException ignored) {
         }
 
-        // Trigger submission via JavaScript click to avoid coordinate misfires in headless Chrome
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", submitButton);
+        submitButton.click();
 
-        // Fallback: If form submission didn't trigger immediately, dispatch requestSubmit on the form
         try {
             new WebDriverWait(driver, Duration.ofSeconds(3)).until(d ->
                     d.getCurrentUrl().equals("http://localhost:5173/admin/poi")
                     || !d.findElements(By.className("ot-error-card")).isEmpty()
-                    || "Creando punto de interés".equals(d.findElement(By.className("ot-create-poi__submit")).getText())
+                    || !"Crear punto de interés".equals(d.findElement(By.className("ot-create-poi__submit")).getText())
             );
         } catch (TimeoutException ignored) {
-            WebElement form = driver.findElement(By.tagName("form"));
-            ((JavascriptExecutor) driver).executeScript("arguments[0].requestSubmit();", form);
+            submitButton.sendKeys(org.openqa.selenium.Keys.ENTER);
         }
 
         try {

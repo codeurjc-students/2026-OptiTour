@@ -272,7 +272,6 @@ export default function CreatePointOfInterest() {
                             type="submit"
                             className="ot-create-poi__submit"
                             disabled={isLoading}
-                            onClick={handleFormSubmit(handleSubmit, handleInvalidSubmit)}
                         >
                             {isLoading ? "Creando punto de interés" : "Crear punto de interés"}
                         </Button>
