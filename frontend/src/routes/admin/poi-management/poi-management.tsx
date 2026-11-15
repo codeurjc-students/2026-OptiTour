@@ -16,8 +16,6 @@ import { getEvolutionData } from '../getEvolutionData';
 import FeedbackModal from '../../../components/feedback-modal/feedback-modal';
 import ActionModal from '../../../components/action-modal/action-modal';
 
-// React Router requires this route metadata export alongside the component.
-// eslint-disable-next-line react-refresh/only-export-components
 export function meta() {
     return [
         { title: "Gestión de Puntos de Interés | OptiTour" },
@@ -94,15 +92,14 @@ export default function POIManagement() {
         try {
             const response = await deletePoiById(poiToDelete.id);
             setPoiToDelete(null);
+            handleDeleteActionModalClose()
             setShowDeleteConfirmModal(true);
             setDeleteConfirmModalMessage(`Se ha eliminado el siguiente punto de interés: \n ${response.name}`);
 
             setPois(pois.filter((poi) => { return poi.id != response.id }));
         }
         catch (err) {
-            err instanceof Error
-                ? setDeleteError(err.message)
-                : setDeleteError("Se ha producido un error al borrar el punto de interés");
+            setDeleteError("Se ha producido un error al borrar el punto de interés.");
         }
         finally {
             setIsLoadingDelete(false);
@@ -150,7 +147,7 @@ export default function POIManagement() {
                         onHide={handleDeleteActionModalClose}
                         title="¿Seguro que quieres borrar este punto de interés?"
                         message={poiToDelete ? `Se borrará permanentemente el siguiente punto de interés: \n ${poiToDelete!.name} \n Se desvinculará de cualquier tour en el que se visite, y sus imágenes también serán eliminadas del sistema.` : ""}
-                        actionButtonHandler={() => { handleDeletePoi(poiToDelete!); handleDeleteActionModalClose() }}
+                        actionButtonHandler={() => { handleDeletePoi(poiToDelete!) }}
                         actionButtonText={isLoadingDelete ? "Borrando..." : "Sí, borrar"}
                         closeButtonText="No, volver al panel"
                         actionError={deleteError!}
