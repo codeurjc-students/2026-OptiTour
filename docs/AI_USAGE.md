@@ -614,3 +614,30 @@ En las pruebas que renderizan componentes dependientes del store persistente de 
 * **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
 * **Modelo concreto:** Google Gemini Pro 3.1
 * **Cómo ha sido usada:** Se utiliza la IA para que repase los test de backend, ya que no pasan en el sistema de CI. Como sí pasan en la máquina usada para el desarrollo, la detección de estos errores es complicada, por lo que tras varios intentos de ejecuión en CI sin éxito, se delega esta detección de errores a la IA.
+
+---
+
+* **Fecha:** 12/11/2026
+* **Fase:** Fase 3
+* **Objetivo:** Estética de la lista de imágenes del formulario de creación de POI
+* **Herramienta:** Chat de Visual Studio Code
+* **Modelo concreto:** GitHub Copilot Pro
+* **Cómo ha sido usada:** Se utiliza la IA para que ajuste el tamaño y colocación de las previsualizaciones de imágenes que se encuentran en el formulario de creación de punto de interés.
+
+---
+
+* **Fecha:** 14/11/2026
+* **Fase:** Fase 3
+* **Objetivo:** Implementación de test de validación de campos
+* **Herramienta:** Chat de Visual Studio Code
+* **Modelo concreto:** GitHub Copilot Pro
+* **Cómo ha sido usada:** Si bien en el caso del registro de usuario las pruebas automáticas de validación de campos se implementaron de manera manual, para los puntos de interés se optó por implementar el primero manualmente y pedirle a la IA implementar el resto basándose en este primer test; ya que son test de código repetitivo cuya implementación manual puede alargarse en el tiempo. Se usa la IA para implementar esta clase de test tanto en los test E2E en backend como en los test de integración en frontend.
+
+---
+
+* **Fecha:** 14/11/2026
+* **Fase:** Fase 3
+* **Objetivo:** Resolver timeout en prueba E2E de creación de punto de interés en GitHub Actions
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro
+* **Cómo ha sido usada:** El test E2E de creación de puntos de interés pasaba correctamente en local, pero fallaba de forma constante en GitHub Actions por un timeout de 15 segundos al intentar enviar el formulario. Se utilizó la IA para investigar el motivo volcando los logs del navegador en el fallo. La IA descubrió que en CI, al arrancar Vite sin caché previa en modo dev, la carga de la ruta de creación de POIs provocaba un error HTTP 504 (*Outdated Optimize Dep*), lo que hacía que React Router recargara la página automáticamente y borrara los datos mientras Selenium escribía. Para solucionarlo, la IA configuró `optimizeDeps` en `vite.config.ts` preempaquetando todas las dependencias del proyecto al inicio para evitar recargas, además de añadir comprobaciones en el formulario para evitar envíos dobles.
