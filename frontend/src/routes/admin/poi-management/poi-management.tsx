@@ -4,7 +4,7 @@ import StatCard from '../../../components/stat-card/stat-card';
 import MediaListItem from '../../../components/list-item/list-item';
 import { useEffect, useState } from 'react';
 import type { PointOfInterestDTO } from '../../../dto/point-of-interest-dto';
-import { getPoisByPage } from '../../../service/point-of-interest-service';
+import { deletePoiById, getPoisByPage } from '../../../service/point-of-interest-service';
 import ErrorCard from '../../../components/error-card/error-card';
 import Spinner from '../../../components/spinner/spinner';
 import { API_BASE_URL } from '../../../service/api-config';
@@ -14,6 +14,7 @@ import '../user-management/user-management.css';
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { getEvolutionData } from '../getEvolutionData';
 import FeedbackModal from '../../../components/feedback-modal/feedback-modal';
+import ActionModal from '../../../components/action-modal/action-modal';
 
 // React Router requires this route metadata export alongside the component.
 // eslint-disable-next-line react-refresh/only-export-components
@@ -34,9 +35,25 @@ export default function POIManagement() {
     const [isLastPage, setIsLastPage] = useState<boolean>(false);
     const [poiAmmount, setPoiAmmount] = useState<number>(0);
     const [showModal, setShowModal] = useState<boolean>(location.state?.showModal);
+    const [showActionModal, setShowActionModal] = useState<boolean>(false);
+    const [poiToDelete, setPoiToDelete] = useState<PointOfInterestDTO | null>(null);
+    const [isLoadingDelete, setIsLoadingDelete] = useState<boolean>();
+    const [deleteError, setDeleteError] = useState<string | null>();
+    const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState<boolean>(false);
+    const [deleteConfirmModalMessage, setDeleteConfirmModalMessage] = useState<string>("");
 
     function handleModalClose() {
         setShowModal(false);
+        window.history.replaceState({}, '');
+    }
+
+    function handleDeleteActionModalClose() {
+        setShowActionModal(false);
+        window.history.replaceState({}, '');
+    }
+
+    function handleDeleteConfirmModalClose() {
+        setShowDeleteConfirmModal(false);
         window.history.replaceState({}, '');
     }
 
@@ -67,6 +84,31 @@ export default function POIManagement() {
         }
     }
 
+    function openActionModal(poiId: number) {
+        setShowActionModal(true);
+        setPoiToDelete(pois.find((poi) => { return poi.id == poiId })!);
+    }
+
+    async function handleDeletePoi(poiToDelete: PointOfInterestDTO) {
+        setIsLoadingDelete(true);
+        try {
+            const response = await deletePoiById(poiToDelete.id);
+            setPoiToDelete(null);
+            setShowDeleteConfirmModal(true);
+            setDeleteConfirmModalMessage(`Se ha eliminado el siguiente punto de interés: \n ${response.name}`);
+
+            setPois(pois.filter((poi) => { return poi.id != response.id }));
+        }
+        catch (err) {
+            err instanceof Error
+                ? setDeleteError(err.message)
+                : setDeleteError("Se ha producido un error al borrar el punto de interés");
+        }
+        finally {
+            setIsLoadingDelete(false);
+        }
+    }
+
     async function handleLoadMore() {
         setIsLoadingMore(true);
         await handleGetPois(currentPage, 5, false);
@@ -93,6 +135,25 @@ export default function POIManagement() {
                         navButtonText={location.state?.navButtonText}
                         navUrl={location.state?.navUrl}
                         buttonText={location.state?.buttonText}
+                    />
+
+                    <FeedbackModal
+                        show={showDeleteConfirmModal}
+                        onHide={handleDeleteConfirmModalClose}
+                        title={"Se ha eliminado correctamente"}
+                        message={deleteConfirmModalMessage}
+                        buttonText={"Entendido"}
+                    />
+
+                    <ActionModal
+                        show={showActionModal}
+                        onHide={handleDeleteActionModalClose}
+                        title="¿Seguro que quieres borrar este punto de interés?"
+                        message={poiToDelete ? `Se borrará permanentemente el siguiente punto de interés: \n ${poiToDelete!.name} \n Se desvinculará de cualquier tour en el que se visite, y sus imágenes también serán eliminadas del sistema.` : ""}
+                        actionButtonHandler={() => { handleDeletePoi(poiToDelete!); handleDeleteActionModalClose() }}
+                        actionButtonText={isLoadingDelete ? "Borrando..." : "Sí, borrar"}
+                        closeButtonText="No, volver al panel"
+                        actionError={deleteError!}
                     />
 
                     <div>
@@ -154,7 +215,7 @@ export default function POIManagement() {
                                                 <>
                                                     <Button variant="outline-dark" as={Link as any} to={`/point-of-interest/${poi.id}`}>Ver detalle</Button>
                                                     <Button variant="outline-dark">Editar</Button>
-                                                    <Button variant="outline-danger">Eliminar</Button>
+                                                    <Button variant="outline-danger" onClick={() => openActionModal(poi.id)}>Eliminar</Button>
                                                 </>
                                             }
                                         />
