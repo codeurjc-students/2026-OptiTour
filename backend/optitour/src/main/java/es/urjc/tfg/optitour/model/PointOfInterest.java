@@ -38,18 +38,6 @@ public class PointOfInterest { // Abbreviated "POI" in the rest of the project's
         }
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setImages(List<Image> images) {
-        this.images = images;
-    }
-
     @ManyToMany(mappedBy = "pois")
     private List<Tour> tours;
 
@@ -133,6 +121,18 @@ public class PointOfInterest { // Abbreviated "POI" in the rest of the project's
 
     public List<Image> getImages() {
         return images;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
     }
 
 }
