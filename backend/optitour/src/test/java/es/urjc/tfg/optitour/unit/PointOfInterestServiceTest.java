@@ -21,22 +21,30 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.web.server.ResponseStatusException;
 
 import es.urjc.tfg.optitour.DTO.PointOfInterestCreateDTO;
+import es.urjc.tfg.optitour.mapper.PointOfInterestMapper;
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.PointOfInterest;
 import es.urjc.tfg.optitour.model.Tour;
 import es.urjc.tfg.optitour.repository.PointOfInterestRepository;
+import es.urjc.tfg.optitour.repository.TourRepository;
 import es.urjc.tfg.optitour.service.PointOfInterestService;
+import es.urjc.tfg.optitour.service.TourService;
 
 public class PointOfInterestServiceTest {
 
     PointOfInterestRepository repositoryMock;
+    TourRepository tourRepositoryMock;
     PointOfInterestService service;
+    PointOfInterestMapper mapperMock;
     List<PointOfInterest> pois;
 
     @BeforeEach
     void setUpmocks() { // Given: a POI service with mocked repository and sample data
         repositoryMock = mock(PointOfInterestRepository.class);
-        service = new PointOfInterestService(repositoryMock);
+        tourRepositoryMock = mock(TourRepository.class);
+        mapperMock = mock(PointOfInterestMapper.class);
+
+        service = new PointOfInterestService(repositoryMock, mapperMock, new TourService(tourRepositoryMock));
 
         pois = new ArrayList<PointOfInterest>();
         List<Tour> tours = new ArrayList<Tour>();
