@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import Profile from "../../../components/profile/profile";
-import { useParams, Link, useLocation } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { getUserById } from "../../../service/user-service";
 import type { UserDTO } from "../../../dto/user-dto";
 import Spinner from "../../../components/spinner/spinner";
 import ErrorCard from "../../../components/error-card/error-card";
 import useDocumentTitle from "../../../hooks/use-document-title";
-import FeedbackModal from "../../../components/feedback-modal/feedback-modal";
 
 export function meta() {
     return [
@@ -15,18 +14,10 @@ export function meta() {
 }
 
 export default function UserProfile() {
-    const location = useLocation();
     const { id } = useParams();
     const [user, setUser] = useState<UserDTO>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [showModal, setShowModal] = useState<boolean>(location.state?.showModal);
-
-
-    function handleModalClose() {
-        setShowModal(false);
-        window.history.replaceState({}, '');
-    }
 
     useDocumentTitle(
         error
@@ -63,14 +54,6 @@ export default function UserProfile() {
                 <Spinner />
             ) : user ? (
                 <div className="ot-my-profile">
-                    <FeedbackModal
-                        show={showModal}
-                        onHide={handleModalClose}
-                        title={location.state?.modalTitle}
-                        message={location.state?.modalMessage}
-                        welcome={location.state?.welcome}
-                        goodbye={location.state?.goodbye}
-                    />
                     <h1 className="ot-panel-title text-center">Perfil de usuario</h1>
                     <Profile user={user} />
                     <div className="ot-my-profile__actions">

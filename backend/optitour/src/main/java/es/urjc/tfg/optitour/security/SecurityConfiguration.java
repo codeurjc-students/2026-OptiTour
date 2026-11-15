@@ -70,7 +70,9 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, "/user/").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/user/**").authenticated()
                         // Point of interest endpoints
-                        .requestMatchers(HttpMethod.GET, "/point-of-interest/").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/point-of-interest/").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.POST, "/point-of-interest/").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/point-of-interest/**").hasRole("ADMIN")
 
                         // PUBLIC ENDPOINTS
                         .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()

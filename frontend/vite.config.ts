@@ -5,6 +5,25 @@ import { reactRouter } from '@react-router/dev/vite'
 export default defineConfig(() => {
   return {
     plugins: [!process.env.VITEST ? reactRouter() : null],
+    optimizeDeps: {
+      entries: ['./src/**/*.{ts,tsx}'],
+      include: [
+        'react',
+        'react-dom',
+        'react/jsx-runtime',
+        'react/jsx-dev-runtime',
+        'react-bootstrap',
+        'react-router',
+        'react-router-dom',
+        'react-hook-form',
+        '@hookform/resolvers/zod',
+        'zod',
+        'zustand',
+        'zustand/middleware',
+        'isbot',
+        'bootstrap'
+      ]
+    },
     server: {
       proxy: {
         '/api': {

@@ -33,5 +33,4 @@ public class ImageController {
 
         return ResponseEntity.ok().contentType(mediaType).body(imageFile);
     }
-
 }

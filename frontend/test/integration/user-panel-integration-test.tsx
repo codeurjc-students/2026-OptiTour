@@ -24,7 +24,7 @@ test('Shows spinner while fetching from API. Then, renders user panel', async ()
 
     // Then, we check if page renders properly.
     // We check if static title and first user received are in DOM
-    const title = await screen.findByText("Gestión de usuarios");
+    const title = await screen.findByText("Panel de gestión de usuarios");
     expect(title).toBeInTheDocument();
 
     const carmen = await screen.findByText("Carmen García");

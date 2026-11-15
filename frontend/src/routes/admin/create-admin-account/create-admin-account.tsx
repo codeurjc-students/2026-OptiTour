@@ -53,11 +53,15 @@ function CreateAdminAccount() {
                 refreshProfileImage();
             }
 
-            navigate(`/admin/users/${response.id}`, {
+            navigate(`/admin/users`, {
                 state: {
                     showModal: true,
                     modalTitle: "Nueva cuenta de administración creada",
-                    modalMessage: `Se ha creado correctamente la siguiente cuenta de administrador: ${data.userName}`
+                    modalMessage: `Se ha creado correctamente la siguiente cuenta de administrador: \n ${data.userName} \n ¿Quieres ver su perfil?`,
+                    navButton: true,
+                    navButtonText: "Sí, ver su perfil",
+                    navUrl: `/admin/users/${response.id}`,
+                    buttonText: "No, volver al panel"
                 }
             });
         }

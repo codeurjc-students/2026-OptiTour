@@ -2,6 +2,7 @@ import { Modal, Button } from 'react-bootstrap';
 import './feedback-modal.css';
 import welcomeLogo from '../../assets/welcome-logo.png';
 import goodbyeLogo from '../../assets/goodbye-logo.png';
+import { useNavigate } from 'react-router-dom';
 
 interface FeedbackModalProps {
     show: boolean;
@@ -11,6 +12,9 @@ interface FeedbackModalProps {
     buttonText?: string;
     welcome?: boolean;
     goodbye?: boolean;
+    navButton?: boolean,
+    navButtonText?: string,
+    navUrl?: string
 }
 
 export default function FeedbackModal({
@@ -20,8 +24,13 @@ export default function FeedbackModal({
     message,
     buttonText = "Entendido",
     welcome,
-    goodbye
+    goodbye,
+    navButton,
+    navButtonText,
+    navUrl
+
 }: FeedbackModalProps) {
+    const navigate = useNavigate();
     return (
         <Modal
             show={show}
@@ -42,10 +51,13 @@ export default function FeedbackModal({
                 </Modal.Body>
             )}
             <Modal.Footer className="ot-modal__footer">
+                {navButton && <Button className="ot-modal__btn ot-modal__nav-btn" onClick={() => { navigate(navUrl!); window.history.replaceState({}, ''); }}>
+                    {navButtonText}
+                </Button>}
                 <Button className="ot-modal__btn" onClick={onHide}>
                     {buttonText}
                 </Button>
             </Modal.Footer>
-        </Modal>
+        </Modal >
     );
 }

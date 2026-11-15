@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface PointOfInterestRepository extends JpaRepository<PointOfInterest, Long> {
     Optional<PointOfInterest> findById(long id);
+
+    Optional<PointOfInterest> findByName(String name);
 }

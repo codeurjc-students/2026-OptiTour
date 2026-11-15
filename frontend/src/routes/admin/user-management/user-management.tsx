@@ -1,5 +1,5 @@
 import { Button, Row, Col } from 'react-bootstrap';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import StatCard from '../../../components/stat-card/stat-card';
 import UserListItem from '../../../components/user-list-item/user-list-item';
 import { useEffect, useState } from 'react';
@@ -12,6 +12,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, LineChart, C
 import '../../../components/tour-card/tour-card.css';
 import './user-management.css';
 import { getEvolutionData } from '../getEvolutionData';
+import FeedbackModal from '../../../components/feedback-modal/feedback-modal';
 
 const base_url = API_BASE_URL;
 
@@ -23,7 +24,7 @@ export function meta() {
 
 export default function UserManagement() {
     const navigate = useNavigate();
-
+    const location = useLocation();
     const [users, setUsers] = useState<UserDTO[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -31,6 +32,12 @@ export default function UserManagement() {
     const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
     const [isLastPage, setIsLastPage] = useState<boolean>(false);
     const [currentPage, setCurrentPage] = useState<number>(0);
+    const [showModal, setShowModal] = useState<boolean>(location.state?.showModal);
+
+    function handleModalClose() {
+        setShowModal(false);
+        window.history.replaceState({}, '');
+    }
 
     async function handleGetPagedUsers(page: number, size: number, isUseEffect: boolean) {
         try {
@@ -109,10 +116,21 @@ export default function UserManagement() {
                 <ErrorCard text={error} />
             ) : (
                 <div>
+                    <FeedbackModal
+                        show={showModal}
+                        onHide={handleModalClose}
+                        title={location.state?.modalTitle}
+                        message={location.state?.modalMessage}
+                        navButton={location.state?.navButton}
+                        navButtonText={location.state?.navButtonText}
+                        navUrl={location.state?.navUrl}
+                        buttonText={location.state?.buttonText}
+                    />
                     <div className="ot-panel-header">
-                        <h1 className="ot-panel-title">Gestión de usuarios</h1>
+                        <h1 className="ot-panel-title">Panel de gestión de usuarios</h1>
 
                         <Button onClick={() => navigate('/admin/create')} className="ot-panel-action ot-panel-action--inline">
+                            <i className="bi bi-plus-circle"></i>
                             Crear nueva cuenta de administración
                         </Button>
                     </div>

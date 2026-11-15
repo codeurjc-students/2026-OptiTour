@@ -578,3 +578,39 @@ En las pruebas que renderizan componentes dependientes del store persistente de 
 * **Herramienta:** Chat de Visual Studio Code
 * **Modelo concreto:** GitHub Copilot Pro
 * **Cómo ha sido usada:** Se le pide a la IA que aplique separadores entre cada entrada del presente documento, debido a que se detectó que todas las entradas de usos de IA se encontraban juntos y era complicado para el lector distinguirlas. Se aprovecha para pedirle que aplique `este formato` a referencias a ficheros y códigos a lo largo del documento.
+
+--
+
+* **Fecha:** 6/11/2026
+* **Fase:** Fase 3
+* **Objetivo:** Estética del formulario de cambio de contraseña
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini Pro 3.1
+* **Cómo ha sido usada:** Se utiliza la IA para que mejore el acabado estético del formulario de cambio de contraseña, a partir de una plantilla con la estructura y elementos del formulario definidos.
+
+---
+
+* **Fecha:** 8/11/2026
+* **Fase:** Fase 3
+* **Objetivo:** Obtener información de cómo implementar modales con React Bootstrap
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini Pro 3.1
+* **Cómo ha sido usada:** Se le pide a la IA una explicación de cómo crear modales con React Bootstrap. La IA explica el funcionamiento del componente Modal de React Bootstrap, así como la manera de activar modales al navegar entre pantallas: enviando un json en el hook de useNavigate con información que se puede rescatar en la página destino mediante el hook location (accediendo a esta información en su propiedad state), siendo todo ello posible gracias a la API del historial del navegador.
+
+---
+
+* **Fecha:** 8/11/2026
+* **Fase:** Fase 3
+* **Objetivo:** Actualizar test para tener en cuenta los modales
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini Pro 3.1
+* **Cómo ha sido usada:** Debido al rápido crecimiento de la suite de test del proyecto, para actualizar todos los test afectados por los nuevos modales, se le pida a la IA que repase y actualice aquellos test que se hayan podido ver afectados.
+
+---
+
+* **Fecha:** 10/11/2026
+* **Fase:** Fase 3
+* **Objetivo:** Resolver problemas en el workflow completo de backend en CI
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini Pro 3.1
+* **Cómo ha sido usada:** Se utiliza la IA para que repase los test de backend, ya que no pasan en el sistema de CI. Como sí pasan en la máquina usada para el desarrollo, la detección de estos errores es complicada, por lo que tras varios intentos de ejecuión en CI sin éxito, se delega esta detección de errores a la IA.

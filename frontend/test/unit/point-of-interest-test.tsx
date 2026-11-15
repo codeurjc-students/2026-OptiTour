@@ -2,11 +2,11 @@ import { expect, test, vi } from "vitest";
 import '@testing-library/jest-dom/vitest';
 import * as service from '../../src/service/point-of-interest-service'
 import { PointOfInterestDTO } from "../../src/dto/point-of-interest-dto";
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import PointOfInterestDetail from '../../src/routes/point-of-interest-detail/point-of-interest-detail';
 import POIManagement from "../../src/routes/admin/poi-management/poi-management";
-
+import CreatePointOfInterest from "../../src/routes/admin/create-poi/create-poi";
 
 vi.mock('../../src/service/point-of-interest-service');
 
@@ -98,4 +98,51 @@ test('Checks if pois are displayed properly in poi panel', async () => {
     });
 
     expect(service.getPoisByPage).toHaveBeenCalled();
+});
+
+test('Checks if poi-creation form adds poi', async () => {
+    render(
+        <MemoryRouter>
+            <CreatePointOfInterest />
+        </MemoryRouter>
+    );
+
+    const submitButton = await screen.findByRole('button', { name: "Crear punto de interés" });
+
+    const nameField = await screen.findByLabelText("Nombre del punto de interés");
+    const descField = await screen.findByLabelText("Descripción");
+    const cityField = await screen.findByLabelText("Ciudad");
+    const addressField = await screen.findByLabelText("Dirección");
+    const latitudeField = await screen.findByLabelText("Latitud");
+    const longitudefield = await screen.findByLabelText("Longitud");
+    const firstImage = new File(["first image"], "first-image.png", {
+        type: "image/png"
+    });
+    const secondImage = new File(["second image"], "second-image.jpg", {
+        type: "image/jpeg"
+    });
+
+    fireEvent.change(nameField, { target: { value: "Test POI" } });
+    fireEvent.change(descField, { target: { value: "Test description" } });
+    fireEvent.change(cityField, { target: { value: "Test city" } });
+    fireEvent.change(addressField, { target: { value: "Test address" } });
+    fireEvent.change(latitudeField, { target: { value: "1.11111" } });
+    fireEvent.change(longitudefield, { target: { value: "1.11111" } });
+    await act(async () => {
+        fireEvent.change(document.getElementById("upload-image")!, {
+            target: { files: [firstImage, secondImage] }
+        });
+    });
+
+    await waitFor(() => expect(submitButton).toBeEnabled());
+    fireEvent.click(submitButton);
+
+    await waitFor(() => expect(service.createPoi).toHaveBeenCalledWith({
+            name: "Test POI",
+            description: "Test description",
+            city: "Test city",
+            address: "Test address",
+            coords: `1.11111,1.11111`
+        })
+    );
 });
