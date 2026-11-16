@@ -91,6 +91,8 @@ export default function POIManagement() {
         setIsLoadingDelete(true);
         try {
             const response = await deletePoiById(poiToDelete.id);
+            const newPoiAmmount = poiAmmount - 1;
+            setPoiAmmount(newPoiAmmount);
             setPoiToDelete(null);
             handleDeleteActionModalClose()
             setShowDeleteConfirmModal(true);
@@ -211,8 +213,14 @@ export default function POIManagement() {
                                             actions={
                                                 <>
                                                     <Button variant="outline-dark" as={Link as any} to={`/point-of-interest/${poi.id}`}>Ver detalle</Button>
-                                                    <Button variant="outline-dark">Editar</Button>
-                                                    <Button variant="outline-danger" onClick={() => openActionModal(poi.id)}>Eliminar</Button>
+                                                    <Button variant="outline-dark">
+                                                        <i className="bi bi-pencil me-2"></i>
+                                                        Editar
+                                                    </Button>
+                                                    <Button variant="outline-danger" onClick={() => openActionModal(poi.id)}>
+                                                        <i className="bi bi-trash3 me-2" />
+                                                        Eliminar
+                                                    </Button>
                                                 </>
                                             }
                                         />

@@ -224,7 +224,10 @@ export default function UserManagement() {
                                                     {user.isBanned ? 'Desbloqueando...' : 'Bloqueando...'}
                                                 </>
                                             ) : (
-                                                user.isBanned ? 'Desbloquear' : 'Bloquear'
+                                                <>
+                                                    {user.isBanned ? <i className="bi bi-unlock me-2"></i> : <i className="bi bi-lock me-2" />}
+                                                    {user.isBanned ? 'Desbloquear' : 'Bloquear'}
+                                                </>
                                             )}
                                         </Button>
                                         <Link to={`/admin/users/${user.id}`} className="btn btn-outline-dark">
