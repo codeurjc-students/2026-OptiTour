@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/OptiTourLogo.png';
 import './login.css';
 import { useAuthStore } from '../../store/auth-store';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ErrorCard from '../../components/error-card/error-card';
 import PasswordInput from '../../components/password-input/password-input';
 import { useSearchParams } from 'react-router-dom';
@@ -12,6 +12,7 @@ import { loginSchema } from '../../schemas/login-schema';
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import type z from 'zod';
+import { getLoginRandomImageId } from '../../service/user-service';
 
 export function meta() {
   return [
@@ -21,7 +22,7 @@ export function meta() {
 
 const base_url = API_BASE_URL;
 
-function Login() {
+export default function Login() {
 
   const navigate = useNavigate();
   const { doLogin } = useAuthStore();
@@ -29,7 +30,9 @@ function Login() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
-  const [randomId] = useState<number>(() => Math.floor(Math.random() * 540) + 1);
+  const [randomId, setRandomId] = useState<number | null>(null);
+  const [imageLoading, setImageLoading] = useState<boolean>(true);
+  const [imageError, setImageError] = useState<boolean>(false);
 
   const {
     register,
@@ -64,11 +67,51 @@ function Login() {
     }
   }
 
+  async function handleGetRandomImage() {
+    setImageLoading(true);
+    try {
+      const response = await getLoginRandomImageId();
+
+      // Precarga los bytes de la imagen para evitar el parpadeo
+      const img = new Image();
+      img.src = `${base_url}/image/${response}`;
+
+      img.onload = () => {
+        setRandomId(response);
+        setImageLoading(false);
+      };
+
+      img.onerror = () => {
+        setImageError(true);
+        setImageLoading(false);
+      };
+    }
+    catch {
+      setImageError(true);
+      setImageLoading(false);
+    }
+  }
+
+  useEffect(() => { handleGetRandomImage() }, []);
+
   return (
     <div className="ot-login">
+      {imageLoading && (
+        <div className="ot-login__loading-overlay">
+          <img
+            src={logo}
+            alt="OptiTour"
+            className="ot-login__loading-logo"
+          />
+          <div className="spinner-border" style={{ color: "var(--ot-primary)", width: "2.5rem", height: "2.5rem" }} role="status">
+            <span className="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+      )}
+
       <Row className="ot-login__row g-0">
         <Col md={6} className="ot-login__visual" style={{
-          backgroundImage: `url("${base_url}/image/${randomId}")`
+          backgroundImage: randomId ? `url("${base_url}/image/${randomId}")` : undefined
         }}>
           <div className="ot-login__visual-content">
             <img src={logo} alt="OptiTour" className="ot-login__visual-logo" />
@@ -76,6 +119,13 @@ function Login() {
               Rutas turísticas optimizadas para aprovechar cada minuto de tu viaje.
             </p>
           </div>
+
+          {imageError && (
+            <div className="ot-login__visual-error">
+              <i className="bi bi-image me-2" />
+              <span>No se ha podido cargar ninguna imagen</span>
+            </div>
+          )}
         </Col>
 
         <Col md={6} className="ot-login__panel">
@@ -161,5 +211,3 @@ function Login() {
     </div >
   );
 }
-
-export default Login;

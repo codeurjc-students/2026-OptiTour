@@ -160,3 +160,16 @@ export async function createAdminAccount(newAdmin: UserCreateDTO) {
 
     return response.json();
 }
+
+export async function getLoginRandomImageId() {
+    const url = `${base_url}/image/random`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+    }
+
+    return response.json();
+}
