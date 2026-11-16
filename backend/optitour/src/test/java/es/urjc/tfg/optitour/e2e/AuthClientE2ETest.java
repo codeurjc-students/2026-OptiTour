@@ -53,8 +53,17 @@ public class AuthClientE2ETest {
 
     @AfterEach
     public void tearDown() {
-        if (driver != null) {
-            driver.quit();
+        try {
+            if (driver != null) {
+                driver.quit();
+            }
+        } finally {
+            userRepository.findByEmail("carmen@example.com").ifPresent(carmen -> {
+                if (carmen.getIsBanned()) {
+                    carmen.setBanned(false);
+                    userRepository.save(carmen);
+                }
+            });
         }
     }
 

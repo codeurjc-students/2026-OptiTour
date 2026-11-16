@@ -8,6 +8,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.web.server.ResponseStatusException;
 
 import es.urjc.tfg.optitour.DTO.PointOfInterestCreateDTO;
+import es.urjc.tfg.optitour.DTO.PointOfInterestDTO;
 import es.urjc.tfg.optitour.mapper.PointOfInterestMapper;
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.PointOfInterest;
@@ -37,6 +39,7 @@ public class PointOfInterestServiceTest {
     PointOfInterestService service;
     PointOfInterestMapper mapperMock;
     List<PointOfInterest> pois;
+    List<Tour> tours;
 
     @BeforeEach
     void setUpmocks() { // Given: a POI service with mocked repository and sample data
@@ -47,7 +50,7 @@ public class PointOfInterestServiceTest {
         service = new PointOfInterestService(repositoryMock, mapperMock, new TourService(tourRepositoryMock));
 
         pois = new ArrayList<PointOfInterest>();
-        List<Tour> tours = new ArrayList<Tour>();
+        tours = new ArrayList<Tour>();
 
         for (int i = 0; i < 3; i++) {
             tours.add(new Tour("Test tour " + i, "Test desc " + i));
@@ -58,6 +61,10 @@ public class PointOfInterestServiceTest {
                     "sample coords");
             poi.setTours(tours);
             pois.add(poi);
+        }
+
+        for (Tour tour : tours) {
+            tour.setPois(pois);
         }
     }
 
@@ -159,5 +166,44 @@ public class PointOfInterestServiceTest {
         assertEquals(
                 "400 BAD_REQUEST \"Ya exisite un punto de interés con este nombre. Prueba con otro punto de interés e inténtalo de nuevo\"",
                 e.getMessage());
+    }
+
+    @Test
+    @DisplayName("deletePoiById should delete method and return deleted poi")
+    public void deletePoiByIdTest() {
+        PointOfInterest poi = pois.get(0);
+        poi.setTours(new ArrayList<>());
+
+        when(repositoryMock.findById(0L)).thenReturn(Optional.of(poi));
+
+        PointOfInterestDTO expectedDto = new PointOfInterestDTO(
+                0L,
+                "Poi name 0",
+                "Poi desc 0",
+                "sample city",
+                "sample address",
+                "sample coords",
+                List.of(),
+                List.of(),
+                LocalDateTime.now());
+
+        when(mapperMock.toDTO(any(PointOfInterest.class))).thenReturn(expectedDto);
+
+        PointOfInterestDTO result = service.deletePoiById(0L);
+
+        assertNotNull(result);
+        assertEquals("Poi name 0", result.name());
+        assertEquals("Poi desc 0", result.description());
+        verify(repositoryMock).delete(poi);
+    }
+
+    @Test
+    @DisplayName("deletePoiById with incorrect id should throw an exception")
+    public void deltePoiByIdIncorrectIdTest() {
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
+            service.deletePoiById(100);
+        });
+
+        assertEquals("404 NOT_FOUND \"No existe ningún punto de interés con el ID 100.\"", e.getMessage());
     }
 }

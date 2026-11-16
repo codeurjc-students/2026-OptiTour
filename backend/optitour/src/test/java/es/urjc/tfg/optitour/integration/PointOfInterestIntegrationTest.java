@@ -3,9 +3,11 @@ package es.urjc.tfg.optitour.integration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,6 +74,18 @@ public class PointOfInterestIntegrationTest extends BaseIntegrationTest {
         repository.deleteAll();
     }
 
+    private long getFirstPoiId() {
+        List<PointOfInterest> all = new ArrayList<>();
+        all = repository.findAll();
+        return all.get(0).getId();
+    }
+
+    private long getFirstTourId() {
+        List<Tour> all = new ArrayList<>();
+        all = tourRepository.findAll();
+        return all.get(0).getId();
+    }
+
     @Test
     @DisplayName("getPointOfInterestById should return correctly requested poi data from actual database")
     public void getPointOfInterestByIdIntegrationTest() {
@@ -127,5 +141,28 @@ public class PointOfInterestIntegrationTest extends BaseIntegrationTest {
         assertEquals("Test city", result.getCity());
         assertEquals("Test address", result.getAddress());
         assertEquals("1.11111,1.11111", result.getCoords());
+    }
+
+    @Test
+    @DisplayName("deletePoiById should delete the correct poi from database, and disattach corresponding tours")
+    public void deletePoiByIdIntegrationTest() {
+        // Given: We want to delete the first POI
+        Long firstId = getFirstPoiId();
+
+        // When: We call service method
+        service.deletePoiById(firstId);
+
+        // Then: POI should have been deleted and tours disattached from this POI
+        Optional<PointOfInterest> op = repository.findById(firstId);
+        assertTrue(op.isEmpty());
+
+        Tour firstTour = tourRepository.findById(getFirstTourId()).get();
+        List<PointOfInterest> tourPois = firstTour.getPois();
+
+        // We don't know exactly which poi will be the first one.
+        // But we know that, if poi was removed from tour's list,
+        // length should be 2 (in integration tests there are 3 pois per tour)
+
+        assertEquals(2, tourPois.size());
     }
 }

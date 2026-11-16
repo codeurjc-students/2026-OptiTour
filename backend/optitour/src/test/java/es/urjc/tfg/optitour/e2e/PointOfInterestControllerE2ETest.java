@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.sql.rowset.serial.SerialBlob;
 
@@ -30,12 +31,15 @@ import es.urjc.tfg.optitour.BaseIntegrationTest;
 import es.urjc.tfg.optitour.DTO.ImageDTO;
 import es.urjc.tfg.optitour.DTO.PointOfInterestCreateDTO;
 import es.urjc.tfg.optitour.DTO.PointOfInterestDTO;
+import es.urjc.tfg.optitour.DTO.PointOfInterestNoListDTO;
+import es.urjc.tfg.optitour.DTO.TourDTO;
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.PointOfInterest;
 import es.urjc.tfg.optitour.model.Tour;
 import es.urjc.tfg.optitour.model.User;
 import es.urjc.tfg.optitour.repository.ImageRepository;
 import es.urjc.tfg.optitour.repository.PointOfInterestRepository;
+import es.urjc.tfg.optitour.repository.TourRepository;
 import es.urjc.tfg.optitour.repository.UserRepository;
 import es.urjc.tfg.optitour.security.jwt.LoginRequest;
 import io.restassured.RestAssured;
@@ -51,6 +55,9 @@ public class PointOfInterestControllerE2ETest extends BaseIntegrationTest {
 
         @Autowired
         private UserRepository userRepository;
+
+        @Autowired
+        private TourRepository tourRepository;
 
         @Autowired
         private PasswordEncoder passwordEncoder;
@@ -91,10 +98,14 @@ public class PointOfInterestControllerE2ETest extends BaseIntegrationTest {
                 poiDescriptions = new ArrayList<>();
 
                 List<Tour> tours = new ArrayList<>();
+
                 for (int i = 0; i < 3; i++) {
-                        tours.add(new Tour("Test tour " + i, "Test desc " + i));
+                        Tour newTour = new Tour("Test tour " + i, "Test desc " + i);
+                        newTour.setPois(null);
+                        tours.add(newTour);
                 }
 
+                List<PointOfInterest> pois = new ArrayList<>();
                 for (int i = 0; i < 10; i++) {
                         String name = "Poi name " + i;
                         String desc = "Poi desc " + i;
@@ -110,8 +121,14 @@ public class PointOfInterestControllerE2ETest extends BaseIntegrationTest {
                         image.setPoi(poi);
                         poi.getImages().add(image);
 
-                        repository.save(poi);
+                        pois.add(poi);
                 }
+
+                for (Tour tour : tours) {
+                        tour.setPois(pois);
+                }
+
+                tourRepository.saveAll(tours);
         }
 
         private String getAdminAuthToken() {
@@ -126,7 +143,20 @@ public class PointOfInterestControllerE2ETest extends BaseIntegrationTest {
                                 .extract().cookie("AuthToken");
         }
 
-        private long getFirstId() {
+        private String getUserAuthToken() {
+                LoginRequest credentials = new LoginRequest("example@example.com", "demo1234");
+
+                return given()
+                                .contentType(ContentType.JSON)
+                                .body(credentials)
+                                .when()
+                                .post("/api/v1/auth/login")
+                                .then()
+                                .statusCode(200)
+                                .extract().cookie("AuthToken");
+        }
+
+        private long getFirstPoiId() {
                 return repository.findAll().stream()
                                 .filter(p -> "Poi name 0".equals(p.getName()))
                                 .findFirst()
@@ -134,10 +164,18 @@ public class PointOfInterestControllerE2ETest extends BaseIntegrationTest {
                                 .orElseThrow();
         }
 
+        private long getFirstTourId() {
+                return tourRepository.findAll().stream()
+                                .filter(p -> "Test tour 0".equals(p.getName()))
+                                .findFirst()
+                                .map(Tour::getId)
+                                .orElseThrow();
+        }
+
         @Test
         @DisplayName("Checks if getPointOfInterestById endpoint returns the correct POI")
         void getPointOfInterestByIdE2ETest() {
-                long firstId = getFirstId();
+                long firstId = getFirstPoiId();
 
                 PointOfInterestDTO result = get("/api/v1/point-of-interest/" + firstId)
                                 .then()
@@ -233,7 +271,7 @@ public class PointOfInterestControllerE2ETest extends BaseIntegrationTest {
         @DisplayName("uploading multiple images to a poi should return and persist all images")
         void uploadMultipleImagesToPoiE2ETest() {
                 String adminToken = getAdminAuthToken();
-                long firstId = getFirstId();
+                long firstId = getFirstPoiId();
                 byte[] firstImage = { 4, 5, 6 };
                 byte[] secondImage = { 7, 8, 9 };
 
@@ -256,6 +294,66 @@ public class PointOfInterestControllerE2ETest extends BaseIntegrationTest {
                 Image secondCreatedImage = imageRepository.findById(result[1].id()).orElseThrow();
                 assertEquals(firstId, firstCreatedImage.getPoi().getId());
                 assertEquals(firstId, secondCreatedImage.getPoi().getId());
+        }
+
+        @Test
+        @DisplayName("deletePoi controller should delete the correct POI in database, be disattached from tours, and return deleted resource")
+        public void deletePoiE2ETEst() {
+                String adminToken = getAdminAuthToken();
+                Long firstId = getFirstPoiId();
+
+                PointOfInterest deleted = repository.findById(firstId).get();
+
+                PointOfInterestDTO result = given()
+                                .cookie("AuthToken", adminToken)
+                                .when()
+                                .delete("/api/v1/point-of-interest/" + firstId)
+                                .then()
+                                .statusCode(200)
+                                .extract().as(PointOfInterestDTO.class);
+
+                Optional<PointOfInterest> op = repository.findById(firstId);
+                assertTrue(op.isEmpty());
+
+                TourDTO firstTour = get("/api/v1/tour/" + getFirstTourId())
+                                .then()
+                                .statusCode(200)
+                                .extract().as(TourDTO.class);
+
+                List<PointOfInterestNoListDTO> tourPois = firstTour.pois();
+
+                assertEquals(9, tourPois.size());
+
+                assertEquals(deleted.getName(), result.name());
+                assertEquals(deleted.getDescription(), result.description());
+        }
+
+        @Test
+        @DisplayName("deletePoi endpoint should return 403 status code if user is not authenticated as an admin")
+        public void deletePoiNoAdminE2ETest() {
+                String userToken = getUserAuthToken();
+                Long firstId = getFirstPoiId();
+
+                given()
+                                .cookie("AuthToken", userToken)
+                                .when()
+                                .delete("/api/v1/point-of-interest/" + firstId)
+                                .then()
+                                .statusCode(403);
+        }
+
+        @Test
+        @DisplayName("deletePoi endpoint called with incorrect id should return 404 status code")
+        public void deletePoiIncorrectIdE2ETest() {
+                String adminToken = getAdminAuthToken();
+
+                given()
+                                .cookie("AuthToken", adminToken)
+                                .when()
+                                .delete("/api/v1/point-of-interest/1000000")
+                                .then()
+                                .statusCode(404);
+
         }
 
         // ---------------- FIELD VALIDATION TESTS --------------------------------

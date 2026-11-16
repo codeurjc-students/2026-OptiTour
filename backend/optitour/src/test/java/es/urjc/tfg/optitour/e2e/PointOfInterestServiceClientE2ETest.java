@@ -26,9 +26,17 @@ import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.support.TransactionTemplate;
 
+import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.PointOfInterest;
 import es.urjc.tfg.optitour.repository.PointOfInterestRepository;
+import es.urjc.tfg.optitour.repository.TourRepository;
+import es.urjc.tfg.optitour.service.ImageService;
+import es.urjc.tfg.optitour.service.PointOfInterestService;
 
 @SpringBootTest
 public class PointOfInterestServiceClientE2ETest {
@@ -38,8 +46,26 @@ public class PointOfInterestServiceClientE2ETest {
     @Autowired
     PointOfInterestRepository repository;
 
+    @Autowired
+    private PointOfInterestService poiService;
+
+    @Autowired
+    private TourRepository tourRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private ImageService imageService;
+
+    @Autowired
+    private TransactionTemplate transactionTemplate;
+
     @BeforeEach
     public void setUp() {
+        deleteTestPois();
+        restoreDefaultPois();
+
         ChromeOptions options = new ChromeOptions();
         options.setAcceptInsecureCerts(true);
         options.addArguments("--ignore-certificate-errors");
@@ -55,8 +81,79 @@ public class PointOfInterestServiceClientE2ETest {
 
     @AfterEach
     public void tearDown() {
-        if (driver != null) {
-            driver.quit();
+        try {
+            if (driver != null) {
+                driver.quit();
+            }
+        } finally {
+            deleteTestPois();
+            restoreDefaultPois();
+        }
+    }
+
+    private void deleteTestPois() {
+        try {
+            List<PointOfInterest> testPois = repository.findAll().stream()
+                    .filter(poi -> poi.getName() != null
+                            && (poi.getName().startsWith("New POI ") || poi.getName().startsWith("Test POI ")))
+                    .toList();
+
+            for (PointOfInterest poi : testPois) {
+                try {
+                    poiService.deletePoiById(poi.getId());
+                } catch (Exception e) {
+                    repository.delete(poi);
+                }
+            }
+            repository.flush();
+        } catch (Exception e) {
+            System.err.println("Could not delete test POIs: " + e.getMessage());
+        }
+    }
+
+    private void restoreDefaultPois() {
+        try {
+            transactionTemplate.executeWithoutResult(status -> {
+                boolean missingPrado = repository.findByName("Museo del Prado").isEmpty();
+                if (missingPrado) {
+                    jdbcTemplate.update(
+                            "INSERT INTO point_of_interest (id, name, description, city, address, coords, created_at) "
+                                    + "VALUES (1, 'Museo del Prado', 'Pinacoteca con obras maestras de Velázquez y Goya.', "
+                                    + "'Madrid', 'Calle de Ruiz de Alarcón, 23', '40.4137818,-3.6921271', NOW())");
+                }
+
+                PointOfInterest prado = repository.findById(1L).orElse(null);
+                if (prado != null) {
+                    tourRepository.findAll().stream()
+                            .filter(t -> "Madrid, España".equals(t.getName()))
+                            .findFirst()
+                            .ifPresent(madridTour -> {
+                                if (madridTour.getPois().stream().noneMatch(p -> p.getId() == 1L)) {
+                                    madridTour.getPois().add(0, prado);
+                                    tourRepository.save(madridTour);
+                                }
+                            });
+
+                    Integer imageCount = jdbcTemplate.queryForObject(
+                            "SELECT COUNT(*) FROM image WHERE poi_id = 1", Integer.class);
+                    if (imageCount == null || imageCount == 0) {
+                        for (int i = 1; i <= 3; i++) {
+                            try {
+                                Resource imgRes = new ClassPathResource(
+                                        "/sample-images/poi/madrid/museo-del-prado/museo-del-prado-" + i + ".jpg");
+                                if (imgRes.exists()) {
+                                    Image createdImage = imageService.createImage(imgRes.getInputStream());
+                                    createdImage.setPoi(prado);
+                                    imageService.saveImage(createdImage);
+                                }
+                            } catch (Exception ignored) {
+                            }
+                        }
+                    }
+                }
+            });
+        } catch (Exception e) {
+            System.err.println("Could not restore default POIs: " + e.getMessage());
         }
     }
 
@@ -217,7 +314,8 @@ public class PointOfInterestServiceClientE2ETest {
             StringBuilder consoleLogs = new StringBuilder();
             try {
                 for (var entry : driver.manage().logs().get(LogType.BROWSER)) {
-                    consoleLogs.append("[").append(entry.getLevel()).append("] ").append(entry.getMessage()).append(" ");
+                    consoleLogs.append("[").append(entry.getLevel()).append("] ").append(entry.getMessage())
+                            .append(" ");
                 }
             } catch (Exception ignored) {
             }
@@ -246,5 +344,75 @@ public class PointOfInterestServiceClientE2ETest {
 
         WebElement poiName = wait.until(visibilityOfElementLocated(By.className("ot-poi-detail__title")));
         assertEquals(createdPoiName, poiName.getText());
+    }
+
+    @Test
+    @DisplayName("Checks if poi creation form should show error card if name is repeated")
+    public void poiCreationFormClientRepeatedNameE2ETest() {
+        driver.get("http://localhost:5173/admin/addpoi");
+        login("admin@optitour.com", "Admin1234");
+
+        wait.until(urlToBe("http://localhost:5173/admin/addpoi"));
+
+        WebElement nameField = wait.until(visibilityOfElementLocated(By.id("poiName")));
+        WebElement descField = driver.findElement(By.id("poiDescription"));
+        WebElement cityField = driver.findElement(By.id("poiCity"));
+        WebElement addressField = driver.findElement(By.id("poiAddress"));
+        WebElement latitudeField = driver.findElement(By.id("poiLat"));
+        WebElement longitudeField = driver.findElement(By.id("poiLng"));
+        WebElement imageField = driver.findElement(By.id("upload-image"));
+
+        nameField.sendKeys("Puerta del Sol");
+        descField.sendKeys("New POI desc");
+        cityField.sendKeys("Test City");
+        addressField.sendKeys("Test address");
+        latitudeField.sendKeys("1.11111");
+        longitudeField.sendKeys("1.11111");
+        String firstImagePath = Path.of("..", "..", "docs", "images", "tour-service-e2e-test.png")
+                .toAbsolutePath().normalize().toString();
+        String secondImagePath = Path.of("..", "..", "docs", "images", "tour-service-client-integration-test.png")
+                .toAbsolutePath().normalize().toString();
+        imageField.sendKeys(firstImagePath + "\n" + secondImagePath);
+
+        wait.until(driver -> driver.findElements(By.className("ot-create-poi__image-slot")).size() == 2);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ignored) {
+        }
+
+        WebElement submitButton = wait.until(elementToBeClickable(By.className("ot-create-poi__submit")));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", submitButton);
+        try {
+            submitButton.click();
+        } catch (Exception e) {
+            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", submitButton);
+        }
+
+        WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
+        assertEquals(
+                "Ya exisite un punto de interés con este nombre. Prueba con otro punto de interés e inténtalo de nuevo",
+                errorCard.getText());
+    }
+
+    @Test
+    @DisplayName("Checks if poi deletion works properly")
+    public void poiDeletionE2EClientTest() {
+        driver.get("http://localhost:5173/admin/poi");
+        login("admin@optitour.com", "Admin1234");
+
+        wait.until(urlToBe("http://localhost:5173/admin/poi"));
+        wait.until(visibilityOfElementLocated(By.className("btn-outline-danger")));
+
+        List<WebElement> allDeleteButtons = driver.findElements(By.className("btn-outline-danger"));
+        WebElement firstDeleteButton = allDeleteButtons.get(0);
+        firstDeleteButton.click();
+
+        WebElement confirmButton = wait.until(visibilityOfElementLocated(By.className("ot-modal__nav-btn")));
+        confirmButton.click();
+
+        WebElement confirmMessage = wait.until(visibilityOfElementLocated(By.id("confirmMessage")));
+        assertEquals("Se ha eliminado el siguiente punto de interés:\n" +
+                "Museo del Prado", confirmMessage.getText().replace("\r\n", "\n"));
     }
 }
