@@ -641,3 +641,112 @@ En las pruebas que renderizan componentes dependientes del store persistente de 
 * **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
 * **Modelo concreto:** Google Gemini 3.1 Pro
 * **Cómo ha sido usada:** El test E2E de creación de puntos de interés pasaba correctamente en local, pero fallaba de forma constante en GitHub Actions por un timeout de 15 segundos al intentar enviar el formulario. Se utilizó la IA para investigar el motivo volcando los logs del navegador en el fallo. La IA descubrió que en CI, al arrancar Vite sin caché previa en modo dev, la carga de la ruta de creación de POIs provocaba un error HTTP 504 (*Outdated Optimize Dep*), lo que hacía que React Router recargara la página automáticamente y borrara los datos mientras Selenium escribía. Para solucionarlo, la IA configuró `optimizeDeps` en `vite.config.ts` preempaquetando todas las dependencias del proyecto al inicio para evitar recargas, además de añadir comprobaciones en el formulario para evitar envíos dobles.
+
+--- 
+
+* **Fecha:** 16/11/2026
+* **Fase:** Fase 3
+* **Objetivo:** Generación de números pseudoaleatorios en backend
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro
+* **Cómo ha sido usada:** Se le pregunta a la IA por una forma de generar números pseudoaleatorios en Java. La IA contesta con el uso de `ThreadLocalRandom`, explicando que es una mejor opción que usar `new Random()` para poder gestionar mútlples peticiones a la vez, dado que se trata de un servicio web. Con las herramientas y explicaciones proporcionadas por la IA se procede a la implementación de manera manual del método de servicio `getRandomId()`.
+
+---
+
+* **Fecha:** 17/11/2026
+* **Fase:** Fase 3
+* **Objetivo:** Limpieza de datos residuales y restauración del estado de la base de datos en pruebas E2E de Selenium
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro
+* **Cómo ha sido usada:** Al ejecutar las pruebas E2E de `Selenium` contra la base de datos de desarrollo, los tests dejaban registros residuales (nuevos puntos de interés y usuarios de prueba creados) y eliminaban datos por defecto del sistema (como el punto de interés *"Museo del Prado"*, sus imágenes y su relación con el tour de Madrid), obligando a reiniciar la base de datos manualmente. Se recurre a la IA para solucionar este problema de persistencia en `UserServiceClientE2ETest.java` y `PointOfInterestServiceClientE2ETest.java`. La IA implementa mecanismos automatizados en `@BeforeEach` y `@AfterEach` para limpiar los datos creados y restaurar los datos por defecto eliminados. En `PointOfInterestServiceClientE2ETest.java` (líneas 94-158), la IA generó los métodos `deleteTestPois()` y `restoreDefaultPois()`:
+
+```java
+    private void deleteTestPois() {
+        try {
+            List<PointOfInterest> testPois = repository.findAll().stream()
+                    .filter(poi -> poi.getName() != null
+                            && (poi.getName().startsWith("New POI ") || poi.getName().startsWith("Test POI ")))
+                    .toList();
+
+            for (PointOfInterest poi : testPois) {
+                try {
+                    poiService.deletePoiById(poi.getId());
+                } catch (Exception e) {
+                    repository.delete(poi);
+                }
+            }
+            repository.flush();
+        } catch (Exception e) {
+            System.err.println("Could not delete test POIs: " + e.getMessage());
+        }
+    }
+
+    private void restoreDefaultPois() {
+        try {
+            transactionTemplate.executeWithoutResult(status -> {
+                boolean missingPrado = repository.findByName("Museo del Prado").isEmpty();
+                if (missingPrado) {
+                    jdbcTemplate.update(
+                            "INSERT INTO point_of_interest (id, name, description, city, address, coords, created_at) "
+                                    + "VALUES (1, 'Museo del Prado', 'Pinacoteca con obras maestras de Velázquez y Goya.', "
+                                    + "'Madrid', 'Calle de Ruiz de Alarcón, 23', '40.4137818,-3.6921271', NOW())");
+                }
+
+                PointOfInterest prado = repository.findById(1L).orElse(null);
+                if (prado != null) {
+                    tourRepository.findAll().stream()
+                            .filter(t -> "Madrid, España".equals(t.getName()))
+                            .findFirst()
+                            .ifPresent(madridTour -> {
+                                if (madridTour.getPois().stream().noneMatch(p -> p.getId() == 1L)) {
+                                    madridTour.getPois().add(0, prado);
+                                    tourRepository.save(madridTour);
+                                }
+                            });
+
+                    Integer imageCount = jdbcTemplate.queryForObject(
+                            "SELECT COUNT(*) FROM image WHERE poi_id = 1", Integer.class);
+                    if (imageCount == null || imageCount == 0) {
+                        for (int i = 1; i <= 3; i++) {
+                            try {
+                                Resource imgRes = new ClassPathResource(
+                                        "/sample-images/poi/madrid/museo-del-prado/museo-del-prado-" + i + ".jpg");
+                                if (imgRes.exists()) {
+                                    Image createdImage = imageService.createImage(imgRes.getInputStream());
+                                    createdImage.setPoi(prado);
+                                    imageService.saveImage(createdImage);
+                                }
+                            } catch (Exception ignored) {
+                            }
+                        }
+                    }
+                }
+            });
+        } catch (Exception e) {
+            System.err.println("Could not restore default POIs: " + e.getMessage());
+        }
+    }
+```
+
+De esta forma, `deleteTestPois()` localiza y elimina en cascada (junto a sus imágenes y asociaciones) cualquier POI creado durante las pruebas mediante `poiService.deletePoiById()`, y `restoreDefaultPois()` comprueba dentro de una transacción (`TransactionTemplate`) si *"Museo del Prado"* (ID 1) fue eliminado por el test de borrado, reinsertándolo en la base de datos con su ID original mediante `JdbcTemplate`, vinculándolo nuevamente al tour correspondiente y recuperando sus imágenes desde los recursos del classpath. Asimismo, en `UserServiceClientE2ETest.java` (líneas 86-133) se aplicó un filtro similar mediante un conjunto de correos por defecto (`DEFAULT_USER_EMAILS`) para eliminar cualquier usuario que no se encuentre entre los datos iniciales y restaurar el estado de los administradores y usuarios modificados.
+
+---
+
+* **Fecha:** 16/11/2026
+* **Fase:** Fase 3
+* **Objetivo:** Generación de números pseudoaleatorios en backend
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro
+* **Cómo ha sido usada:** Se le pregunta a la IA la causa del siguiente error en la ejecución de test en GitHub Actions: 
+
+```bash
+mysql: [Warning] Using a password on the command line interface can be insecure.
+ERROR 1524 (HY000) at line 2: Plugin 'mysql_native_password' is not loaded
+```
+
+La IA explica que el problema viene de la reciente actualizaión de la versión de MySQL en los runners, versión en la que el plugin `mysql_native_password` viene deshabilitado por defecto.
+La IA realiza el siguiente cambio en los workflows afectados: (complete-workflow.yml, lineas 45 y 81)
+
+``` sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'tfgOptitour';
+```
