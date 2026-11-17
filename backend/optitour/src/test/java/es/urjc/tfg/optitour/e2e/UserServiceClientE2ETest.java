@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.jupiter.api.AfterEach;
@@ -38,19 +39,24 @@ public class UserServiceClientE2ETest {
 
     private PasswordEncoder encoder = new BCryptPasswordEncoder();
 
+    private static final Set<String> DEFAULT_USER_EMAILS = Set.of(
+            "admin@optitour.com",
+            "carmen@example.com",
+            "laura@example.com",
+            "maria@example.com",
+            "ana@example.com",
+            "lucia@example.com",
+            "javier@example.com",
+            "carlos@example.com",
+            "david@example.com",
+            "alejandro@example.com",
+            "daniel@example.com");
+
     @BeforeEach
     public void setup() {
-        // Clean up any test users to guarantee idempotency and avoid
-        // NonUniqueResultException
         deleteTestUsers();
         keepOnlyDefaultAdmin();
-
-        repository.findByEmail("carmen@example.com").ifPresent(carmen -> {
-            if (carmen.getIsBanned()) {
-                carmen.setBanned(false);
-                repository.save(carmen);
-            }
-        });
+        resetDefaultUsers();
 
         ChromeOptions options = new ChromeOptions();
         options.setAcceptInsecureCerts(true);
@@ -72,29 +78,58 @@ public class UserServiceClientE2ETest {
             }
         } finally {
             deleteTestUsers();
+            keepOnlyDefaultAdmin();
+            resetDefaultUsers();
         }
     }
 
     private void deleteTestUsers() {
-        List<User> testUsers = repository.findAll().stream()
-                .filter(user -> "example@example.com".equals(user.getEmail())
-                        || "example2@example.com".equals(user.getEmail())
-                        || "example".equals(user.getUserName())
-                        || (user.getEmail() != null && user.getEmail().endsWith("@ex.com")))
-                .toList();
+        try {
+            List<User> testUsers = repository.findAll().stream()
+                    .filter(user -> user.getEmail() == null
+                            || !DEFAULT_USER_EMAILS.contains(user.getEmail())
+                            || "example".equals(user.getUserName())
+                            || "example@example.com".equals(user.getEmail())
+                            || "example2@example.com".equals(user.getEmail())
+                            || (user.getEmail() != null && user.getEmail().endsWith("@ex.com")))
+                    .toList();
 
-        repository.deleteAll(testUsers);
-        repository.flush();
+            if (!testUsers.isEmpty()) {
+                repository.deleteAll(testUsers);
+                repository.flush();
+            }
+        } catch (Exception e) {
+            System.err.println("Could not delete test users: " + e.getMessage());
+        }
     }
 
     private void keepOnlyDefaultAdmin() {
-        List<User> extraAdmins = repository.findAll().stream()
-                .filter(user -> user.getRoles().contains("ADMIN"))
-                .filter(user -> !"admin@optitour.com".equals(user.getEmail()))
-                .toList();
+        try {
+            List<User> extraAdmins = repository.findAll().stream()
+                    .filter(user -> user.getRoles().contains("ADMIN"))
+                    .filter(user -> !"admin@optitour.com".equals(user.getEmail()))
+                    .toList();
 
-        repository.deleteAll(extraAdmins);
-        repository.flush();
+            if (!extraAdmins.isEmpty()) {
+                repository.deleteAll(extraAdmins);
+                repository.flush();
+            }
+        } catch (Exception e) {
+            System.err.println("Could not clean extra admins: " + e.getMessage());
+        }
+    }
+
+    private void resetDefaultUsers() {
+        try {
+            repository.findByEmail("carmen@example.com").ifPresent(carmen -> {
+                if (carmen.getIsBanned()) {
+                    carmen.setBanned(false);
+                    repository.save(carmen);
+                }
+            });
+        } catch (Exception e) {
+            System.err.println("Could not reset default users: " + e.getMessage());
+        }
     }
 
     private void login(String email, String password) {

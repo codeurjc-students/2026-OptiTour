@@ -1,7 +1,7 @@
 // @ts-ignore
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { expect, test } from "vitest";
 import '@testing-library/jest-dom/vitest';
@@ -87,6 +87,41 @@ test('Checks if pois are loaded correclty from API', async () => {
     await waitFor(() => {
         expect(container.querySelectorAll('.ot-poi-list-item').length).toBe(15);
     });
+});
+
+test('Checks if poi is delete from database correctly', async () => {
+    await loginAs("admin@optitour.com", "Admin1234");
+
+    render(
+        <MemoryRouter>
+            <POIManagement />
+        </MemoryRouter>
+    );
+
+    const allDetailButtons = await screen.findAllByRole('button', { name: "Ver detalle" });
+    const targetUrl = allDetailButtons[0].getAttribute('href')!;
+
+    const allDeleteButtons = await screen.findAllByRole('button', { name: "Eliminar" });
+    const firstDeleteButton = allDeleteButtons[0];
+    fireEvent.click(firstDeleteButton);
+
+    const confirmButton = await screen.findByRole('button', { name: "Sí, borrar" });
+    fireEvent.click(confirmButton);
+
+    expect(await screen.findByText(/Se ha eliminado el siguiente punto de interés/)).toBeInTheDocument();
+
+    cleanup();
+
+    render(
+        <MemoryRouter initialEntries={[targetUrl]}>
+            <Routes>
+                <Route path="/point-of-interest/:id" element={<PointOfInterestDetail />} />
+            </Routes>
+        </MemoryRouter>
+    );
+
+    const errorTitle = await screen.findByText("404: Punto de interés no encontrado");
+    expect(errorTitle).toBeInTheDocument();
 });
 
 // ------------------ Field Validation Tests --------------------------------

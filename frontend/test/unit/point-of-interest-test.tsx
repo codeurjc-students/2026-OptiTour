@@ -10,23 +10,23 @@ import CreatePointOfInterest from "../../src/routes/admin/create-poi/create-poi"
 
 vi.mock('../../src/service/point-of-interest-service');
 
-test('Point of interest detail displays requierded poi information properly', async () => {
-    const testPoi = {
-        id: 1,
-        name: "Museo del Prado",
-        description: "Pinacoteca con obras maestras de Velázquez y Goya.",
-        city: "Madrid",
-        address: "Calle de Ruiz de Alarcón, 23",
-        coords: "40.4137818,-3.6921271",
-        tours: [
-            {
-                id: 1,
-                name: "Madrid, España",
-                description: "Descubre la capital de España, sus museos y su vibrante vida nocturna."
-            },
-        ]
-    };
+const testPoi = {
+    id: 1,
+    name: "Museo del Prado",
+    description: "Pinacoteca con obras maestras de Velázquez y Goya.",
+    city: "Madrid",
+    address: "Calle de Ruiz de Alarcón, 23",
+    coords: "40.4137818,-3.6921271",
+    tours: [
+        {
+            id: 1,
+            name: "Madrid, España",
+            description: "Descubre la capital de España, sus museos y su vibrante vida nocturna."
+        },
+    ]
+};
 
+test('Point of interest detail displays requierded poi information properly', async () => {
     vi.mocked(service.getPoiById).mockResolvedValue(testPoi as unknown as PointOfInterestDTO);
 
     render(
@@ -138,11 +138,42 @@ test('Checks if poi-creation form adds poi', async () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => expect(service.createPoi).toHaveBeenCalledWith({
-            name: "Test POI",
-            description: "Test description",
-            city: "Test city",
-            address: "Test address",
-            coords: `1.11111,1.11111`
-        })
+        name: "Test POI",
+        description: "Test description",
+        city: "Test city",
+        address: "Test address",
+        coords: `1.11111,1.11111`
+    })
     );
+});
+
+test('Checks if delete UI elements render properly', async () => {
+    vi.mocked(service.getPoisByPage).mockResolvedValue({
+        content: [testPoi as unknown as PointOfInterestDTO],
+        page: { number: 0, totalPages: 1, totalElements: 1 }
+    } as any);
+    vi.mocked(service.deletePoiById).mockResolvedValue(testPoi as unknown as PointOfInterestDTO);
+
+    render(
+        <MemoryRouter>
+            <POIManagement />
+        </MemoryRouter>
+    );
+
+    const allDeleteButtons = await screen.findAllByRole('button', { name: "Eliminar" });
+    const firstDeleteButton = allDeleteButtons[0];
+    fireEvent.click(firstDeleteButton);
+
+    const confirmText = await screen.findByText(/Se borrará permanentemente el siguiente punto de interés/);
+    expect(confirmText).toBeInTheDocument();
+    expect(confirmText.textContent).toContain(testPoi.name);
+
+    const confirmButton = await screen.findByRole('button', { name: "Sí, borrar" });
+    fireEvent.click(confirmButton);
+
+    const confirmMessage = await screen.findByText(/Se ha eliminado el siguiente punto de interés/);
+    expect(confirmMessage).toBeInTheDocument();
+    expect(confirmMessage.textContent).toContain(testPoi.name);
+
+    expect(service.deletePoiById).toHaveBeenCalledWith(testPoi.id);
 });

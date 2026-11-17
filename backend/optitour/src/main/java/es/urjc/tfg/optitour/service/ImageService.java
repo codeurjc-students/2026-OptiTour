@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.sql.rowset.serial.SerialBlob;
 
@@ -86,5 +87,15 @@ public class ImageService {
             return new ByteArrayResource(image.getImageFile().getBytes(1, (int) length));
         }
         throw new RuntimeException("Image file not found");
+    }
+
+    public Long getRandomId() {
+        List<Long> ids = imageRepository.findAllIds();
+
+        if (ids.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No hay imágenes almacenadas en el sistema.");
+
+        int randomIndex = ThreadLocalRandom.current().nextInt(ids.size());
+        return ids.get(randomIndex);
     }
 }

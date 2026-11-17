@@ -11,16 +11,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import es.urjc.tfg.optitour.DTO.PointOfInterestCreateDTO;
+import es.urjc.tfg.optitour.DTO.PointOfInterestDTO;
+import es.urjc.tfg.optitour.mapper.PointOfInterestMapper;
 import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.PointOfInterest;
+import es.urjc.tfg.optitour.model.Tour;
 import es.urjc.tfg.optitour.repository.PointOfInterestRepository;
 
 @Service
 public class PointOfInterestService {
     private final PointOfInterestRepository repository;
+    private PointOfInterestMapper mapper;
+    private TourService tourService;
 
-    public PointOfInterestService(PointOfInterestRepository repository) {
+    public PointOfInterestService(PointOfInterestRepository repository, PointOfInterestMapper mapper,
+            TourService tourService) {
         this.repository = repository;
+        this.mapper = mapper;
+        this.tourService = tourService;
     }
 
     public PointOfInterest getPointOfInterestById(long id) throws ResponseStatusException {
@@ -67,5 +75,38 @@ public class PointOfInterestService {
         PointOfInterest savedPoi = repository.save(targetPoi);
         int firstNewImageIndex = savedPoi.getImages().size() - images.size();
         return new ArrayList<>(savedPoi.getImages().subList(firstNewImageIndex, savedPoi.getImages().size()));
+    }
+
+    public PointOfInterestDTO deletePoiById(long id) {
+        PointOfInterest deleted = getPointOfInterestById(id);
+
+        /**
+         * It's necessary to map the dto here, because in controller
+         * it won't be possible to map it due to references to other tables,
+         * like tours or images. This causes that Hibernate cannot search for
+         * tours and images attached to a deleted (this is, unexisiting) poi,
+         * so return 504 status code instead of the deleted POI DTO
+         */
+
+        PointOfInterestDTO dto = mapper.toDTO(deleted);
+
+        /*
+         * Also, it's neccessary to delete manually attached tours.
+         * This is because, being a many-to-many relationship, both tours and poi tables
+         * are related thanks to a middle table: tour_poi. This table has foreign keys
+         * to
+         * tour and poi tables. So, in order to delete a poi, it's necessary to
+         * disconnect this middle
+         * table's the corresponding tour foreign key.
+         */
+
+        List<Tour> attachedTours = deleted.getTours();
+        for (Tour tour : attachedTours) {
+            tour.getPois().remove(deleted);
+            tourService.saveTour(tour);
+        }
+
+        repository.delete(deleted);
+        return dto;
     }
 }

@@ -1,8 +1,11 @@
 package es.urjc.tfg.optitour.unit;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
@@ -12,6 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialException;
@@ -19,6 +23,7 @@ import javax.sql.rowset.serial.SerialException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.springframework.core.io.Resource;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -100,7 +105,7 @@ public class ImageServiceTest {
         streams.add(null);
 
         assertThrows(ResponseStatusException.class,
-            () -> service.createImageList(streams));
+                () -> service.createImageList(streams));
     }
 
     @Test
@@ -122,4 +127,36 @@ public class ImageServiceTest {
         assertNotNull(images.get(1).getImageFile());
     }
 
+    @Test
+    @DisplayName("getRandomId should return a random id")
+    public void getRandomIdTest() {
+        // Given: We have a 3 ids list.
+        // Pseudorandom numbers are not deterministic: we need to mock it.
+        when(repositoryMock.findAllIds()).thenReturn(List.of(1L, 2L, 3L));
+
+        ThreadLocalRandom mockRandom = mock(ThreadLocalRandom.class);
+        try (MockedStatic<ThreadLocalRandom> mockedStatic = mockStatic(ThreadLocalRandom.class)) {
+            mockedStatic.when(ThreadLocalRandom::current).thenReturn(mockRandom);
+
+            when(ThreadLocalRandom.current().nextInt(any(int.class))).thenReturn(1);
+
+            // When: we call the service method
+            Long result = service.getRandomId();
+
+            // Then: a random number should be returned.
+            assertEquals(2, result);
+        }
+    }
+
+    @Test
+    @DisplayName("getRandomId should throw if there are no images")
+    public void getRandomIdEmptyListTest() {
+        when(repositoryMock.findAllIds()).thenReturn(List.of());
+
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
+            service.getRandomId();
+        });
+
+        assertEquals("404 NOT_FOUND \"No hay imágenes almacenadas en el sistema.\"", e.getMessage());
+    }
 }

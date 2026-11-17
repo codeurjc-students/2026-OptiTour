@@ -33,4 +33,13 @@ public class ImageController {
 
         return ResponseEntity.ok().contentType(mediaType).body(imageFile);
     }
+
+    // As login shows random images, it's necessary to show ramdonly an available
+    // id. So, we replace random selector logic to backend. In here, we can
+    // query the database for available IDs.
+
+    @GetMapping("/random")
+    public Long getRandomId() {
+        return imageService.getRandomId();
+    }
 }
