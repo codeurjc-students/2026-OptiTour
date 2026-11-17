@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
@@ -93,5 +94,10 @@ public class PointOfInterestController {
     @DeleteMapping("/{id}")
     public PointOfInterestDTO deletePoi(@PathVariable long id) {
         return service.deletePoiById(id);
+    }
+
+    @PutMapping("/{id}")
+    public PointOfInterestDTO editPoi(@PathVariable long id, @Valid @RequestBody PointOfInterestCreateDTO body) {
+        return mapper.toDTO(service.editPoiById(id, body));
     }
 }
