@@ -213,7 +213,7 @@ export default function POIManagement() {
                                             actions={
                                                 <>
                                                     <Button variant="outline-dark" as={Link as any} to={`/point-of-interest/${poi.id}`}>Ver detalle</Button>
-                                                    <Button variant="outline-dark">
+                                                    <Button variant="outline-dark" as={Link as any} to={`/admin/poi/edit/${poi.id}`}>
                                                         <i className="bi bi-pencil me-2"></i>
                                                         Editar
                                                     </Button>

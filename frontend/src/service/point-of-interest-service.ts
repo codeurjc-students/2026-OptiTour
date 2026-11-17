@@ -88,3 +88,21 @@ export async function deletePoiById(id: number) {
 
     return await response.json();
 }
+
+export async function editPoiById(id: number, newPoi: PointOfInterestCreateDTO) {
+    const url = `${base_url}/${id}`;
+
+    const response = await fetch(url, {
+        headers: { "Content-Type": "application7json" },
+        method: "PUT",
+        credentials: "include",
+        body: JSON.stringify(newPoi)
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new ApiError(errorData.message, errorData.status, errorData.error);
+    }
+
+    return await response.json();
+}
