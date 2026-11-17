@@ -96,7 +96,7 @@ export default function POIManagement() {
             setPoiToDelete(null);
             handleDeleteActionModalClose()
             setShowDeleteConfirmModal(true);
-            setDeleteConfirmModalMessage(`Se ha eliminado el siguiente punto de interés: \n ${response.name}`);
+            setDeleteConfirmModalMessage(`Se ha eliminado el siguiente punto de interés:\n${response.name}`);
 
             setPois(pois.filter((poi) => { return poi.id != response.id }));
         }
@@ -148,7 +148,7 @@ export default function POIManagement() {
                         show={showActionModal}
                         onHide={handleDeleteActionModalClose}
                         title="¿Seguro que quieres borrar este punto de interés?"
-                        message={poiToDelete ? `Se borrará permanentemente el siguiente punto de interés: \n ${poiToDelete!.name} \n Se desvinculará de cualquier tour en el que se visite, y sus imágenes también serán eliminadas del sistema.` : ""}
+                        message={poiToDelete ? `Se borrará permanentemente el siguiente punto de interés:\n${poiToDelete!.name}\nSe desvinculará de cualquier tour en el que se visite, y sus imágenes también serán eliminadas del sistema.` : ""}
                         actionButtonHandler={() => { handleDeletePoi(poiToDelete!) }}
                         actionButtonText={isLoadingDelete ? "Borrando..." : "Sí, borrar"}
                         closeButtonText="No, volver al panel"
@@ -209,7 +209,7 @@ export default function POIManagement() {
                                     >
                                         <MediaListItem
                                             title={poi.name}
-                                            imageSrc={`${API_BASE_URL}/image/${poi.images[0].id}`}
+                                            imageSrc={poi.images && poi.images.length > 0 ? `${API_BASE_URL}/image/${poi.images[0].id}` : undefined}
                                             actions={
                                                 <>
                                                     <Button variant="outline-dark" as={Link as any} to={`/point-of-interest/${poi.id}`}>Ver detalle</Button>

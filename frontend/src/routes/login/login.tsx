@@ -72,7 +72,7 @@ export default function Login() {
     try {
       const response = await getLoginRandomImageId();
 
-      // Precarga los bytes de la imagen para evitar el parpadeo
+      // Pre-load image bytes to avoid left panel flickering
       const img = new Image();
       img.src = `${base_url}/image/${response}`;
 

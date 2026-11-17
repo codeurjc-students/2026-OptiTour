@@ -46,7 +46,7 @@ export default function FeedbackModal({
                 </Modal.Header>
             )}
             {message && (
-                <Modal.Body className="ot-modal__body">
+                <Modal.Body className="ot-modal__body" id="confirmMessage">
                     {message}
                 </Modal.Body>
             )}
