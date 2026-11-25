@@ -5,7 +5,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "react-bootstrap";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import '../create-poi/create-poi.css';
 import type { PointOfInterestDTO } from "../../../dto/point-of-interest-dto";
 import { deletePoiImage, editPoiById, getPoiById, uploadPoiUIamges } from "../../../service/point-of-interest-service";
@@ -21,7 +21,9 @@ export default function POIEdition() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>();
     const [poi, setPoi] = useState<PointOfInterestDTO>();
+
     const { id } = useParams();
+    const navigate = useNavigate();
 
     async function handleSubmit(data: CreatePoiFormData) {
         setIsLoading(true);
@@ -49,6 +51,19 @@ export default function POIEdition() {
             if (imagesToUpload.length > 0) {
                 await uploadPoiUIamges(imagesToUpload, response.id);
             }
+
+            navigate("/admin/poi", {
+                state: {
+                    showModal: true,
+                    modalTitle: "Punto de interés editado",
+                    modalMessage: `Se ha editado el siguiente punto de interés:\n ${response.name}\n ¿Quieres ver su detalle?`,
+                    navButton: true,
+                    navButtonText: "Sí, ver detalle",
+                    navUrl: `/point-of-interest/${response.id}`,
+                    buttonText: "No, volver al panel",
+                }
+            });
+
         }
         catch (err) {
             err instanceof ApiError
