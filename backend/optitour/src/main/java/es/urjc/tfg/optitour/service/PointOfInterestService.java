@@ -113,7 +113,9 @@ public class PointOfInterestService {
 
     public PointOfInterest editPoiById(long id, PointOfInterestCreateDTO newPoi) {
         PointOfInterest target = getPointOfInterestById(id);
-        validateUniqueName(newPoi.name());
+
+        if (!target.getName().equals(newPoi.name()))
+            validateUniqueName(newPoi.name());
 
         target.setName(newPoi.name());
         target.setDescription(newPoi.description());
@@ -123,5 +125,22 @@ public class PointOfInterestService {
 
         repository.save(target);
         return target;
+    }
+
+    public void deleteImageFromPoi(long poiId, long imageId) {
+        PointOfInterest target = getPointOfInterestById(poiId);
+        boolean removed = target.getImages().removeIf(image -> {
+            if (image.getId() == imageId) {
+                image.setPoi(null);
+                return true;
+            }
+            return false;
+        });
+
+        if (!removed)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "No existe ninguna imagen con el id " + imageId + " en el punto de interés " + poiId);
+
+        repository.save(target);
     }
 }

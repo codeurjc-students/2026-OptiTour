@@ -100,4 +100,10 @@ public class PointOfInterestController {
     public PointOfInterestDTO editPoi(@PathVariable long id, @Valid @RequestBody PointOfInterestCreateDTO body) {
         return mapper.toDTO(service.editPoiById(id, body));
     }
+
+    @DeleteMapping("/{poiId}/image/{imageId}")
+    public ResponseEntity<Void> deleteImageFromPoi(@PathVariable long poiId, @PathVariable long imageId) {
+        service.deleteImageFromPoi(poiId, imageId);
+        return ResponseEntity.noContent().build();
+    }
 }

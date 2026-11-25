@@ -7,8 +7,8 @@ import { Button } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import '../create-poi/create-poi.css';
-import type { PointOfInterestCreateDTO } from "../../../dto/point-of-interest-create-dto";
-import { getPoiById } from "../../../service/point-of-interest-service";
+import type { PointOfInterestDTO } from "../../../dto/point-of-interest-dto";
+import { deletePoiImage, editPoiById, getPoiById, uploadPoiUIamges } from "../../../service/point-of-interest-service";
 import { ApiError } from "../../../service/api-error";
 import Spinner from "../../../components/spinner/spinner";
 import ErrorCard from "../../../components/error-card/error-card";
@@ -20,11 +20,44 @@ type CreatePoiFormData = z.output<typeof poiSchema>;
 export default function POIEdition() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>();
-    const [poi, setPoi] = useState<PointOfInterestCreateDTO>();
+    const [poi, setPoi] = useState<PointOfInterestDTO>();
     const { id } = useParams();
 
-    async function handleSubmit() {
+    async function handleSubmit(data: CreatePoiFormData) {
+        setIsLoading(true);
 
+        try {
+            const response = await editPoiById(parseInt(id!), {
+                name: data.name,
+                description: data.desc,
+                city: data.city,
+                address: data.address,
+                coords: `${data.lat},${data.lng}`
+            });
+
+            const deletedImageIds = data.deletedImageIds as number[] | undefined;
+            if (deletedImageIds && deletedImageIds.length > 0) {
+                await Promise.all(
+                    deletedImageIds.map(imageId => deletePoiImage(response.id, imageId))
+                );
+            }
+
+            const imagesToUpload = data.images
+                ? Array.from(data.images as FileList | File[])
+                : [];
+
+            if (imagesToUpload.length > 0) {
+                await uploadPoiUIamges(imagesToUpload, response.id);
+            }
+        }
+        catch (err) {
+            err instanceof ApiError
+                ? setError(err.message)
+                : setError("Se ha producido un error al editar el punto de interés.")
+        }
+        finally {
+            setIsLoading(false);
+        }
     }
 
     const methods = useForm<CreatePoiFormInput, undefined, CreatePoiFormData>({
@@ -55,6 +88,7 @@ export default function POIEdition() {
                 address: response.address,
                 lat: response.coords ? response.coords.split(",")[0] : "",
                 lng: response.coords ? response.coords.split(",")[1] : "",
+                existingImages: response.images,
             });
         }
         catch (err) {
@@ -77,6 +111,8 @@ export default function POIEdition() {
         <>
             <FormProvider {...methods}>
                 {error && <ErrorCard text={error} />}
+                <h1 className="ot-panel-title">Editar punto de interés</h1>
+
                 <PoiFieldsCard poi={poi!} />
                 <div className="ot-create-poi__actions">
                     <Button
@@ -85,7 +121,7 @@ export default function POIEdition() {
                         disabled={isLoading}
                         onClick={handleFormSubmit(handleSubmit, handleInvalidSubmit)}
                     >
-                        {isLoading ? "Creando punto de interés" : "Crear punto de interés"}
+                        {isLoading ? "Editando punto de interés..." : "Editar punto de interés"}
                     </Button>
                     <Link to="/admin/poi" className="btn btn-outline-dark ot-create-poi__cancel-btn">
                         Cancelar

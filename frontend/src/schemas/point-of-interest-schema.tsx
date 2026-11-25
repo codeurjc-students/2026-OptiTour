@@ -23,12 +23,45 @@ export const poiSchema = z.object({
         .min(1, "La longitud es obligatoria")
         .regex(/^-?\d{1,3}\.\d+$/, "Debe ser un número decimal (ej: -3.7038)")
         .min(1, "Debes introducir la contraseña de nuevo."),
-    images: z.any()
-        .refine((files) => files && files.length > 0, "Debes seleccionar al menos una imagen")
-        // For image management, we can use file native file list created in dom
-        .refine((files) => files && Array.from(files).every((file: any) => file.size <= MAX_FILE_SIZE),
-            "Cada imagen debe pesar menos de 15 MB")
-        .refine((files) => files && Array.from(files).every((file: any) =>
+    images: z.any().optional(),
+    existingImages: z.any().optional(),
+    deletedImageIds: z.any().optional(),
+}).superRefine((data, ctx) => {
+    const existingCount = data.existingImages && typeof data.existingImages.length === "number"
+        ? data.existingImages.length
+        : 0;
+    const selectedCount = data.images
+        ? (typeof data.images.length === "number" ? data.images.length : 1)
+        : 0;
+
+    if (existingCount + selectedCount === 0) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Debes seleccionar al menos una imagen",
+            path: ["images"]
+        });
+    }
+
+    if (selectedCount > 0) {
+        const files = Array.isArray(data.images) || (typeof FileList !== "undefined" && data.images instanceof FileList)
+            ? Array.from(data.images)
+            : [data.images];
+
+        if (!files.every((file: any) => file.size <= MAX_FILE_SIZE)) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Cada imagen debe pesar menos de 15 MB",
+                path: ["images"]
+            });
+        }
+        if (!files.every((file: any) =>
             ACCEPTED_IMAGE_TYPES.includes(file.type) || (file.name && /\.(jpe?g|png|webp)$/i.test(file.name))
-        ), "Solo se permiten imágenes JPG, PNG o WEBP")
+        )) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Solo se permiten imágenes JPG, PNG o WEBP",
+                path: ["images"]
+            });
+        }
+    }
 });

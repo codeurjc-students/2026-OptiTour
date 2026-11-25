@@ -1,11 +1,13 @@
 import { Card, Form, Row, Col, Button } from 'react-bootstrap';
 import './poi-fields-card.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import type { PointOfInterestCreateDTO } from '../../dto/point-of-interest-create-dto';
+import type { PointOfInterestDTO } from '../../dto/point-of-interest-dto';
+import type { ImageDTO } from '../../dto/image-dto';
+import { API_BASE_URL } from '../../service/api-config';
 
 export interface PoiFieldsCardProps {
-    poi?: PointOfInterestCreateDTO;
+    poi?: PointOfInterestDTO;
 }
 
 export type PoiFieldsCard = PoiFieldsCardProps;
@@ -13,14 +15,20 @@ export type PoiFieldsCard = PoiFieldsCardProps;
 export default function PoiFieldsCard({ poi }: PoiFieldsCardProps) {
     const [selectedImages, setSelectedImages] = useState<File[]>([]);
     const [_imagePreviews, setImagesPreviwews] = useState<string[]>([]);
+    const [existingImages, setExistingImages] = useState<ImageDTO[]>([]);
+    const hasImages = existingImages.length > 0 || selectedImages.length > 0;
 
     const {
         formState: { errors },
         getFieldState,
+        getValues,
         register,
         setValue,
+        trigger,
     } = useFormContext();
     const imagesRegistration = register("images");
+    register("existingImages");
+    register("deletedImageIds");
 
     function handlePreview(event: React.ChangeEvent<HTMLInputElement>) {
         const files = Array.from(event.target.files ?? []);
@@ -39,17 +47,47 @@ export default function PoiFieldsCard({ poi }: PoiFieldsCardProps) {
         });
     }
 
-    function handleDeleteImage(deleteIndex: number) {
-        const deletedList = selectedImages.filter((_image, index) => {
-            return index != deleteIndex;
-        });
+    async function handleDeleteImage(deleteIndex: number, isExisting: boolean) {
+        if (isExisting) {
+            const imageToDelete = existingImages[deleteIndex];
 
-        setSelectedImages(deletedList);
-        setValue("images", deletedList.length > 0 ? deletedList : undefined, {
-            shouldDirty: true,
-            shouldValidate: true
-        });
+            if (imageToDelete?.id) {
+                const currentDeleted = (getValues("deletedImageIds") ?? []) as number[];
+                setValue("deletedImageIds", [...currentDeleted, imageToDelete.id], { shouldDirty: true });
+            }
+
+            const deletedList = existingImages.filter((_image, index) => index != deleteIndex);
+            setExistingImages(deletedList);
+            setValue("existingImages", deletedList.length > 0 ? deletedList : undefined, {
+                shouldDirty: true,
+                shouldValidate: true
+            });
+            trigger("images");
+        }
+        else {
+            const deletedList = selectedImages.filter((_image, index) => {
+                return index != deleteIndex;
+            });
+
+            setSelectedImages(deletedList);
+            setValue("images", deletedList.length > 0 ? deletedList : undefined, {
+                shouldDirty: true,
+                shouldValidate: true
+            });
+        }
     }
+
+    function handleLoadImages() {
+        if (poi && poi.images) {
+            setExistingImages(poi.images);
+            setValue("existingImages", poi.images.length > 0 ? poi.images : undefined, {
+                shouldValidate: true
+            });
+            trigger("images");
+        }
+    }
+
+    useEffect(() => { handleLoadImages() }, [poi]);
 
     return (
         <Card className="ot-create-poi__card">
@@ -70,7 +108,7 @@ export default function PoiFieldsCard({ poi }: PoiFieldsCardProps) {
             <Form.Group className="ot-create-poi__field">
                 <Form.Label>Imágenes</Form.Label>
                 <div className="ot-create-poi__images">
-                    {selectedImages.length === 0 ? (
+                    {!hasImages ? (
                         <Button
                             variant="outline-dark"
                             className="ot-create-poi__upload-btn"
@@ -81,6 +119,20 @@ export default function PoiFieldsCard({ poi }: PoiFieldsCardProps) {
                         </Button>
                     ) : (
                         <>
+                            {existingImages.map((image, index) => (
+                                <div className="ot-create-poi__image-slot" key={`existing-${image.id}-${index}`}>
+                                    <img src={`${API_BASE_URL}/image/${image.id}`} alt={`Imagen existente ${index + 1}`} />
+                                    <button
+                                        type="button"
+                                        className="ot-create-poi__remove-image"
+                                        aria-label={`Eliminar imagen existente ${index + 1}`}
+                                        onClick={() => { handleDeleteImage(index, true) }}
+                                    >
+                                        X
+                                    </button>
+                                </div>
+                            ))}
+
                             {selectedImages.map((image, index) => (
                                 <div className="ot-create-poi__image-slot" key={image.name + index}>
                                     <img src={URL.createObjectURL(image)} alt={`Imagen ${index + 1}`} />
@@ -88,7 +140,7 @@ export default function PoiFieldsCard({ poi }: PoiFieldsCardProps) {
                                         type="button"
                                         className="ot-create-poi__remove-image"
                                         aria-label={`Eliminar imagen ${index + 1}`}
-                                        onClick={() => { handleDeleteImage(index) }}
+                                        onClick={() => { handleDeleteImage(index, false) }}
                                     >
                                         X
                                     </button>
