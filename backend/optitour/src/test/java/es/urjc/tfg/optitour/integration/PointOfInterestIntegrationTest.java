@@ -1,13 +1,21 @@
 package es.urjc.tfg.optitour.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import java.sql.Blob;
+import java.sql.SQLException;
+
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +32,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import es.urjc.tfg.optitour.BaseIntegrationTest;
 import es.urjc.tfg.optitour.DTO.PointOfInterestCreateDTO;
+import es.urjc.tfg.optitour.model.Image;
 import es.urjc.tfg.optitour.model.PointOfInterest;
 import es.urjc.tfg.optitour.model.Tour;
 import es.urjc.tfg.optitour.repository.PointOfInterestRepository;
@@ -45,7 +54,7 @@ public class PointOfInterestIntegrationTest extends BaseIntegrationTest {
     private TourRepository tourRepository;
 
     @BeforeEach
-    public void initSampleData() {
+    public void initSampleData() throws SerialException, SQLException {
         tourRepository.deleteAll();
         repository.deleteAll();
 
@@ -58,6 +67,17 @@ public class PointOfInterestIntegrationTest extends BaseIntegrationTest {
         for (int i = 0; i < 3; i++) {
             PointOfInterest poi = new PointOfInterest("Poi name " + i, "Poi desc " + i, "sample city", "sample adress",
                     "sample coords");
+
+            List<Image> images = new ArrayList<>();
+            for (int j = 1; j <= 3; j++) {
+                Blob imageFile = new SerialBlob("fake image".getBytes(StandardCharsets.UTF_8));
+                Image image = new Image();
+                image.setImageFile(imageFile);
+                image.setPoi(poi);
+                images.add(image);
+            }
+
+            poi.setImages(images);
             poi.setTours(tours);
             savedPois.add(repository.save(poi));
         }
@@ -164,5 +184,39 @@ public class PointOfInterestIntegrationTest extends BaseIntegrationTest {
         // length should be 2 (in integration tests there are 3 pois per tour)
 
         assertEquals(2, tourPois.size());
+    }
+
+    @Test
+    @DisplayName("editPoiById should change correct poi data in database")
+    public void editPoiByIdIntegrationTest() {
+        PointOfInterestCreateDTO editedDTO = new PointOfInterestCreateDTO("Edited poi name", "Edited poi desc",
+                "Edited city", "Edited address", "Edited coords");
+
+        long firstId = getFirstPoiId();
+
+        PointOfInterest result = service.editPoiById(firstId, editedDTO);
+        PointOfInterest actual = repository.findById(firstId).get();
+
+        assertEquals(actual.getName(), result.getName());
+        assertEquals(actual.getDescription(), result.getDescription());
+        assertEquals(actual.getCity(), result.getCity());
+        assertEquals(actual.getAddress(), result.getAddress());
+        assertEquals(actual.getCoords(), result.getCoords());
+    }
+
+    @Test
+    @DisplayName("deleteImageFromPoi should remove correct image from poi image list")
+    public void deleteImageFromPoiIntegrationTest() {
+        PointOfInterest poi = repository.findById(getFirstPoiId()).get();
+        long imageIdToDelete = poi.getImages().get(0).getId();
+
+        service.deleteImageFromPoi(poi.getId(), imageIdToDelete);
+        PointOfInterest result = repository.findById(poi.getId()).get();
+        List<Image> resultImages = result.getImages();
+
+        assertEquals(2, resultImages.size());
+
+        for (Image image : resultImages)
+            assertNotEquals(imageIdToDelete, image.getId());
     }
 }

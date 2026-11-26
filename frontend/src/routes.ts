@@ -21,6 +21,7 @@ export default [
         route("/admin/users", "routes/admin/user-management/user-management.tsx"),
         route("/admin/users/:id", "routes/admin/user-management/user-profile.tsx"),
         route("/admin/poi", "routes/admin/poi-management/poi-management.tsx"),
+        route("/admin/poi/edit/:id", "routes/admin/edit-poi/edit-poi.tsx"),
         route("/admin/billing", "routes/admin/billing.tsx"),
         route("/admin/profile", "routes/admin/admin-profile.tsx"),
         route("/admin/profile/edit", "routes/my-profile/edit-profile.tsx", { id: "admin-edit-profile" }),

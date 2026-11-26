@@ -8,10 +8,17 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import java.sql.Blob;
+import java.sql.SQLException;
+
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +49,8 @@ public class PointOfInterestServiceTest {
     List<Tour> tours;
 
     @BeforeEach
-    void setUpmocks() { // Given: a POI service with mocked repository and sample data
+    void setUpmocks() throws SerialException, SQLException { // Given: a POI service with mocked repository and sample
+                                                             // data
         repositoryMock = mock(PointOfInterestRepository.class);
         tourRepositoryMock = mock(TourRepository.class);
         mapperMock = mock(PointOfInterestMapper.class);
@@ -59,6 +67,17 @@ public class PointOfInterestServiceTest {
         for (int i = 0; i < 3; i++) {
             PointOfInterest poi = new PointOfInterest("Poi name " + i, "Poi desc " + i, "sample city", "sample adress",
                     "sample coords");
+
+            List<Image> images = new ArrayList<>();
+
+            for (int j = 0; j < 3; j++) {
+                Blob imageFile = new SerialBlob("fake image".getBytes(StandardCharsets.UTF_8));
+                Image image = new Image();
+                image.setImageFile(imageFile);
+                images.add(image);
+            }
+
+            poi.setImages(images);
             poi.setTours(tours);
             pois.add(poi);
         }
@@ -85,7 +104,6 @@ public class PointOfInterestServiceTest {
         assertEquals("sample adress", correctResult.getAddress());
         assertEquals("sample coords", correctResult.getCoords());
         assertNotNull(correctResult.getTours());
-
     }
 
     @Test
@@ -119,6 +137,7 @@ public class PointOfInterestServiceTest {
     @DisplayName("addImagesToPoi should link and add images to the point of interest")
     void addImagesToPoiTest() {
         PointOfInterest poi = pois.get(0);
+        poi.getImages().clear();
         Image image = new Image();
         when(repositoryMock.findById(1L)).thenReturn(Optional.of(poi));
         when(repositoryMock.save(poi)).thenReturn(poi);
@@ -205,5 +224,55 @@ public class PointOfInterestServiceTest {
         });
 
         assertEquals("404 NOT_FOUND \"No existe ningún punto de interés con el ID 100.\"", e.getMessage());
+    }
+
+    @Test
+    @DisplayName("editPoiById should call repository save method with correct data and return edited poi instance")
+    public void editPoiByIdTest() {
+        when(repositoryMock.findById(1)).thenReturn(Optional.of(pois.get(1)));
+
+        PointOfInterestCreateDTO editedPoi = new PointOfInterestCreateDTO("Edited poi name", "Edited poi desc",
+                "Edited city", "Edited address", "Edited coords");
+
+        PointOfInterest result = service.editPoiById(1, editedPoi);
+
+        verify(repositoryMock).save(any(PointOfInterest.class));
+
+        assertEquals("Edited poi name", result.getName());
+        assertEquals("Edited poi desc", result.getDescription());
+        assertEquals("Edited city", result.getCity());
+        assertEquals("Edited address", result.getAddress());
+        assertEquals("Edited coords", result.getCoords());
+    }
+
+    @Test
+    @DisplayName("editPoiById should throw exception when called with other poi repeated name")
+    public void editPoiByIdRepeatedNameTest() {
+        when(repositoryMock.findById(1)).thenReturn(Optional.of(pois.get(1)));
+        when(repositoryMock.findByName("Poi name 2")).thenReturn(Optional.of(pois.get(2)));
+
+        PointOfInterestCreateDTO editedPoi = new PointOfInterestCreateDTO("Poi name 2", "Edited poi desc",
+                "Edited city", "Edited address", "Edited coords");
+
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
+            service.editPoiById(1, editedPoi);
+        });
+
+        assertEquals(
+                "400 BAD_REQUEST \"Ya exisite un punto de interés con este nombre. Prueba con otro punto de interés e inténtalo de nuevo\"",
+                e.getMessage());
+    }
+
+    @Test
+    @DisplayName("deleteImageFromPoi should throw when called with incorrect imageId")
+    public void deleteImageFromPoiIncorrectImageIsTest() {
+        when(repositoryMock.findById(1)).thenReturn(Optional.of(pois.get(1)));
+
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> {
+            service.deleteImageFromPoi(1, 100);
+        });
+
+        assertEquals("404 NOT_FOUND \"No existe ninguna imagen con el id 100 en el punto de interés 1\"",
+                e.getMessage());
     }
 }

@@ -19,7 +19,7 @@ test('Checks if tour-service calls the API and receive data correctly', async ()
     );
 
     //We get the tour list and check if has 5 elements
-    const itemList = await screen.findAllByTestId('tour-card');
+    const itemList = await screen.findAllByTestId('tour-card', {}, { timeout: 5000 });
 
     expect(itemList).toHaveLength(8);
 

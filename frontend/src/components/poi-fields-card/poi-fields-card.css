@@ -1,0 +1,81 @@
+.ot-poi-fields,
+.ot-create-poi__card {
+    border: 1px solid var(--ot-border);
+    border-radius: var(--ot-radius);
+    background-color: #fff;
+    box-shadow: var(--ot-shadow);
+    padding: 1.75rem;
+}
+
+.ot-create-poi__field {
+    margin-bottom: 1.5rem;
+}
+
+.ot-create-poi__field--last {
+    margin-bottom: 0;
+}
+
+.ot-create-poi__field label {
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.ot-create-poi__images {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.ot-create-poi__image-slot {
+    width: 140px;
+    height: 140px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    border: 1px dashed var(--ot-border);
+    background-color: var(--ot-bg-soft);
+    color: var(--ot-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.ot-create-poi__image-slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+}
+
+.ot-create-poi__remove-image {
+    position: absolute;
+    top: 0.35rem;
+    right: 0.35rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 0;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.ot-create-poi__upload-btn {
+    border-radius: var(--ot-radius-pill);
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.45rem 1.1rem;
+}
+
+@media (max-width: 575.98px) {
+    .ot-poi-fields,
+    .ot-create-poi__card {
+        padding: 1.25rem;
+    }
+}

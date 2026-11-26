@@ -353,11 +353,69 @@ public class PointOfInterestControllerE2ETest extends BaseIntegrationTest {
                                 .delete("/api/v1/point-of-interest/1000000")
                                 .then()
                                 .statusCode(404);
+        }
 
+        @Test
+        @DisplayName("editPoi endpoint should return the edited object")
+        public void editPoiE2ETest() {
+                String adminToken = getAdminAuthToken();
+                PointOfInterestCreateDTO body = new PointOfInterestCreateDTO("Edited poi name", "Edited poi desc",
+                                "Edited poi city", "Edited poi address", "40.4168,-3.7038");
+                long firstId = getFirstPoiId();
+
+                PointOfInterestDTO result = given()
+                                .cookie("AuthToken", adminToken)
+                                .contentType(ContentType.JSON)
+                                .body(body)
+                                .when()
+                                .put("/api/v1/point-of-interest/" + firstId)
+                                .then()
+                                .statusCode(200)
+                                .extract().as(PointOfInterestDTO.class);
+
+                PointOfInterest actual = repository.findById(firstId).get();
+
+                assertEquals(actual.getName(), result.name());
+                assertEquals(actual.getDescription(), result.description());
+                assertEquals(actual.getCity(), result.city());
+                assertEquals(actual.getAddress(), result.address());
+                assertEquals(actual.getCoords(), result.coords());
+        }
+
+        @Test
+        @DisplayName("deleteImageFromPoi endpoint should delete image from poi and database, returning 204")
+        public void deleteImageFromPoiE2ETest() {
+                String adminToken = getAdminAuthToken();
+                long firstPoiId = getFirstPoiId();
+
+                PointOfInterestDTO poi = get("/api/v1/point-of-interest/" + firstPoiId)
+                                .then()
+                                .statusCode(200)
+                                .extract().as(PointOfInterestDTO.class);
+
+                assertFalse(poi.images().isEmpty());
+                long imageId = poi.images().get(0).id();
+
+                given()
+                                .cookie("AuthToken", adminToken)
+                                .when()
+                                .delete("/api/v1/point-of-interest/" + firstPoiId + "/image/" + imageId)
+                                .then()
+                                .statusCode(204);
+
+                PointOfInterestDTO updatedPoi = get("/api/v1/point-of-interest/" + firstPoiId)
+                                .then()
+                                .statusCode(200)
+                                .extract().as(PointOfInterestDTO.class);
+
+                boolean imageStillInPoi = updatedPoi.images().stream()
+                                .anyMatch(img -> img.id() == imageId);
+                assertFalse(imageStillInPoi);
+
+                assertTrue(imageRepository.findById(imageId).isEmpty());
         }
 
         // ---------------- FIELD VALIDATION TESTS --------------------------------
-
         // ---------------- NAME VALIDATION TESTS --------------------------------
 
         @Test
@@ -397,7 +455,6 @@ public class PointOfInterestControllerE2ETest extends BaseIntegrationTest {
         }
 
         // ---------------- DESCRIPTION VALIDATION TESTS
-        // --------------------------------
 
         @Test
         @DisplayName("create poi with blank description should return 400 status code")

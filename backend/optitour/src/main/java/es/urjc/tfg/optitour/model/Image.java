@@ -31,6 +31,10 @@ public class Image {
         this.tour = tour;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public PointOfInterest getPoi() {
         return poi;
     }

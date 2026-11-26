@@ -51,14 +51,15 @@ public class PointOfInterestService {
         return repository.findAll(pageable);
     }
 
-    public boolean validateUniqueName(String name) {
-        return !repository.findByName(name).isPresent();
+    public void validateUniqueName(String name) {
+        if (repository.findByName(name).isPresent())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Ya exisite un punto de interés con este nombre. Prueba con otro punto de interés e inténtalo de nuevo");
+
     }
 
     public PointOfInterest saveNewPoi(PointOfInterestCreateDTO newPoi) {
-        if (!validateUniqueName(newPoi.name()))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Ya exisite un punto de interés con este nombre. Prueba con otro punto de interés e inténtalo de nuevo");
+        validateUniqueName(newPoi.name());
 
         PointOfInterest savedPoi = new PointOfInterest(newPoi.name(), newPoi.description(), newPoi.city(),
                 newPoi.address(), newPoi.coords());
@@ -108,5 +109,38 @@ public class PointOfInterestService {
 
         repository.delete(deleted);
         return dto;
+    }
+
+    public PointOfInterest editPoiById(long id, PointOfInterestCreateDTO newPoi) {
+        PointOfInterest target = getPointOfInterestById(id);
+
+        if (!target.getName().equals(newPoi.name()))
+            validateUniqueName(newPoi.name());
+
+        target.setName(newPoi.name());
+        target.setDescription(newPoi.description());
+        target.setCity(newPoi.city());
+        target.setAddress(newPoi.address());
+        target.setCoords(newPoi.coords());
+
+        repository.save(target);
+        return target;
+    }
+
+    public void deleteImageFromPoi(long poiId, long imageId) {
+        PointOfInterest target = getPointOfInterestById(poiId);
+        boolean removed = target.getImages().removeIf(image -> {
+            if (image.getId() == imageId) {
+                image.setPoi(null);
+                return true;
+            }
+            return false;
+        });
+
+        if (!removed)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "No existe ninguna imagen con el id " + imageId + " en el punto de interés " + poiId);
+
+        repository.save(target);
     }
 }

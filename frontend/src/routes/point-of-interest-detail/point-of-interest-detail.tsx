@@ -27,7 +27,7 @@ const base_url = API_BASE_URL;
 export default function PointOfInterestDetail() {
 
     const [poi, setPoi] = useState<PointOfInterestDTO>();
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [errTitle, setErrTitle] = useState<string | null>(null);
     const [errCode, setErrCode] = useState<number | null>(null);
