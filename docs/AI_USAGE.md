@@ -750,3 +750,31 @@ La IA realiza el siguiente cambio en los workflows afectados: (complete-workflow
 ``` sql
 ALTER USER 'root'@'localhost' IDENTIFIED BY 'tfgOptitour';
 ```
+
+--- 
+
+* **Fecha:** 17/11/2026
+* **Fase:** Fase 3
+* **Objetivo:** Refactorizar formulario de edición
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro
+* **Cómo ha sido usada:** Para implementar el formulario de edición de puntos de interés en frontend, se decide reaprovechar el formulario creado para la creación de esta entidad. Sin embargo, este formulario no fue implementado en un componente propio (si no que se encontraba directamente en el componente de ruta de creación). Teniendo esto en cuenta, se le pide a la IA que mueva este formulario a un nuevo componente en la carpeta `components`, de modo que pueda ser utilizado en cualquier ruta.
+
+--- 
+
+* **Fecha:** 17/11/2026
+* **Fase:** Fase 3
+* **Objetivo:** Eliminación de imágenes de un punto de interés
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro
+* **Cómo ha sido usada:** Se le pide a la IA un método para filtrar elementos de una lista en Java. La IA explica el método `removeIf` de la clase `Collection`, el cual es similar a la función `filter` de TypeScript. La IA genera el siguiente código: 
+
+``` java
+boolean removed = target.getImages().removeIf(image -> {
+            if (image.getId() == imageId) {
+                image.setPoi(null);
+                return true;
+            }
+            return false;
+        });
+```
