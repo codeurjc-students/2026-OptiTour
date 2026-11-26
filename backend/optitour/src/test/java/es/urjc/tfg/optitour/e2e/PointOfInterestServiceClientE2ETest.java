@@ -95,7 +95,9 @@ public class PointOfInterestServiceClientE2ETest {
         try {
             List<PointOfInterest> testPois = repository.findAll().stream()
                     .filter(poi -> poi.getName() != null
-                            && (poi.getName().startsWith("New POI ") || poi.getName().startsWith("Test POI ")))
+                            && (poi.getName().startsWith("New POI ")
+                                    || poi.getName().startsWith("Test POI ")
+                                    || (poi.getId() != 1L && ("Punto de interés editado".equals(poi.getName()) || "Museo del Prado".equals(poi.getName())))))
                     .toList();
 
             for (PointOfInterest poi : testPois) {
@@ -114,23 +116,49 @@ public class PointOfInterestServiceClientE2ETest {
     private void restoreDefaultPois() {
         try {
             transactionTemplate.executeWithoutResult(status -> {
-                boolean missingPrado = repository.findByName("Museo del Prado").isEmpty();
-                if (missingPrado) {
+                PointOfInterest prado = repository.findById(1L).orElse(null);
+                if (prado == null) {
                     jdbcTemplate.update(
                             "INSERT INTO point_of_interest (id, name, description, city, address, coords, created_at) "
                                     + "VALUES (1, 'Museo del Prado', 'Pinacoteca con obras maestras de Velázquez y Goya.', "
                                     + "'Madrid', 'Calle de Ruiz de Alarcón, 23', '40.4137818,-3.6921271', NOW())");
+                    prado = repository.findById(1L).orElse(null);
+                } else {
+                    boolean modified = false;
+                    if (!"Museo del Prado".equals(prado.getName())) {
+                        prado.setName("Museo del Prado");
+                        modified = true;
+                    }
+                    if (!"Pinacoteca con obras maestras de Velázquez y Goya.".equals(prado.getDescription())) {
+                        prado.setDescription("Pinacoteca con obras maestras de Velázquez y Goya.");
+                        modified = true;
+                    }
+                    if (!"Madrid".equals(prado.getCity())) {
+                        prado.setCity("Madrid");
+                        modified = true;
+                    }
+                    if (!"Calle de Ruiz de Alarcón, 23".equals(prado.getAddress())) {
+                        prado.setAddress("Calle de Ruiz de Alarcón, 23");
+                        modified = true;
+                    }
+                    if (!"40.4137818,-3.6921271".equals(prado.getCoords())) {
+                        prado.setCoords("40.4137818,-3.6921271");
+                        modified = true;
+                    }
+                    if (modified) {
+                        repository.saveAndFlush(prado);
+                    }
                 }
 
-                PointOfInterest prado = repository.findById(1L).orElse(null);
                 if (prado != null) {
+                    final PointOfInterest finalPrado = prado;
                     tourRepository.findAll().stream()
                             .filter(t -> "Madrid, España".equals(t.getName()))
                             .findFirst()
                             .ifPresent(madridTour -> {
                                 if (madridTour.getPois().stream().noneMatch(p -> p.getId() == 1L)) {
-                                    madridTour.getPois().add(0, prado);
-                                    tourRepository.save(madridTour);
+                                    madridTour.getPois().add(0, finalPrado);
+                                    tourRepository.saveAndFlush(madridTour);
                                 }
                             });
 
@@ -143,7 +171,7 @@ public class PointOfInterestServiceClientE2ETest {
                                         "/sample-images/poi/madrid/museo-del-prado/museo-del-prado-" + i + ".jpg");
                                 if (imgRes.exists()) {
                                     Image createdImage = imageService.createImage(imgRes.getInputStream());
-                                    createdImage.setPoi(prado);
+                                    createdImage.setPoi(finalPrado);
                                     imageService.saveImage(createdImage);
                                 }
                             } catch (Exception ignored) {
@@ -176,21 +204,23 @@ public class PointOfInterestServiceClientE2ETest {
         driver.get("http://localhost:5173/tour/1");
 
         WebElement seeMoreButton = wait.until(elementToBeClickable(By.cssSelector("a[href='/point-of-interest/1']")));
-        seeMoreButton.click();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", seeMoreButton);
 
         WebElement title = wait.until(visibilityOfElementLocated(By.className("ot-poi-detail__title")));
-        WebElement desc = driver
-                .findElement(By.xpath("//*[text()='Pinacoteca con obras maestras de Velázquez y Goya.']"));
-        WebElement cityAndAddress = driver
-                .findElement(By.xpath("//dt[text()='Ciudad y dirección']/following-sibling::dd"));
-        WebElement coords = driver.findElement(By.xpath("//*[text()='40.4137818,-3.6921271']"));
+        WebElement desc = wait.until(visibilityOfElementLocated(
+                By.xpath("//*[text()='Pinacoteca con obras maestras de Velázquez y Goya.']")));
+        WebElement cityAndAddress = wait.until(visibilityOfElementLocated(
+                By.xpath("//dt[text()='Ciudad y dirección']/following-sibling::dd")));
+        WebElement coords = wait.until(visibilityOfElementLocated(
+                By.xpath("//*[text()='40.4137818,-3.6921271']")));
 
         assertEquals("Museo del Prado", title.getText());
         assertEquals("Pinacoteca con obras maestras de Velázquez y Goya.", desc.getText());
         assertEquals("Madrid: Calle de Ruiz de Alarcón, 23", cityAndAddress.getText());
         assertEquals("40.4137818,-3.6921271", coords.getText());
 
-        WebElement availableTour = driver.findElement(By.xpath("//*[text()='Madrid, España']"));
+        WebElement availableTour = wait.until(visibilityOfElementLocated(
+                By.xpath("//*[text()='Madrid, España']")));
         assertEquals("Madrid, España", availableTour.getText());
 
     }
@@ -414,5 +444,50 @@ public class PointOfInterestServiceClientE2ETest {
         WebElement confirmMessage = wait.until(visibilityOfElementLocated(By.id("confirmMessage")));
         assertEquals("Se ha eliminado el siguiente punto de interés:\n" +
                 "Museo del Prado", confirmMessage.getText().replace("\r\n", "\n"));
+    }
+
+    @Test
+    @DisplayName("Checks if editing poi form works properly with correct data.")
+    public void editPoiClientE2ETest() {
+        driver.get("http://localhost:5173/admin/poi/edit/1");
+
+        login("admin@optitour.com", "Admin1234");
+
+        WebElement nameField = wait.until(visibilityOfElementLocated(By.id("poiName")));
+        WebElement submitButton = driver.findElement(By.className("ot-create-poi__submit"));
+
+        nameField.clear();
+        nameField.sendKeys("Punto de interés editado");
+        submitButton.click();
+
+        wait.until(urlToBe("http://localhost:5173/admin/poi"));
+        WebElement detailButton = wait
+                .until(visibilityOfElementLocated(By.className("ot-modal__nav-btn")));
+        detailButton.click();
+
+        wait.until(urlToBe("http://localhost:5173/point-of-interest/1"));
+        WebElement poiTitle = wait.until(visibilityOfElementLocated(By.className("ot-poi-detail__title")));
+
+        assertEquals("Punto de interés editado", poiTitle.getText());
+    }
+
+    @Test
+    @DisplayName("Checks if errorcard appears in case of duplicated name")
+    public void editPoiRepeatedNameClientE2ETest() {
+        driver.get("http://localhost:5173/admin/poi/edit/1");
+
+        login("admin@optitour.com", "Admin1234");
+
+        WebElement nameField = wait.until(visibilityOfElementLocated(By.id("poiName")));
+        WebElement submitButton = driver.findElement(By.className("ot-create-poi__submit"));
+
+        nameField.clear();
+        nameField.sendKeys("Puerta del Sol");
+        submitButton.click();
+
+        WebElement errorCard = wait.until(visibilityOfElementLocated(By.className("ot-error-card")));
+        assertEquals(
+                "Ya exisite un punto de interés con este nombre. Prueba con otro punto de interés e inténtalo de nuevo",
+                errorCard.getText());
     }
 }

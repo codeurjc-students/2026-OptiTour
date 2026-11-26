@@ -74,6 +74,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/point-of-interest/").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/point-of-interest/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/point-of-interest/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/point-of-interest/**").hasRole("ADMIN")
 
                         // PUBLIC ENDPOINTS
                         .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()

@@ -14,6 +14,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
 
       - name: Install modules
         working-directory: ./frontend
@@ -33,6 +35,8 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '25'
+          cache: 'maven'
+          cache-dependency-path: 'backend/optitour/pom.xml'
       
       # We'll also need to run backend, so E2E tests can call the api.
       # To do that, it's necessary to run a mysql database:
@@ -72,6 +76,8 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '25'
+          cache: 'maven'
+          cache-dependency-path: 'backend/optitour/pom.xml'
       
       - name: Configure and run MySQL
         run: |
@@ -97,6 +103,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
 
       - name: Install modules
         working-directory: ./frontend

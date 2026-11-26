@@ -21,13 +21,42 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.support.TransactionTemplate;
+
+import es.urjc.tfg.optitour.model.Image;
+import es.urjc.tfg.optitour.model.PointOfInterest;
+import es.urjc.tfg.optitour.repository.PointOfInterestRepository;
+import es.urjc.tfg.optitour.repository.TourRepository;
+import es.urjc.tfg.optitour.service.ImageService;
+
 @SpringBootTest
 public class TourServiceClientE2ETest {
     protected WebDriver driver;
     private WebDriverWait wait;
 
+    @Autowired
+    private PointOfInterestRepository repository;
+
+    @Autowired
+    private TourRepository tourRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private ImageService imageService;
+
+    @Autowired
+    private TransactionTemplate transactionTemplate;
+
     @BeforeEach
     public void setUp() {
+        restoreDefaultPois();
+
         // We add some configurations so Google Chrome Window don't appear, in order to
         // avoid problems with GitHub Actions
         ChromeOptions options = new ChromeOptions();
@@ -40,7 +69,79 @@ public class TourServiceClientE2ETest {
         options.addArguments("--window-size=1920,1080");
 
         driver = new ChromeDriver(options);
-        wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+    }
+
+    private void restoreDefaultPois() {
+        try {
+            transactionTemplate.executeWithoutResult(status -> {
+                PointOfInterest prado = repository.findById(1L).orElse(null);
+                if (prado == null) {
+                    jdbcTemplate.update(
+                            "INSERT INTO point_of_interest (id, name, description, city, address, coords, created_at) "
+                                    + "VALUES (1, 'Museo del Prado', 'Pinacoteca con obras maestras de Velázquez y Goya.', "
+                                    + "'Madrid', 'Calle de Ruiz de Alarcón, 23', '40.4137818,-3.6921271', NOW())");
+                    prado = repository.findById(1L).orElse(null);
+                } else {
+                    boolean modified = false;
+                    if (!"Museo del Prado".equals(prado.getName())) {
+                        prado.setName("Museo del Prado");
+                        modified = true;
+                    }
+                    if (!"Pinacoteca con obras maestras de Velázquez y Goya.".equals(prado.getDescription())) {
+                        prado.setDescription("Pinacoteca con obras maestras de Velázquez y Goya.");
+                        modified = true;
+                    }
+                    if (!"Madrid".equals(prado.getCity())) {
+                        prado.setCity("Madrid");
+                        modified = true;
+                    }
+                    if (!"Calle de Ruiz de Alarcón, 23".equals(prado.getAddress())) {
+                        prado.setAddress("Calle de Ruiz de Alarcón, 23");
+                        modified = true;
+                    }
+                    if (!"40.4137818,-3.6921271".equals(prado.getCoords())) {
+                        prado.setCoords("40.4137818,-3.6921271");
+                        modified = true;
+                    }
+                    if (modified) {
+                        repository.saveAndFlush(prado);
+                    }
+                }
+
+                if (prado != null) {
+                    final PointOfInterest finalPrado = prado;
+                    tourRepository.findAll().stream()
+                            .filter(t -> "Madrid, España".equals(t.getName()))
+                            .findFirst()
+                            .ifPresent(madridTour -> {
+                                if (madridTour.getPois().stream().noneMatch(p -> p.getId() == 1L)) {
+                                    madridTour.getPois().add(0, finalPrado);
+                                    tourRepository.saveAndFlush(madridTour);
+                                }
+                            });
+
+                    Integer imageCount = jdbcTemplate.queryForObject(
+                            "SELECT COUNT(*) FROM image WHERE poi_id = 1", Integer.class);
+                    if (imageCount == null || imageCount == 0) {
+                        for (int i = 1; i <= 3; i++) {
+                            try {
+                                Resource imgRes = new ClassPathResource(
+                                        "/sample-images/poi/madrid/museo-del-prado/museo-del-prado-" + i + ".jpg");
+                                if (imgRes.exists()) {
+                                    Image createdImage = imageService.createImage(imgRes.getInputStream());
+                                    createdImage.setPoi(finalPrado);
+                                    imageService.saveImage(createdImage);
+                                }
+                            } catch (Exception ignored) {
+                            }
+                        }
+                    }
+                }
+            });
+        } catch (Exception e) {
+            System.err.println("Could not restore default POIs: " + e.getMessage());
+        }
     }
 
     // After each test, we tear down the driver if it's active.
@@ -110,15 +211,14 @@ public class TourServiceClientE2ETest {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", seeMoreButton);
 
         WebElement title = wait.until(visibilityOfElementLocated(By.className("ot-tour-detail__title")));
-        WebElement desc = driver
-                .findElement(By
-                        .xpath("//*[text()='Descubre la capital de España, sus museos y su vibrante vida nocturna.']"));
+        WebElement desc = wait.until(visibilityOfElementLocated(
+                By.xpath("//*[text()='Descubre la capital de España, sus museos y su vibrante vida nocturna.']")));
 
         assertEquals("Madrid, España", title.getText());
         assertEquals("Descubre la capital de España, sus museos y su vibrante vida nocturna.", desc.getText());
 
-        WebElement poiTitle = driver.findElement(
-                By.xpath("//*[text()='Museo del Prado']"));
+        WebElement poiTitle = wait.until(visibilityOfElementLocated(
+                By.xpath("//*[text()='Museo del Prado']")));
 
         assertEquals("Museo del Prado", poiTitle.getText());
     }

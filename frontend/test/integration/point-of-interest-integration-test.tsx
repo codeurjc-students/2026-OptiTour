@@ -9,6 +9,8 @@ import PointOfInterestDetail from '../../src/routes/point-of-interest-detail/poi
 import { loginAs } from "./integration-test-setup";
 import POIManagement from "../../src/routes/admin/poi-management/poi-management";
 import CreatePointOfInterest from "../../src/routes/admin/create-poi/create-poi";
+import POIEdition from "../../src/routes/admin/edit-poi/edit-poi";
+import { editPoiById, getPoisByPage } from "../../src/service/point-of-interest-service";
 
 function renderPoiCreationForm() {
     render(
@@ -124,8 +126,69 @@ test('Checks if poi is delete from database correctly', async () => {
     expect(errorTitle).toBeInTheDocument();
 });
 
-// ------------------ Field Validation Tests --------------------------------
+test('Checks if repeated name error card shows in edit poi form', async () => {
+    await loginAs("admin@optitour.com", "Admin1234");
 
+    const poisResponse = await getPoisByPage(0, 5);
+    const targetPoi = poisResponse.content[0];
+    const duplicateName = poisResponse.content[1].name;
+
+    render(
+        <MemoryRouter initialEntries={[`/admin/poi/edit/${targetPoi.id}`]}>
+            <Routes>
+                <Route path="/admin/poi/edit/:id" element={<POIEdition />} />
+            </Routes>
+        </MemoryRouter>
+    );
+    const nameField = await screen.findByLabelText("Nombre del punto de interés");
+    const submitButton = await screen.findByRole('button', { name: "Editar punto de interés" });
+
+    fireEvent.change(nameField, { target: { value: duplicateName } });
+    fireEvent.click(submitButton);
+
+    const errorCard = await screen.findByText(
+        "Ya exisite un punto de interés con este nombre. Prueba con otro punto de interés e inténtalo de nuevo"
+    );
+
+    expect(errorCard).toBeInTheDocument();
+});
+
+test('Checks if poi editing workflow works properly', async () => {
+    await loginAs("admin@optitour.com", "Admin1234");
+
+    const poisResponse = await getPoisByPage(0, 5);
+    const targetPoi = poisResponse.content[0];
+    const originalName = targetPoi.name;
+
+    render(
+        <MemoryRouter initialEntries={[`/admin/poi/edit/${targetPoi.id}`]}>
+            <Routes>
+                <Route path="/admin/poi/edit/:id" element={<POIEdition />} />
+                <Route path="/admin/poi" element={<POIManagement />} />
+            </Routes>
+        </MemoryRouter>
+    );
+
+    const nameField = await screen.findByLabelText("Nombre del punto de interés");
+    const submitButton = await screen.findByRole('button', { name: "Editar punto de interés" });
+
+    fireEvent.change(nameField, { target: { value: "EDITED" } });
+    fireEvent.click(submitButton);
+
+    const modalTitle = await screen.findByText("Punto de interés editado");
+    expect(modalTitle).toBeInTheDocument();
+
+    // Restauramos el nombre original para no alterar los demás tests
+    await editPoiById(targetPoi.id, {
+        name: originalName,
+        description: targetPoi.description,
+        city: targetPoi.city,
+        address: targetPoi.address,
+        coords: targetPoi.coords
+    });
+});
+
+// ------------------ Field Validation Tests --------------------------------
 // ------------------ Name Validation Tests ---------------------------------
 
 test("POI with an empty name should render an error", async () => {

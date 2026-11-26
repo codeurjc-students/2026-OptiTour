@@ -51,6 +51,8 @@ export async function createPoi(newPoi: PointOfInterestCreateDTO) {
 }
 
 export async function uploadPoiUIamges(images: File[], id: number) {
+    if (!images || images.length === 0) return [];
+
     const url = `${base_url}/${id}/image`;
 
     const formData = new FormData();
@@ -87,4 +89,36 @@ export async function deletePoiById(id: number) {
     }
 
     return await response.json();
+}
+
+export async function editPoiById(id: number, newPoi: PointOfInterestCreateDTO) {
+    const url = `${base_url}/${id}`;
+
+    const response = await fetch(url, {
+        headers: { "Content-Type": "application/json" },
+        method: "PUT",
+        credentials: "include",
+        body: JSON.stringify(newPoi)
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new ApiError(errorData.message, errorData.status, errorData.error);
+    }
+
+    return await response.json();
+}
+
+export async function deletePoiImage(poiId: number, imageId: number) {
+    const url = `${base_url}/${poiId}/image/${imageId}`;
+
+    const response = await fetch(url, {
+        credentials: "include",
+        method: "DELETE"
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new ApiError(errorData.message, errorData.status, errorData.error);
+    }
 }
