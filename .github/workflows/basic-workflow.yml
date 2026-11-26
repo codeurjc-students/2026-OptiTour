@@ -18,6 +18,8 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '25'
+          cache: 'maven'
+          cache-dependency-path: 'backend/optitour/pom.xml'
       
       - name: Build Spring Boot project
         run: mvn clean test-compile
@@ -36,6 +38,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
 
       - name: Install modules
         run: npm install

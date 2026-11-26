@@ -118,7 +118,15 @@ export default function POIEdition() {
 
     useEffect(() => { handleLoadPoi() }, []);
 
-    if (isLoading || !poi) {
+    if (isLoading) {
+        return <Spinner />;
+    }
+
+    if (error && !poi) {
+        return <ErrorCard text={error} />;
+    }
+
+    if (!poi) {
         return <Spinner />;
     }
 

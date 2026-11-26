@@ -7,6 +7,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import PointOfInterestDetail from '../../src/routes/point-of-interest-detail/point-of-interest-detail';
 import POIManagement from "../../src/routes/admin/poi-management/poi-management";
 import CreatePointOfInterest from "../../src/routes/admin/create-poi/create-poi";
+import POIEdition from "../../src/routes/admin/edit-poi/edit-poi";
 
 vi.mock('../../src/service/point-of-interest-service');
 
@@ -176,4 +177,62 @@ test('Checks if delete UI elements render properly', async () => {
     expect(confirmMessage.textContent).toContain(testPoi.name);
 
     expect(service.deletePoiById).toHaveBeenCalledWith(testPoi.id);
+});
+
+test('Checks if data loading is correct in poi editing form', async () => {
+    vi.mocked(service.getPoiById).mockResolvedValue(testPoi as unknown as PointOfInterestDTO);
+
+    render(
+        <MemoryRouter initialEntries={["/admin/poi/edit/1"]}>
+            <Routes>
+                <Route path="/admin/poi/edit/:id" element={<POIEdition />} />
+            </Routes>
+        </MemoryRouter>
+    );
+
+    const nameField = await screen.findByLabelText("Nombre del punto de interés");
+    const descField = await screen.findByLabelText("Descripción");
+    const cityField = await screen.findByLabelText("Ciudad");
+    const addressField = await screen.findByLabelText("Dirección");
+    const latField = await screen.findByLabelText("Latitud");
+    const lngField = await screen.findByLabelText("Longitud");
+
+    expect(nameField).toHaveValue("Museo del Prado");
+    expect(descField).toHaveValue("Pinacoteca con obras maestras de Velázquez y Goya.");
+    expect(cityField).toHaveValue("Madrid");
+    expect(addressField).toHaveValue("Calle de Ruiz de Alarcón, 23");
+    expect(latField).toHaveValue("40.4137818");
+    expect(lngField).toHaveValue("-3.6921271");
+});
+
+test('Checks if service is called with correct data in poi editing form', async () => {
+    vi.mocked(service.getPoiById).mockResolvedValue({
+        ...testPoi,
+        images: [{ id: 1 }]
+    } as unknown as PointOfInterestDTO);
+    vi.mocked(service.editPoiById).mockResolvedValue({ id: 1, name: "EDITION" } as any);
+
+    render(
+        <MemoryRouter initialEntries={["/admin/poi/edit/1"]}>
+            <Routes>
+                <Route path="/admin/poi/edit/:id" element={<POIEdition />} />
+            </Routes>
+        </MemoryRouter>
+    );
+
+    const nameField = await screen.findByLabelText("Nombre del punto de interés");
+    const submitButton = await screen.findByRole('button', { name: "Editar punto de interés" });
+
+    fireEvent.change(nameField, { target: { value: "EDITION" } });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+        expect(service.editPoiById).toHaveBeenCalledWith(1, {
+            name: "EDITION",
+            description: "Pinacoteca con obras maestras de Velázquez y Goya.",
+            city: "Madrid",
+            address: "Calle de Ruiz de Alarcón, 23",
+            coords: "40.4137818,-3.6921271"
+        });
+    });
 });
