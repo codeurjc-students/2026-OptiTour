@@ -1,0 +1,84 @@
+.ot-pagination-bar-wrap {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.ot-pagination-bar {
+    display: inline-flex;
+    align-items: stretch;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+    background-color: var(--ot-bg);
+    border: 1.5px solid var(--ot-primary);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(38, 209, 42, 0.08);
+}
+
+.ot-pagination-bar__item {
+    display: flex;
+    align-items: stretch;
+}
+
+.ot-pagination-bar__item + .ot-pagination-bar__item {
+    border-left: 1.5px solid var(--ot-primary);
+}
+
+.ot-pagination-bar__btn,
+.ot-pagination-bar__ellipsis {
+    min-width: 2.75rem;
+    height: 2.5rem;
+    padding: 0 0.7rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-base);
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1;
+}
+
+.ot-pagination-bar__btn {
+    border: none;
+    background-color: transparent;
+    color: var(--ot-primary-dark);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.ot-pagination-bar__btn:hover:not(.ot-pagination-bar__btn--active) {
+    background-color: var(--ot-primary-soft);
+    color: var(--ot-primary-dark);
+}
+
+.ot-pagination-bar__btn:focus-visible {
+    outline: 2px solid var(--ot-primary-dark);
+    outline-offset: -2px;
+}
+
+.ot-pagination-bar__btn--active {
+    background-color: var(--ot-primary);
+    color: #fff;
+    cursor: default;
+}
+
+.ot-pagination-bar__ellipsis {
+    color: var(--ot-text-muted);
+    user-select: none;
+    cursor: default;
+    letter-spacing: 0.05em;
+}
+
+@media (max-width: 575.98px) {
+    .ot-pagination-bar__btn,
+    .ot-pagination-bar__ellipsis {
+        min-width: 2.25rem;
+        height: 2.25rem;
+        padding: 0 0.5rem;
+        font-size: 0.875rem;
+    }
+}

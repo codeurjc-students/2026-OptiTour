@@ -1,0 +1,40 @@
+@keyframes ot-tour-scale-fade-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.92) translateY(-15px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.ot-tour-list-container {
+    min-height: 808px;
+    display: flex;
+    flex-direction: column;
+}
+
+.ot-tour-list-container .ot-spinner-wrap {
+    min-height: 0;
+    height: 60vh;
+    flex-grow: 0;
+    position: sticky;
+    top: 2rem;
+}
+
+.ot-tour-list-item {
+    margin-bottom: 0.75rem;
+    animation: ot-tour-scale-fade-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.ot-tour-list-item:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 575.98px) {
+    .ot-tour-list-container {
+        min-height: 60vh;
+    }
+}
