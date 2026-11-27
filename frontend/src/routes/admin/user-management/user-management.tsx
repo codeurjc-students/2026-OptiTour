@@ -2,10 +2,11 @@ import { Button, Row, Col } from 'react-bootstrap';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import StatCard from '../../../components/stat-card/stat-card';
 import UserListItem from '../../../components/user-list-item/user-list-item';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { UserDTO } from '../../../dto/user-dto';
-import { changeIsUserBanned } from '../../../service/user-service';
+import { changeIsUserBanned, getPagedUsers } from '../../../service/user-service';
 import ErrorCard from '../../../components/error-card/error-card';
+import Spinner from '../../../components/spinner/spinner';
 import { API_BASE_URL } from '../../../service/api-config';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, LineChart, CartesianGrid, XAxis, YAxis, Line } from 'recharts';
 import './user-management.css';
@@ -25,8 +26,33 @@ export default function UserManagement() {
     const navigate = useNavigate();
     const location = useLocation();
     const [users, setUsers] = useState<UserDTO[]>([]);
-    const [totalUsers] = useState<number>(0);
+    const [totalUsers, setTotalUsers] = useState<number>(0);
+    const [totalPages, setTotalPages] = useState<number>(1);
+    const [currentPage, setCurrentPage] = useState<number>(0);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
     const [showModal, setShowModal] = useState<boolean>(location.state?.showModal);
+
+    async function handleLoadUsers(page: number, size: number) {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const response = await getPagedUsers(page, size);
+            setUsers(response.content);
+            setTotalUsers(response.page.totalElements);
+            setTotalPages(response.page.totalPages);
+            setCurrentPage(page);
+        } catch (err) {
+            if (err instanceof Error) setError(err.message);
+            else setError("Se ha producido un error al cargar los usuarios");
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        handleLoadUsers(0, 10);
+    }, []);
 
     function handleModalClose() {
         setShowModal(false);
@@ -142,54 +168,69 @@ export default function UserManagement() {
 
                     <h2 className="ot-panel-subtitle">Lista de usuarios registrados</h2>
                     {banError && <ErrorCard text={banError} />}
-                    {users.map((user, index) => (
-                        <div
-                            key={user.id}
-                            className="ot-poi-list-item"
-                            style={{
-                                animationDelay: `${index * 0.05}s`
-                            }}
-                        >
-                            <UserListItem
-                                userName={user.userName}
-                                avatarSrc={`${base_url}/user/${user.id}/image`}
-                                actions={
-                                    <>
-                                        <Button
-                                            ref={(el: HTMLButtonElement | null) => {
-                                                if (el) {
-                                                    el.onclick = () => handleBanButton(user.id, user.isBanned);
-                                                }
-                                            }}
-                                            variant={user.isBanned ? 'outline-success' : 'outline-danger'}
-                                            disabled={banningUserId === user.id || user.roles.includes("ADMIN")}
-                                            title={user.roles.includes("ADMIN") ? "No se puede bloquear la cuenta de un administrador" : undefined}
-                                        >
-                                            {banningUserId === user.id ? (
-                                                <>
-                                                    <span
-                                                        className="spinner-border spinner-border-sm me-2"
-                                                        role="status"
-                                                        aria-hidden="true"
-                                                    />
-                                                    {user.isBanned ? 'Desbloqueando...' : 'Bloqueando...'}
-                                                </>
-                                            ) : (
-                                                <>
-                                                    {user.isBanned ? <i className="bi bi-unlock me-2"></i> : <i className="bi bi-lock me-2" />}
-                                                    {user.isBanned ? 'Desbloquear' : 'Bloquear'}
-                                                </>
-                                            )}
-                                        </Button>
-                                        <Link to={`/admin/users/${user.id}`} className="btn btn-outline-dark">
-                                            Ver perfil
-                                        </Link>
-                                    </>
-                                }
-                            />
-                        </div>
-                    ))}
-            <PaginationBar totalPages={10} className="mt-4 pt-2" />
+                    <div className="ot-user-list-container">
+                        {isLoading ? (
+                            <div className="ot-spinner-wrap">
+                                <Spinner />
+                            </div>
+                        ) : error ? (
+                            <ErrorCard text={error} />
+                        ) : (
+                            users.map((user, index) => (
+                                <div
+                                    key={user.id}
+                                    className="ot-poi-list-item"
+                                    style={{
+                                        animationDelay: `${index * 0.05}s`
+                                    }}
+                                >
+                                    <UserListItem
+                                        userName={user.userName}
+                                        avatarSrc={`${base_url}/user/${user.id}/image`}
+                                        actions={
+                                            <>
+                                                <Button
+                                                    ref={(el: HTMLButtonElement | null) => {
+                                                        if (el) {
+                                                            el.onclick = () => handleBanButton(user.id, user.isBanned);
+                                                        }
+                                                    }}
+                                                    variant={user.isBanned ? 'outline-success' : 'outline-danger'}
+                                                    disabled={banningUserId === user.id || user.roles.includes("ADMIN")}
+                                                    title={user.roles.includes("ADMIN") ? "No se puede bloquear la cuenta de un administrador" : undefined}
+                                                >
+                                                    {banningUserId === user.id ? (
+                                                        <>
+                                                            <span
+                                                                className="spinner-border spinner-border-sm me-2"
+                                                                role="status"
+                                                                aria-hidden="true"
+                                                            />
+                                                            {user.isBanned ? 'Desbloqueando...' : 'Bloqueando...'}
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            {user.isBanned ? <i className="bi bi-unlock me-2"></i> : <i className="bi bi-lock me-2" />}
+                                                            {user.isBanned ? 'Desbloquear' : 'Bloquear'}
+                                                        </>
+                                                    )}
+                                                </Button>
+                                                <Link to={`/admin/users/${user.id}`} className="btn btn-outline-dark">
+                                                    Ver perfil
+                                                </Link>
+                                            </>
+                                        }
+                                    />
+                                </div>
+                            ))
+                        )}
+                    </div>
+            <PaginationBar
+                totalPages={totalPages}
+                currentPage={currentPage + 1}
+                onPageChange={(page) => handleLoadUsers(page - 1, 10)}
+                className="mt-4 pt-2"
+            />
         </div>
     );
 }

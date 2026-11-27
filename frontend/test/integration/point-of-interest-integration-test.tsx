@@ -78,18 +78,19 @@ test('Checks if pois are loaded correclty from API', async () => {
 
     await waitFor(() => {
         expect(container.querySelectorAll('.ot-poi-list-item').length).toBe(10);
-    });
+    }, { timeout: 10000 });
 
     const firstPoiCard = screen.getByText("Museo del Prado");
     expect(firstPoiCard).toBeInTheDocument();
 
-    const loadMoreButton = screen.getByRole('button', { name: "Cargar más" });
-    fireEvent.click(loadMoreButton);
+    const page2Button = screen.getByRole('button', { name: 'Página 2' });
+    fireEvent.click(page2Button);
 
-    await waitFor(() => {
-        expect(container.querySelectorAll('.ot-poi-list-item').length).toBe(15);
-    });
-});
+    expect(await screen.findByText("Catedral y Giralda", {}, { timeout: 10000 })).toBeInTheDocument();
+    expect(screen.queryByText("Museo del Prado")).not.toBeInTheDocument();
+    expect(container.querySelectorAll('.ot-poi-list-item').length).toBe(10);
+    expect(page2Button).toHaveAttribute('aria-current', 'page');
+}, 20000);
 
 test('Checks if poi is delete from database correctly', async () => {
     await loginAs("admin@optitour.com", "Admin1234");

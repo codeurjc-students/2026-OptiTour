@@ -60,18 +60,20 @@ test('User panel shows users properly', async () => {
     });
 });
 
-test('Clicking load more appends additional users', async () => {
+test('Clicking pagination bar loads second page of users', async () => {
     const initialUsers = testUsers.slice(0, 5);
     const moreUsers = testUsers.slice(5, 10);
+
+    const scrollToSpy = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
 
     vi.mocked(service.getPagedUsers)
         .mockResolvedValueOnce({
             content: initialUsers,
-            page: { number: 0, totalPages: 2, totalElements: 8 }
+            page: { number: 0, totalPages: 2, totalElements: 10 }
         } as any)
         .mockResolvedValueOnce({
             content: moreUsers,
-            page: { number: 1, totalPages: 2, totalElements: 8 }
+            page: { number: 1, totalPages: 2, totalElements: 10 }
         } as any);
 
     const { container } = render(
@@ -84,15 +86,17 @@ test('Clicking load more appends additional users', async () => {
         expect(container.querySelectorAll('.ot-user-item').length).toBe(5);
     });
 
-    const loadMoreButton = screen.getByRole('button', { name: "Cargar más" });
-    expect(loadMoreButton).toBeInTheDocument();
+    const page2Button = screen.getByRole('button', { name: "Página 2" });
+    expect(page2Button).toBeInTheDocument();
 
-    fireEvent.click(loadMoreButton);
+    fireEvent.click(page2Button);
 
     await waitFor(() => {
-        expect(container.querySelectorAll('.ot-user-item').length).toBe(10);
+        expect(container.querySelectorAll('.ot-user-item').length).toBe(5);
     });
 
     expect(service.getPagedUsers).toHaveBeenCalledWith(0, 10);
-    expect(service.getPagedUsers).toHaveBeenCalledWith(2, 5);
+    expect(service.getPagedUsers).toHaveBeenCalledWith(1, 10);
+
+    scrollToSpy.mockRestore();
 });

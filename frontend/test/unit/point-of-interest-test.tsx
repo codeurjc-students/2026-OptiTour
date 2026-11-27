@@ -101,6 +101,40 @@ test('Checks if pois are displayed properly in poi panel', async () => {
     expect(service.getPoisByPage).toHaveBeenCalled();
 });
 
+test('Checks if poi pagination bar loads selected page', async () => {
+    vi.clearAllMocks();
+
+    vi.mocked(service.getPoisByPage)
+        .mockResolvedValueOnce({
+            content: [{ ...testPoi, id: 1, name: "Museo del Prado", images: [], createdAt: "2026-01-01T00:00:00.000Z" }],
+            page: { number: 0, totalPages: 2, totalElements: 11 }
+        } as any)
+        .mockResolvedValueOnce({
+            content: [{ ...testPoi, id: 11, name: "Catedral y Giralda", images: [], createdAt: "2026-01-01T00:00:00.000Z" }],
+            page: { number: 1, totalPages: 2, totalElements: 11 }
+        } as any);
+
+    render(
+        <MemoryRouter>
+            <POIManagement />
+        </MemoryRouter>
+    );
+
+    expect(await screen.findByText("Museo del Prado")).toBeInTheDocument();
+    expect(service.getPoisByPage).toHaveBeenCalledWith(0, 10);
+
+    const page2Button = screen.getByRole('button', { name: 'Página 2' });
+    fireEvent.click(page2Button);
+
+    await waitFor(() => {
+        expect(service.getPoisByPage).toHaveBeenCalledWith(1, 10);
+    });
+
+    expect(await screen.findByText("Catedral y Giralda")).toBeInTheDocument();
+    expect(screen.queryByText("Museo del Prado")).not.toBeInTheDocument();
+    expect(page2Button).toHaveAttribute('aria-current', 'page');
+});
+
 test('Checks if poi-creation form adds poi', async () => {
     render(
         <MemoryRouter>
