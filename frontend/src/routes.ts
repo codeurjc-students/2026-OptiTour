@@ -30,7 +30,7 @@ export default [
         route("/admin/notifications", "routes/admin/admin-notifications.tsx"),
         route("/admin/create", "routes/admin/create-admin-account/create-admin-account.tsx"),
         route("/admin/addpoi", "routes/admin/create-poi/create-poi.tsx"),
-        route("/admin/tours", "routes/admin/tour-management.tsx")
+        route("/admin/tours", "routes/admin/tour-management/tour-management.tsx")
     ]),
     layout("layouts/protected-layout.tsx", [
         route("/tour-builder", "routes/route-builder/route-builder.tsx"),

@@ -25,7 +25,7 @@ import * as AdminProfileRoute from '../../src/routes/admin/admin-profile';
 import * as AdminNotificationsRoute from '../../src/routes/admin/admin-notifications';
 import * as AdminCreateRoute from '../../src/routes/admin/create-admin-account/create-admin-account';
 import * as AdminAddPoiRoute from '../../src/routes/admin/create-poi/create-poi';
-import * as AdminToursRoute from '../../src/routes/admin/tour-management';
+import * as AdminToursRoute from '../../src/routes/admin/tour-management/tour-management';
 import * as UnauthorizedRoute from '../../src/routes/error-routes/unauthorized';
 import * as NotFoundRoute from '../../src/routes/error-routes/not-found';
 
