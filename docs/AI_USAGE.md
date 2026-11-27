@@ -778,3 +778,14 @@ boolean removed = target.getImages().removeIf(image -> {
             return false;
         });
 ```
+
+---
+
+* **Fecha:** 17/11/2026
+* **Fase:** Fase 3
+* **Objetivo:** Nuevo componente de barra de botones de página
+* **Herramienta:** Google Antigravity (con acceso a los ficheros del proyecto)
+* **Modelo concreto:** Google Gemini 3.1 Pro
+* **Cómo ha sido usada:** Se le pide a la IA que implemente un nuevo componente con botones de página para el panel de gestión de tours. Se opta por esta forma de paginación ya que, durante la implementación de los paneles de gestión de usuario y puntos de interés, se observó que llegar a consultar elementos de las últimas páginas puede llegar a hacerse pesado mediante el botón de cargar más, por lo que en próximas ramas se ha decidio sustituir ese sistema por una barra de botones de página. 
+
+Por lo tanto, se le pide a la IA que implemente tanto la parte estética como la lógica que gestiona la pulsación de los botones y cuántos botones aparecen mediante props. Genera en su totalidad el código de los archivos `pagination-nar.tsx` y `pagination-bar.css`. No obstante, la lógica de navegación de páginas e integración con backend se implementan de manera manual.
