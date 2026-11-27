@@ -71,3 +71,23 @@
     animation: ot-poi-scale-fade-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+.ot-user-list-container {
+    min-height: 808px;
+    display: flex;
+    flex-direction: column;
+}
+
+.ot-user-list-container .ot-spinner-wrap {
+    min-height: 0;
+    height: 60vh;
+    flex-grow: 0;
+    position: sticky;
+    top: 2rem;
+}
+
+@media (max-width: 575.98px) {
+    .ot-user-list-container {
+        min-height: 60vh;
+    }
+}
+

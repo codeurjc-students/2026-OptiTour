@@ -122,3 +122,18 @@ export async function deletePoiImage(poiId: number, imageId: number) {
         throw new ApiError(errorData.message, errorData.status, errorData.error);
     }
 }
+
+export async function getPoisCreationDate() {
+    const url = `${base_url}/date`;
+
+    const response = await fetch(url, {
+        credentials: "include"
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new ApiError(errorData.message, errorData.status, errorData.error);
+    }
+
+    return await response.json();
+}

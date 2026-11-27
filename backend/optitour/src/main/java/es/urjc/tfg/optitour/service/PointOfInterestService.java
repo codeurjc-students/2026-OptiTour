@@ -1,5 +1,6 @@
 package es.urjc.tfg.optitour.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -142,5 +143,9 @@ public class PointOfInterestService {
                     "No existe ninguna imagen con el id " + imageId + " en el punto de interés " + poiId);
 
         repository.save(target);
+    }
+
+    public List<LocalDateTime> getPoisDates() {
+        return repository.findAllDates();
     }
 }

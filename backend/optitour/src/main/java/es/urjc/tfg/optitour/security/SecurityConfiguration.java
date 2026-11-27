@@ -71,6 +71,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/user/**").authenticated()
                         // Point of interest endpoints
                         .requestMatchers(HttpMethod.GET, "/point-of-interest/").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.GET, "/point-of-interest/date").hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/point-of-interest/").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/point-of-interest/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/point-of-interest/**").hasRole("ADMIN")

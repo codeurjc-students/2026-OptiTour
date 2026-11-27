@@ -4,7 +4,7 @@ import StatCard from '../../../components/stat-card/stat-card';
 import MediaListItem from '../../../components/list-item/list-item';
 import { useEffect, useState } from 'react';
 import type { PointOfInterestDTO } from '../../../dto/point-of-interest-dto';
-import { deletePoiById, getPoisByPage } from '../../../service/point-of-interest-service';
+import { deletePoiById, getPoisByPage, getPoisCreationDate } from '../../../service/point-of-interest-service';
 import { API_BASE_URL } from '../../../service/api-config';
 import './poi-management.css';
 import '../user-management/user-management.css';
@@ -34,9 +34,11 @@ export default function POIManagement() {
     const [deleteError, setDeleteError] = useState<string | null>();
     const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState<boolean>(false);
     const [deleteConfirmModalMessage, setDeleteConfirmModalMessage] = useState<string>("");
-    const [isLoadingPage, setIsLoadingPage] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [totalPages, setTotalPages] = useState<number>(0);
     const [pageError, setPageError] = useState<string | null>(null);
+    const [poiDates, setPoiDates] = useState<string[]>([]);
+    const [chartError, setChartError] = useState<string | null>(null);
 
     function handleModalClose() {
         setShowModal(false);
@@ -80,7 +82,7 @@ export default function POIManagement() {
     }
 
     async function handleLoadPois(page: number, size: number) {
-        setIsLoadingPage(true);
+        setIsLoading(true);
         setPageError(null);
         try {
             const response = await getPoisByPage(page, size);
@@ -95,13 +97,29 @@ export default function POIManagement() {
                 : setPageError("Se ha producido un error al cargar la página " + page);
         }
         finally {
-            setIsLoadingPage(false);
+            setIsLoading(false);
         }
     }
 
-    const evolutionData = getEvolutionData(pois, p => p.createdAt);
+    async function handleLoadDates() {
+        setIsLoading(true);
+        try {
+            const response = await getPoisCreationDate();
+            setPoiDates(response.createdDates);
+        }
+        catch (err) {
+            err instanceof Error
+                ? setChartError(err.message)
+                : setChartError("Se ha producido un problema al cargar los datos del gráfico.")
+        }
+        finally {
+            setIsLoading(false);
+        }
+    }
 
-    useEffect(() => { handleLoadPois(0, 10) }, [])
+    const evolutionData = getEvolutionData(poiDates, date => date);
+
+    useEffect(() => { handleLoadPois(0, 10); handleLoadDates() }, [])
 
     return (
         <>
@@ -154,29 +172,31 @@ export default function POIManagement() {
                 <div className="ot-chart-card mb-4">
                     <h3 className="ot-chart-title">Evolución de puntos de interés registrados</h3>
                     <ResponsiveContainer width="100%" height={260}>
-                        <LineChart data={evolutionData}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E4E7E4" />
-                            <XAxis dataKey="period" stroke="#6B7280" />
-                            <YAxis allowDecimals={false} stroke="#6B7280" />
-                            <Tooltip />
-                            <Legend />
-                            <Line
-                                type="monotone"
-                                dataKey="total"
-                                name="Puntos de interés acumulados"
-                                stroke="#26D12A"
-                                strokeWidth={3}
-                                dot={{ r: 4 }}
-                                activeDot={{ r: 6 }}
-                            />
-                        </LineChart>
+                        {chartError ? <ErrorCard text={chartError} /> :
+                            <LineChart data={evolutionData}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E4E7E4" />
+                                <XAxis dataKey="period" stroke="#6B7280" />
+                                <YAxis allowDecimals={false} stroke="#6B7280" />
+                                <Tooltip />
+                                <Legend />
+                                <Line
+                                    type="monotone"
+                                    dataKey="total"
+                                    name="Puntos de interés acumulados"
+                                    stroke="#26D12A"
+                                    strokeWidth={3}
+                                    dot={{ r: 4 }}
+                                    activeDot={{ r: 6 }}
+                                />
+                            </LineChart>
+                        }
                     </ResponsiveContainer>
                 </div>
 
                 <h2 className="ot-panel-subtitle">Lista de puntos de interés</h2>
 
                 <div className="ot-poi-list-container">
-                    {isLoadingPage ? (
+                    {isLoading ? (
                         <Spinner />
                     ) : pageError ? (
                         <ErrorCard text={pageError} />

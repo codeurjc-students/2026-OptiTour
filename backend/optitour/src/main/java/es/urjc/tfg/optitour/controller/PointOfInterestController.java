@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import es.urjc.tfg.optitour.DTO.ImageDTO;
 import es.urjc.tfg.optitour.DTO.PointOfInterestCreateDTO;
 import es.urjc.tfg.optitour.DTO.PointOfInterestDTO;
+import es.urjc.tfg.optitour.DTO.PointOfInterestStatsDTO;
 import es.urjc.tfg.optitour.mapper.ImageMapper;
 import es.urjc.tfg.optitour.mapper.PointOfInterestMapper;
 import es.urjc.tfg.optitour.model.Image;
@@ -105,5 +106,10 @@ public class PointOfInterestController {
     public ResponseEntity<Void> deleteImageFromPoi(@PathVariable long poiId, @PathVariable long imageId) {
         service.deleteImageFromPoi(poiId, imageId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/date")
+    public PointOfInterestStatsDTO getPoiChartData() {
+        return new PointOfInterestStatsDTO(service.getPoisDates());
     }
 }
