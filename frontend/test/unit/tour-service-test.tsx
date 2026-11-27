@@ -1,12 +1,13 @@
 import { expect, test, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 
 import Index from '../../src/routes/index/index'
 import TourDetail from '../../src/routes/tour-detail/tour-detail'
 import * as service from '../../src/service/tour-service'
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { TourDTO } from '../../src/dto/tour-dto'
+import { TourDTO } from '../../src/dto/tour-dto';
+import TourManagement from '../../src/routes/admin/tour-management/tour-management';
 
 // First of all, we mock the service that make the request to backend:
 vi.mock('../../src/service/tour-service');
@@ -93,4 +94,52 @@ test('Tour detail displays rquested tour information properly', async () => {
 
     const poiTitle = await screen.findByText("Parque del Retiro");
     expect(poiTitle).toBeInTheDocument();
+});
+
+test('Checks if tour management shows tours and pagination bar calls service', async () => {
+    vi.clearAllMocks();
+
+    const page0Response = {
+        content: [
+            { id: 1, name: "Madrid, España", description: "Desc 1", images: [{ id: 1 }], pois: [] },
+            { id: 2, name: "Barcelona, España", description: "Desc 2", images: [{ id: 2 }], pois: [] }
+        ],
+        page: { size: 10, number: 0, totalElements: 12, totalPages: 2 }
+    };
+    const page1Response = {
+        content: [
+            { id: 11, name: "París, Francia", description: "Desc 11", images: [{ id: 11 }], pois: [] },
+            { id: 12, name: "Roma, Italia", description: "Desc 12", images: [{ id: 12 }], pois: [] }
+        ],
+        page: { size: 10, number: 1, totalElements: 12, totalPages: 2 }
+    };
+
+    vi.mocked(service.getToursByPage)
+        .mockResolvedValueOnce(page0Response as any)
+        .mockResolvedValueOnce(page1Response as any);
+
+    render(
+        <MemoryRouter>
+            <TourManagement />
+        </MemoryRouter>
+    );
+
+    expect(await screen.findByText("Madrid, España")).toBeInTheDocument();
+    expect(screen.getByText("Barcelona, España")).toBeInTheDocument();
+    expect(service.getToursByPage).toHaveBeenCalledWith(0, 10);
+
+    const page1Button = screen.getByRole('button', { name: 'Página 1' });
+    const page2Button = screen.getByRole('button', { name: 'Página 2' });
+    expect(page1Button).toHaveAttribute('aria-current', 'page');
+
+    fireEvent.click(page2Button);
+
+    await waitFor(() => {
+        expect(service.getToursByPage).toHaveBeenCalledWith(1, 10);
+    });
+
+    expect(await screen.findByText("París, Francia")).toBeInTheDocument();
+    expect(screen.getByText("Roma, Italia")).toBeInTheDocument();
+    expect(screen.queryByText("Madrid, España")).not.toBeInTheDocument();
+    expect(page2Button).toHaveAttribute('aria-current', 'page');
 });
