@@ -41,12 +41,6 @@
     line-height: 1.2;
 }
 
-.ot-poi-load-more-spinner .ot-spinner-wrap,
-.ot-user-load-more-spinner .ot-spinner-wrap {
-    min-height: 0;
-    padding: 0;
-}
-
 @keyframes ot-poi-scale-fade-in {
     0% {
         opacity: 0;

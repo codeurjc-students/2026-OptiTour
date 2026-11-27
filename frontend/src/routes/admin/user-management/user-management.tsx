@@ -2,17 +2,16 @@ import { Button, Row, Col } from 'react-bootstrap';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import StatCard from '../../../components/stat-card/stat-card';
 import UserListItem from '../../../components/user-list-item/user-list-item';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { UserDTO } from '../../../dto/user-dto';
-import { changeIsUserBanned, getPagedUsers } from '../../../service/user-service';
-import Spinner from '../../../components/spinner/spinner';
+import { changeIsUserBanned } from '../../../service/user-service';
 import ErrorCard from '../../../components/error-card/error-card';
 import { API_BASE_URL } from '../../../service/api-config';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, LineChart, CartesianGrid, XAxis, YAxis, Line } from 'recharts';
-import '../../../components/tour-card/tour-card.css';
 import './user-management.css';
 import { getEvolutionData } from '../getEvolutionData';
 import FeedbackModal from '../../../components/feedback-modal/feedback-modal';
+import PaginationBar from '../../../components/pagination-bar/pagination-bar';
 
 const base_url = API_BASE_URL;
 
@@ -26,55 +25,13 @@ export default function UserManagement() {
     const navigate = useNavigate();
     const location = useLocation();
     const [users, setUsers] = useState<UserDTO[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const [totalUsers, setTotalUsers] = useState<number>(0);
-    const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
-    const [isLastPage, setIsLastPage] = useState<boolean>(false);
-    const [currentPage, setCurrentPage] = useState<number>(0);
+    const [totalUsers] = useState<number>(0);
     const [showModal, setShowModal] = useState<boolean>(location.state?.showModal);
 
     function handleModalClose() {
         setShowModal(false);
         window.history.replaceState({}, '');
     }
-
-    async function handleGetPagedUsers(page: number, size: number, isUseEffect: boolean) {
-        try {
-            const response = await getPagedUsers(page, size);
-            setUsers([...(users || []), ...response.content]);
-
-            if (isUseEffect) {
-                setTotalUsers(response.page.totalElements);
-                const newPage = currentPage + 2;
-                setCurrentPage(newPage)
-            }
-            else {
-                const newPage = currentPage + 1;
-                setCurrentPage(newPage);
-            }
-
-            setIsLastPage(response.page.number + 1 >= response.page.totalPages);
-        }
-        catch (err) {
-            err instanceof Error
-                ? setError(err.message)
-                : setError("Se ha producido un error al cargar los datos de los usuarios.");
-        }
-        finally {
-            setIsLoading(false);
-        }
-    }
-
-    async function handleLoadMore() {
-        setIsLoadingMore(true);
-        await handleGetPagedUsers(currentPage, 5, false);
-        setIsLoadingMore(false);
-    }
-
-    useEffect(() => {
-        handleGetPagedUsers(currentPage, 10, true);
-    }, []);
 
     const [banningUserId, setBanningUserId] = useState<number | null>(null);
     const [banError, setBanError] = useState<string | null>(null);
@@ -109,14 +66,8 @@ export default function UserManagement() {
     const evolutionData = getEvolutionData(users, u => u.createdAt);
 
     return (
-        <>
-            {isLoading ? (
-                <Spinner />
-            ) : error ? (
-                <ErrorCard text={error} />
-            ) : (
-                <div>
-                    <FeedbackModal
+        <div>
+            <FeedbackModal
                         show={showModal}
                         onHide={handleModalClose}
                         title={location.state?.modalTitle}
@@ -196,7 +147,7 @@ export default function UserManagement() {
                             key={user.id}
                             className="ot-poi-list-item"
                             style={{
-                                animationDelay: `${(index < 10 ? index : (index - 10) % 5) * 0.05}s`
+                                animationDelay: `${index * 0.05}s`
                             }}
                         >
                             <UserListItem
@@ -238,23 +189,7 @@ export default function UserManagement() {
                             />
                         </div>
                     ))}
-                    <div className="text-center mt-5 mb-4">
-                        {isLoadingMore ? <div className="ot-poi-load-more-spinner"><Spinner /></div>
-                            : !isLastPage && <Button
-                                variant="outline-success"
-                                className="ot-tour-card__btn d-inline-flex align-items-center justify-content-center load-more-button"
-                                style={{ gap: '0.5rem' }}
-                                onClick={handleLoadMore}
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                    <path fillRule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z" />
-                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466" />
-                                </svg>
-                                Cargar más
-                            </Button>}
-                    </div>
-                </div>
-            )}
-        </>
+            <PaginationBar totalPages={10} className="mt-4 pt-2" />
+        </div>
     );
 }
