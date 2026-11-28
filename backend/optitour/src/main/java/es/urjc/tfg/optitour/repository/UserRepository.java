@@ -20,4 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u.createdAt FROM User u")
     public List<LocalDateTime> findAllDates();
+
+    @Query("SELECT u.isBanned FROM User u ORDER BY u.id ASC")
+    public List<Boolean> findAllBanned();
 }

@@ -4,7 +4,7 @@ import StatCard from '../../../components/stat-card/stat-card';
 import UserListItem from '../../../components/user-list-item/user-list-item';
 import { useEffect, useState } from 'react';
 import type { UserDTO } from '../../../dto/user-dto';
-import { changeIsUserBanned, getAllCreationDates, getPagedUsers } from '../../../service/user-service';
+import { changeIsUserBanned, getAllBanedValues, getAllCreationDates, getPagedUsers } from '../../../service/user-service';
 import ErrorCard from '../../../components/error-card/error-card';
 import Spinner from '../../../components/spinner/spinner';
 import { API_BASE_URL } from '../../../service/api-config';
@@ -36,6 +36,8 @@ export default function UserManagement() {
     const [chartError, setChartError] = useState<string | null>(null);
     const [banningUserId, setBanningUserId] = useState<number | null>(null);
     const [banError, setBanError] = useState<string | null>(null);
+    const [banList, setBanList] = useState<boolean[]>([]);
+    const [pieChartError, setPieChartError] = useState<string | null>(null);
 
     async function handleLoadUsers(page: number, size: number) {
         setIsLoading(true);
@@ -54,7 +56,7 @@ export default function UserManagement() {
         }
     }
 
-    async function handleLoadChartData() {
+    async function handleLoadLineChartData() {
         setIsLoading(true);
         try {
             const response = await getAllCreationDates();
@@ -63,7 +65,23 @@ export default function UserManagement() {
         catch (err) {
             err instanceof Error
                 ? setChartError(err.message)
-                : setChartError("Se ha producido un error al cargar los datos del gráfico.");
+                : setChartError("Se ha producido un error al cargar los datos del gráfico lineal.");
+        }
+        finally {
+            setIsLoading(false);
+        }
+    }
+
+    async function handleLoadPieChartData() {
+        setIsLoading(true);
+        try {
+            const response = await getAllBanedValues();
+            setBanList(response.bannedList);
+        }
+        catch (err) {
+            err instanceof Error
+                ? setPieChartError(err.message)
+                : setPieChartError("Se ha producido un error al cargar los datos del gráfico de tarta");
         }
         finally {
             setIsLoading(false);
@@ -76,6 +94,11 @@ export default function UserManagement() {
         try {
             const response = await changeIsUserBanned(id);
             setUsers(prev => prev.map(u => u.id === id ? response : u));
+            setBanList(prev => prev.map((ban, index) =>
+                index === users.findIndex(user => user.id === id)
+                    ? !ban
+                    : ban
+            ));
         }
         catch (err) {
             if (err instanceof Error)
@@ -96,8 +119,8 @@ export default function UserManagement() {
     }
 
     const pieChartData = [
-        { name: "Activos", value: users.filter(u => !u.isBanned).length },
-        { name: "Bloqueados", value: users.filter(u => u.isBanned).length }
+        { name: "Activos", value: banList.filter(isBanned => !isBanned).length },
+        { name: "Bloqueados", value: banList.filter(isBanned => isBanned).length }
     ];
     const COLORS = ['#26D12A', '#dc3545'];
 
@@ -105,7 +128,8 @@ export default function UserManagement() {
 
     useEffect(() => {
         handleLoadUsers(0, 10);
-        handleLoadChartData();
+        handleLoadLineChartData();
+        handleLoadPieChartData();
     }, []);
 
     return (
@@ -139,7 +163,7 @@ export default function UserManagement() {
                     <div className="ot-chart-card">
                         <h3 className="ot-chart-title">Estado de los usuarios</h3>
                         <ResponsiveContainer width="100%" height={220}>
-                            <PieChart>
+                            {pieChartError ? <ErrorCard text={pieChartError} /> : <PieChart>
                                 <Pie
                                     data={pieChartData}
                                     dataKey="value"
@@ -155,7 +179,7 @@ export default function UserManagement() {
                                 </Pie>
                                 <Tooltip />
                                 <Legend />
-                            </PieChart>
+                            </PieChart>}
                         </ResponsiveContainer>
                     </div>
                 </Col>

@@ -63,6 +63,7 @@ public class SecurityConfiguration {
                         // User endpoints
                         .requestMatchers(HttpMethod.GET, "/user/").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/user/date").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/user/banned").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/user/admin").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/user/password").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/user/*").hasRole("ADMIN")

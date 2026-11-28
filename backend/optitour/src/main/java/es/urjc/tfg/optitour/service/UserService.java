@@ -191,4 +191,8 @@ public class UserService {
     public List<LocalDateTime> getUsersDates() {
         return userRepository.findAllDates();
     }
+
+    public List<Boolean> getAllBannedValues() {
+        return userRepository.findAllBanned();
+    }
 }

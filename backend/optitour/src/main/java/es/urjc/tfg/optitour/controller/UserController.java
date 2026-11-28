@@ -26,6 +26,7 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath;
 
 import jakarta.validation.Valid;
+import es.urjc.tfg.optitour.DTO.BannedStatsDTO;
 import es.urjc.tfg.optitour.DTO.CreatedDatesDTO;
 import es.urjc.tfg.optitour.DTO.ImageDTO;
 import es.urjc.tfg.optitour.DTO.PasswordDTO;
@@ -160,5 +161,10 @@ public class UserController {
     @GetMapping("/date")
     public CreatedDatesDTO getUserChartData() {
         return new CreatedDatesDTO(userService.getUsersDates());
+    }
+
+    @GetMapping("/banned")
+    public BannedStatsDTO getBannedChartData() {
+        return new BannedStatsDTO(userService.getAllBannedValues());
     }
 }

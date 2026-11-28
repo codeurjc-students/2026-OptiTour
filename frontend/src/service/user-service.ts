@@ -188,3 +188,18 @@ export async function getAllCreationDates() {
 
     return response.json();
 }
+
+export async function getAllBanedValues() {
+    const url = `${base_url}/user/banned`;
+
+    const response = await fetch(url, {
+        credentials: "include"
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+    }
+
+    return response.json();
+}
