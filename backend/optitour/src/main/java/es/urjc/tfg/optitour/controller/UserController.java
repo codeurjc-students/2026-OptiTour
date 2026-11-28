@@ -26,6 +26,7 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath;
 
 import jakarta.validation.Valid;
+import es.urjc.tfg.optitour.DTO.CreatedDatesDTO;
 import es.urjc.tfg.optitour.DTO.ImageDTO;
 import es.urjc.tfg.optitour.DTO.PasswordDTO;
 import es.urjc.tfg.optitour.DTO.PasswordEditDTO;
@@ -154,5 +155,10 @@ public class UserController {
     public PasswordDTO editPassword(@Valid @RequestBody PasswordEditDTO body, HttpServletRequest request) {
         String loggedEmail = request.getUserPrincipal().getName();
         return passwordMapper.toDTO(userService.editLoggedPassword(loggedEmail, body));
+    }
+
+    @GetMapping("/date")
+    public CreatedDatesDTO getUserChartData() {
+        return new CreatedDatesDTO(userService.getUsersDates());
     }
 }

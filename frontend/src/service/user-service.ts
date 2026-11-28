@@ -173,3 +173,18 @@ export async function getLoginRandomImageId() {
 
     return response.json();
 }
+
+export async function getAllCreationDates() {
+    const url = `${base_url}/user/date`;
+
+    const response = await fetch(url, {
+        credentials: "include"
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+    }
+
+    return response.json();
+}

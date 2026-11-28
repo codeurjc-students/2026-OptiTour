@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import es.urjc.tfg.optitour.DTO.ImageDTO;
 import es.urjc.tfg.optitour.DTO.PointOfInterestCreateDTO;
 import es.urjc.tfg.optitour.DTO.PointOfInterestDTO;
-import es.urjc.tfg.optitour.DTO.PointOfInterestStatsDTO;
+import es.urjc.tfg.optitour.DTO.CreatedDatesDTO;
 import es.urjc.tfg.optitour.mapper.ImageMapper;
 import es.urjc.tfg.optitour.mapper.PointOfInterestMapper;
 import es.urjc.tfg.optitour.model.Image;
@@ -109,7 +109,7 @@ public class PointOfInterestController {
     }
 
     @GetMapping("/date")
-    public PointOfInterestStatsDTO getPoiChartData() {
-        return new PointOfInterestStatsDTO(service.getPoisDates());
+    public CreatedDatesDTO getPoiChartData() {
+        return new CreatedDatesDTO(service.getPoisDates());
     }
 }

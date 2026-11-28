@@ -2,6 +2,8 @@ package es.urjc.tfg.optitour.service;
 
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -184,5 +186,9 @@ public class UserService {
 
         userRepository.save(newUser);
         return newUser;
+    }
+
+    public List<LocalDateTime> getUsersDates() {
+        return userRepository.findAllDates();
     }
 }
